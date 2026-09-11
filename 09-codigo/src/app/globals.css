@@ -1,0 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;600;700;800&display=swap');
+
+:root { --ink: #15211f; --muted: #6d7b76; --line: #dce5df; --paper: #f4f6f1; --card: #fffefa; --mint: #cdeedc; --green: #16754d; --orange: #e99b4b; --red: #b94e3d; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: Manrope, Arial, sans-serif; }
