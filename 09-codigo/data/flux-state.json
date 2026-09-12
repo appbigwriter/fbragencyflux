@@ -1,0 +1,118 @@
+{
+  "version": 1,
+  "projects": [
+    {
+      "id": "after-forty",
+      "name": "After Forty",
+      "status": "active",
+      "owner": "Íris",
+      "description": "Pesquisa e preparação editorial para o projeto After Forty"
+    },
+    {
+      "id": "project-flux",
+      "name": "FBR Agency Flux",
+      "status": "active",
+      "owner": "Sergio",
+      "description": "Governança transversal e auditoria"
+    }
+  ],
+  "cards": [
+    {
+      "id": "AF-001",
+      "title": "Validar fundação editorial After Forty",
+      "project": "After Forty",
+      "status": "review",
+      "assignee": "Íris",
+      "priority": "high",
+      "detail": "Briefing, escopo e critérios de aceite para revisão local",
+      "updatedAt": "2026-09-12T18:43:12.623Z"
+    },
+    {
+      "id": "AF-002",
+      "title": "Revisar fontes e evidências",
+      "project": "After Forty",
+      "status": "review",
+      "assignee": "Gabe",
+      "priority": "normal",
+      "detail": "Evidências e riscos aguardando revisão",
+      "updatedAt": "2026-09-12T10:18:00-03:00"
+    }
+  ],
+  "approvals": [
+    {
+      "id": "approval-af-001",
+      "cardId": "AF-001",
+      "title": "Aprovar revisão local do After Forty",
+      "requestedBy": "Íris",
+      "impact": "Simulação local; nenhuma publicação ou despesa",
+      "status": "approved",
+      "decidedAt": "2026-09-12T18:43:25.857Z",
+      "decidedBy": "Sergio"
+    }
+  ],
+  "events": [
+    {
+      "id": "event-af-001",
+      "time": "2026-09-12T10:42:00-03:00",
+      "actor": "Íris",
+      "action": "iniciou a validação da fundação After Forty",
+      "cardId": "AF-001"
+    },
+    {
+      "id": "event-af-002",
+      "time": "2026-09-12T10:18:00-03:00",
+      "actor": "Gabe",
+      "action": "enviou evidências para revisão local",
+      "cardId": "AF-002"
+    },
+    {
+      "id": "event-af-003",
+      "time": "2026-09-12T09:54:00-03:00",
+      "actor": "Íris",
+      "action": "solicitou aprovação local",
+      "cardId": "AF-001"
+    },
+    {
+      "id": "event-1789238592623",
+      "time": "2026-09-12T18:43:12.623Z",
+      "actor": "Gabe",
+      "action": "transicionou AF-001 para review (LOCAL)",
+      "cardId": "AF-001"
+    },
+    {
+      "id": "event-1789238605857",
+      "time": "2026-09-12T18:43:25.857Z",
+      "actor": "Sergio",
+      "action": "registrou decisão approved para approval-af-001 (LOCAL/NO EXTERNAL EFFECT)",
+      "cardId": "AF-001"
+    }
+  ],
+  "handoffs": [
+    {
+      "id": "handoff-af-001",
+      "cardId": "AF-001",
+      "from": "Íris",
+      "to": "Gabe",
+      "summary": "Briefing normalizado; revisar evidências e riscos antes do gate",
+      "createdAt": "2026-09-12T10:42:00-03:00"
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "artifact-af-001",
+      "cardId": "AF-001",
+      "name": "after-forty-briefing.md",
+      "kind": "briefing",
+      "status": "available",
+      "path": "artifacts/after-forty-briefing.md"
+    },
+    {
+      "id": "artifact-af-002",
+      "cardId": "AF-001",
+      "name": "after-forty-evidence-register.md",
+      "kind": "evidence",
+      "status": "pending_review",
+      "path": "artifacts/after-forty-evidence-register.md"
+    }
+  ]
+}
