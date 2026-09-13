@@ -13,7 +13,19 @@ npm run build
 npm run start -- -p 3000
 ```
 
-Acesse `http://localhost:3000`. A interface tem filtro AF-001, detalhe navegável, ações de transição, approval com escopo/impacto/rollback, teste explícito de ator sem permissão, formulário de Handoff e botão de reload/readback. O banner `LOCAL TEST ENVIRONMENT · NO EXTERNAL EFFECT` é obrigatório: nenhuma ação publica, gasta, gera HopLink ou altera produção.
+Acesse `http://localhost:3000`. A interface tem filtro AF-001, detalhe navegável, ações de transição, approval com escopo/impacto/rollback, os exatamente 4 Gates transversais do FBR Agency Flux, confirmação visual de decisão local, teste explícito de ator sem permissão, formulário de Handoff e botão de reload/readback. O banner `LOCAL TEST ENVIRONMENT · NO EXTERNAL EFFECT` é obrigatório: nenhuma ação publica, gasta, gera HopLink ou altera produção.
+
+### Gates transversais do Flux
+
+`GET /api/flux/gates` retorna exatamente os quatro Gates persistidos do `FBR Agency Flux`; `After Forty`/`AF-001` é apenas caso de exemplo. `POST /api/flux/gates/:id/decision` aceita `approved`, `rejected` ou `changes_requested` somente com `{ "actor": "Sergio", "scope": "local" }`. A decisão é conceitual/local, idempotência é fail-closed para Gate já decidido e `externalActionAuthorized` permanece `false`. Aprovar não executa deploy, publicação, DNS, HopLink, gasto, migration ou integração externa
+
+Smoke local reproduzível:
+
+```bash
+curl -s http://localhost:3000/api/flux/gates
+curl -s -X POST http://localhost:3000/api/flux/gates/AF-GATE-01/decision -H 'content-type: application/json' -d '{"decision":"approved","actor":"Sergio","scope":"local"}'
+curl -s http://localhost:3000/api/flux/gates
+```
 
 `FLUX_DATA_FILE` permite apontar um arquivo JSON de teste. Gravações usam arquivo temporário + rename. Os drafts reais são sincronizados do filesystem e exibidos com caminho e tamanho.
 

@@ -239,5 +239,99 @@
       "sourcePath": "F:\\Projetos\\_FBR\\FBR Agency Flux\\08-historico\\afterforty\\drafts\\drafts-index.md",
       "size": 8986
     }
+  ],
+  "gates": [
+    {
+      "id": "FLUX-GATE-01",
+      "cardId": "FLUX-001",
+      "project": "FBR Agency Flux",
+      "title": "Concepção e escopo do Flux",
+      "requiredDecision": "Confirmar concepção, escopo, critérios de aceite e ownership do ciclo atual",
+      "status": "pending",
+      "impact": "Define a base transversal; não executa jobs nem integrações",
+      "cost": "Nenhum custo local; custo externo não autorizado",
+      "scope": "concepção, escopo, critérios e ownership · decisão local",
+      "reversibility": "Reversível alterando o estado local antes da execução",
+      "rollback": "Restaurar o estado anterior, registrar risco e reabrir revisão",
+      "evidence": [
+        "resultado-esperado-do-flux.md",
+        "ACCEPTANCE-MATRIX.md"
+      ],
+      "owner": "Íris",
+      "requestedAt": "2026-09-12T10:00:00-03:00",
+      "externalActionAuthorized": false,
+      "blockers": [
+        "Concepção exige revisão e decisão explícita de Sergio"
+      ]
+    },
+    {
+      "id": "FLUX-GATE-02",
+      "cardId": "FLUX-001",
+      "project": "FBR Agency Flux",
+      "title": "Sincronização de agentes, jobs, skills e workflows",
+      "requiredDecision": "Confirmar mapa de agentes, jobs, skills e workflows e sua sincronização no estado do Flux",
+      "status": "pending",
+      "impact": "Coordena execução transversal; não dispara agent ou job externo",
+      "cost": "Nenhum custo local; custo externo não autorizado",
+      "scope": "agentes · jobs · skills · workflows · versões e ownership · estado local",
+      "reversibility": "Reversível alterando o estado local antes da execução",
+      "rollback": "Restaurar o estado anterior, registrar risco e reabrir revisão",
+      "evidence": [
+        "fbr-agency-flux.md: Controle em tempo real da concepção"
+      ],
+      "owner": "Kora",
+      "requestedAt": "2026-09-12T10:00:00-03:00",
+      "externalActionAuthorized": false,
+      "blockers": [
+        "Eventos e Handoffs de agentes/jobs ainda precisam de sincronização contínua"
+      ]
+    },
+    {
+      "id": "FLUX-GATE-03",
+      "cardId": "FLUX-001",
+      "project": "FBR Agency Flux",
+      "title": "Dependências, Handoffs e evidências",
+      "requiredDecision": "Confirmar dependências, próximo responsável, Handoffs e evidências suficientes para avançar",
+      "status": "pending",
+      "impact": "Impede avanço sem rastreabilidade; não altera projeto externo",
+      "cost": "Nenhum custo local; custo externo não autorizado",
+      "scope": "cards · dependências · Handoffs · artefatos · evidências · blockers",
+      "reversibility": "Reversível alterando o estado local antes da execução",
+      "rollback": "Restaurar o estado anterior, registrar risco e reabrir revisão",
+      "evidence": [
+        "overnight-delivery-readiness.md",
+        "artifacts e Handoffs persistidos localmente"
+      ],
+      "owner": "Gabe",
+      "requestedAt": "2026-09-12T10:00:00-03:00",
+      "externalActionAuthorized": false,
+      "blockers": [
+        "Toda conclusão exige artefato/evidência verificável"
+      ]
+    },
+    {
+      "id": "FLUX-GATE-04",
+      "cardId": "FLUX-001",
+      "project": "FBR Agency Flux",
+      "title": "Status em tempo real e decisões de Sergio",
+      "requiredDecision": "Confirmar que status, decisões, eventos e readbacks estão visíveis e separados de execução externa",
+      "status": "pending",
+      "impact": "Governa decisões transversais; aprovação local não é execução",
+      "cost": "Nenhum custo local; custo externo não autorizado",
+      "scope": "dashboard · API · repositório local · eventos · readback · decisões de Sergio",
+      "reversibility": "Reversível alterando o estado local antes da execução",
+      "rollback": "Restaurar o estado anterior, registrar risco e reabrir revisão",
+      "evidence": [
+        "README.md",
+        "tests/gates.test.ts",
+        "LOCAL DECISION / NO EXTERNAL EFFECT"
+      ],
+      "owner": "Sergio",
+      "requestedAt": "2026-09-12T10:00:00-03:00",
+      "externalActionAuthorized": false,
+      "blockers": [
+        "Auth remoto e integrações permanecem fora deste gate local"
+      ]
+    }
   ]
 }
