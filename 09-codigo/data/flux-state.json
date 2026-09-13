@@ -21,11 +21,16 @@
       "id": "AF-001",
       "title": "Validar fundação editorial After Forty",
       "project": "After Forty",
-      "status": "review",
+      "status": "in_progress",
       "assignee": "Íris",
       "priority": "high",
       "detail": "Briefing, escopo e critérios de aceite para revisão local",
-      "updatedAt": "2026-09-12T18:43:12.623Z"
+      "updatedAt": "2026-09-12T19:54:36.419Z",
+      "acceptanceCriteria": [
+        "12 artigos importados",
+        "fontes e evidências vinculadas",
+        "readback persistido"
+      ]
     },
     {
       "id": "AF-002",
@@ -35,7 +40,10 @@
       "assignee": "Gabe",
       "priority": "normal",
       "detail": "Evidências e riscos aguardando revisão",
-      "updatedAt": "2026-09-12T10:18:00-03:00"
+      "updatedAt": "2026-09-12T10:18:00-03:00",
+      "acceptanceCriteria": [
+        "evidência revisada"
+      ]
     }
   ],
   "approvals": [
@@ -45,9 +53,9 @@
       "title": "Aprovar revisão local do After Forty",
       "requestedBy": "Íris",
       "impact": "Simulação local; nenhuma publicação ou despesa",
-      "status": "approved",
-      "decidedAt": "2026-09-12T18:43:25.857Z",
-      "decidedBy": "Sergio"
+      "status": "pending",
+      "scope": "revisão editorial local do AF-001",
+      "rollback": "rejeitar decisão e manter card em awaiting_approval"
     }
   ],
   "events": [
@@ -78,13 +86,6 @@
       "actor": "Gabe",
       "action": "transicionou AF-001 para review (LOCAL)",
       "cardId": "AF-001"
-    },
-    {
-      "id": "event-1789238605857",
-      "time": "2026-09-12T18:43:25.857Z",
-      "actor": "Sergio",
-      "action": "registrou decisão approved para approval-af-001 (LOCAL/NO EXTERNAL EFFECT)",
-      "cardId": "AF-001"
     }
   ],
   "handoffs": [
@@ -99,20 +100,144 @@
   ],
   "artifacts": [
     {
-      "id": "artifact-af-001",
+      "id": "artifact-HF-01-protein-evidence-after-40-md",
       "cardId": "AF-001",
-      "name": "after-forty-briefing.md",
-      "kind": "briefing",
+      "name": "HF-01-protein-evidence-after-40.md",
+      "kind": "real-filesystem-article",
       "status": "available",
-      "path": "artifacts/after-forty-briefing.md"
+      "path": "F:\\Projetos\\_FBR\\FBR Agency Flux\\08-historico\\afterforty\\drafts\\HF-01-protein-evidence-after-40.md",
+      "sourcePath": "F:\\Projetos\\_FBR\\FBR Agency Flux\\08-historico\\afterforty\\drafts\\HF-01-protein-evidence-after-40.md",
+      "size": 6097
     },
     {
-      "id": "artifact-af-002",
+      "id": "artifact-HF-02-reading-a-creatine-listing-after-40-md",
       "cardId": "AF-001",
-      "name": "after-forty-evidence-register.md",
-      "kind": "evidence",
-      "status": "pending_review",
-      "path": "artifacts/after-forty-evidence-register.md"
+      "name": "HF-02-reading-a-creatine-listing-after-40.md",
+      "kind": "real-filesystem-article",
+      "status": "available",
+      "path": "F:\\Projetos\\_FBR\\FBR Agency Flux\\08-historico\\afterforty\\drafts\\HF-02-reading-a-creatine-listing-after-40.md",
+      "sourcePath": "F:\\Projetos\\_FBR\\FBR Agency Flux\\08-historico\\afterforty\\drafts\\HF-02-reading-a-creatine-listing-after-40.md",
+      "size": 6461
+    },
+    {
+      "id": "artifact-HF-03-protein-powder-labels-md",
+      "cardId": "AF-001",
+      "name": "HF-03-protein-powder-labels.md",
+      "kind": "real-filesystem-article",
+      "status": "available",
+      "path": "F:\\Projetos\\_FBR\\FBR Agency Flux\\08-historico\\afterforty\\drafts\\HF-03-protein-powder-labels.md",
+      "sourcePath": "F:\\Projetos\\_FBR\\FBR Agency Flux\\08-historico\\afterforty\\drafts\\HF-03-protein-powder-labels.md",
+      "size": 6238
+    },
+    {
+      "id": "artifact-HF-04-comparing-creatine-listings-without-ranking-md",
+      "cardId": "AF-001",
+      "name": "HF-04-comparing-creatine-listings-without-ranking.md",
+      "kind": "real-filesystem-article",
+      "status": "available",
+      "path": "F:\\Projetos\\_FBR\\FBR Agency Flux\\08-historico\\afterforty\\drafts\\HF-04-comparing-creatine-listings-without-ranking.md",
+      "sourcePath": "F:\\Projetos\\_FBR\\FBR Agency Flux\\08-historico\\afterforty\\drafts\\HF-04-comparing-creatine-listings-without-ranking.md",
+      "size": 6652
+    },
+    {
+      "id": "artifact-RW-01-foam-roller-features-and-questions-md",
+      "cardId": "AF-001",
+      "name": "RW-01-foam-roller-features-and-questions.md",
+      "kind": "real-filesystem-article",
+      "status": "available",
+      "path": "F:\\Projetos\\_FBR\\FBR Agency Flux\\08-historico\\afterforty\\drafts\\RW-01-foam-roller-features-and-questions.md",
+      "sourcePath": "F:\\Projetos\\_FBR\\FBR Agency Flux\\08-historico\\afterforty\\drafts\\RW-01-foam-roller-features-and-questions.md",
+      "size": 5874
+    },
+    {
+      "id": "artifact-RW-02-movement-sleep-recovery-md",
+      "cardId": "AF-001",
+      "name": "RW-02-movement-sleep-recovery.md",
+      "kind": "real-filesystem-article",
+      "status": "available",
+      "path": "F:\\Projetos\\_FBR\\FBR Agency Flux\\08-historico\\afterforty\\drafts\\RW-02-movement-sleep-recovery.md",
+      "sourcePath": "F:\\Projetos\\_FBR\\FBR Agency Flux\\08-historico\\afterforty\\drafts\\RW-02-movement-sleep-recovery.md",
+      "size": 6329
+    },
+    {
+      "id": "artifact-RW-03-comparing-foam-roller-listings-md",
+      "cardId": "AF-001",
+      "name": "RW-03-comparing-foam-roller-listings.md",
+      "kind": "real-filesystem-article",
+      "status": "available",
+      "path": "F:\\Projetos\\_FBR\\FBR Agency Flux\\08-historico\\afterforty\\drafts\\RW-03-comparing-foam-roller-listings.md",
+      "sourcePath": "F:\\Projetos\\_FBR\\FBR Agency Flux\\08-historico\\afterforty\\drafts\\RW-03-comparing-foam-roller-listings.md",
+      "size": 6210
+    },
+    {
+      "id": "artifact-RW-04-recovery-basics-md",
+      "cardId": "AF-001",
+      "name": "RW-04-recovery-basics.md",
+      "kind": "real-filesystem-article",
+      "status": "available",
+      "path": "F:\\Projetos\\_FBR\\FBR Agency Flux\\08-historico\\afterforty\\drafts\\RW-04-recovery-basics.md",
+      "sourcePath": "F:\\Projetos\\_FBR\\FBR Agency Flux\\08-historico\\afterforty\\drafts\\RW-04-recovery-basics.md",
+      "size": 6444
+    },
+    {
+      "id": "artifact-SB-01-retinol-label-reading-after-40-md",
+      "cardId": "AF-001",
+      "name": "SB-01-retinol-label-reading-after-40.md",
+      "kind": "real-filesystem-article",
+      "status": "available",
+      "path": "F:\\Projetos\\_FBR\\FBR Agency Flux\\08-historico\\afterforty\\drafts\\SB-01-retinol-label-reading-after-40.md",
+      "sourcePath": "F:\\Projetos\\_FBR\\FBR Agency Flux\\08-historico\\afterforty\\drafts\\SB-01-retinol-label-reading-after-40.md",
+      "size": 6089
+    },
+    {
+      "id": "artifact-SB-02-simple-skincare-routine-without-product-md",
+      "cardId": "AF-001",
+      "name": "SB-02-simple-skincare-routine-without-product.md",
+      "kind": "real-filesystem-article",
+      "status": "available",
+      "path": "F:\\Projetos\\_FBR\\FBR Agency Flux\\08-historico\\afterforty\\drafts\\SB-02-simple-skincare-routine-without-product.md",
+      "sourcePath": "F:\\Projetos\\_FBR\\FBR Agency Flux\\08-historico\\afterforty\\drafts\\SB-02-simple-skincare-routine-without-product.md",
+      "size": 6065
+    },
+    {
+      "id": "artifact-SB-03-comparing-retinol-moisturizer-listings-md",
+      "cardId": "AF-001",
+      "name": "SB-03-comparing-retinol-moisturizer-listings.md",
+      "kind": "real-filesystem-article",
+      "status": "available",
+      "path": "F:\\Projetos\\_FBR\\FBR Agency Flux\\08-historico\\afterforty\\drafts\\SB-03-comparing-retinol-moisturizer-listings.md",
+      "sourcePath": "F:\\Projetos\\_FBR\\FBR Agency Flux\\08-historico\\afterforty\\drafts\\SB-03-comparing-retinol-moisturizer-listings.md",
+      "size": 6472
+    },
+    {
+      "id": "artifact-SB-04-skincare-trends-after-40-md",
+      "cardId": "AF-001",
+      "name": "SB-04-skincare-trends-after-40.md",
+      "kind": "real-filesystem-article",
+      "status": "available",
+      "path": "F:\\Projetos\\_FBR\\FBR Agency Flux\\08-historico\\afterforty\\drafts\\SB-04-skincare-trends-after-40.md",
+      "sourcePath": "F:\\Projetos\\_FBR\\FBR Agency Flux\\08-historico\\afterforty\\drafts\\SB-04-skincare-trends-after-40.md",
+      "size": 6323
+    },
+    {
+      "id": "artifact-drafts-flexible-index-md",
+      "cardId": "AF-001",
+      "name": "drafts-flexible-index.md",
+      "kind": "real-filesystem-article",
+      "status": "available",
+      "path": "F:\\Projetos\\_FBR\\FBR Agency Flux\\08-historico\\afterforty\\drafts\\drafts-flexible-index.md",
+      "sourcePath": "F:\\Projetos\\_FBR\\FBR Agency Flux\\08-historico\\afterforty\\drafts\\drafts-flexible-index.md",
+      "size": 11074
+    },
+    {
+      "id": "artifact-drafts-index-md",
+      "cardId": "AF-001",
+      "name": "drafts-index.md",
+      "kind": "real-filesystem-article",
+      "status": "available",
+      "path": "F:\\Projetos\\_FBR\\FBR Agency Flux\\08-historico\\afterforty\\drafts\\drafts-index.md",
+      "sourcePath": "F:\\Projetos\\_FBR\\FBR Agency Flux\\08-historico\\afterforty\\drafts\\drafts-index.md",
+      "size": 8986
     }
   ]
 }

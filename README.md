@@ -1,12 +1,29 @@
 # FBR Agency Flux
 
-Camada transversal de governança, orquestração, execução e auditoria dos projetos da FBR Agency
+Camada transversal de concepção, governança e coordenação dos projetos da FBR Agency
+
+## Escopo da versão 1.0
+
+A versão 1.0 é dedicada à concepção coordenada e controlada dos projetos. O Flux recebe o conceito, organiza o escopo, informa e treina os agentes, verifica ou cria skills e workflows necessários, controla dependências e Gates e acompanha em tempo real quem está fazendo cada job, seu status e sua conclusão baseada em evidência
+
+A versão 1.0 do Flux não é o executor técnico de todos os deploys, mas coordena a concepção e o encaminhamento dos projetos para os owners de execução. O piloto After Forty continua sendo uma entrega completa da FBR Agency, executada pelo FBR Blogs e pelos agents especializados
 
 ## Objetivo
 
-Definir o fluxo comum para intake, planejamento, delegação entre agents, Kanban, gates de aprovação, handoffs, evidências, QA, publicação, deploy e histórico dos projetos da FBR Agency
+Definir o modelo comum de concepção, intake, escopo, arquitetura conceitual, agentes, ownership, critérios de aceite, Handoffs, evidências e Gates dos projetos da FBR Agency
 
 O Flux não substitui os projetos específicos, o Control Tower, o Kanban da Kora ou os agents especialistas. Ele define os contratos e regras que conectam essas partes
+
+## Versão 2.0 — gestão, acompanhamento e governança
+
+Na versão 2.0, o Flux guiará os workflows de gestão, acompanhamento e governança dos projetos nas áreas de:
+
+- Marketing
+- Vendas
+- Suporte
+- Machine Learning
+
+A governança manterá os processos em evolução contínua, aprimorando e adaptando workflows, responsabilidades, skills, critérios, métricas e Gates conforme novas realidades, necessidades, riscos e aprendizados dos projetos. Mudanças relevantes deverão ter motivo, evidência, impacto, owner, versão, critérios de aceite e aprovação quando exigida
 
 ## Estrutura
 

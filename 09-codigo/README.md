@@ -1,39 +1,26 @@
-# FBR Agency Flux dashboard
+# FBR Agency Flux executor — estado atual
 
-Aplicação local do Agency Flux com estado persistido em JSON. A página lê o estado server-side; os mocks históricos permanecem apenas nos testes/artefatos de referência e não são fonte de verdade da produção.
+Este código é o executor local verificável do Flux, não a entrega remota completa. Ele lê o estado persistido fora de `src`, importa os drafts reais de `08-historico/afterforty/drafts`, mostra Gates, artefatos, Handoffs e eventos, e permite transições, decisões locais de Sergio e criação de Handoffs com readback.
 
-## Execução
+## Escopo local
 
 ```bash
 npm install
-npm run dev
-# ou: npm run build && npm start
-```
-
-O estado padrão fica em `data/flux-state.json`, fora de `src`. Para usar outro arquivo, defina `FLUX_DATA_FILE` antes de iniciar o processo (caminho absoluto ou relativo ao diretório de execução). O repositório grava por arquivo temporário e rename para evitar escrita parcial.
-
-## API local
-
-- `GET /api/flux/snapshot` — snapshot agregado para o painel
-- `GET /api/flux/cards` — cards persistidos
-- `GET /api/flux/events` — eventos de auditoria
-- `GET /api/flux/approvals` — approvals persistidos
-- `POST` ou `PATCH /api/flux/cards/:id` — transição; body `{ "status": "review", "actor": "Íris", "scope": "local" }`
-- `POST /api/flux/approvals/:id/decision` — decisão local; body `{ "decision": "approved", "actor": "Sergio", "scope": "local" }`
-
-Transições desconhecidas ou fora da máquina falham fechado. Toda operação exige `scope: local`; decisões de approval exigem exatamente `actor: Sergio`, registram timestamp e evento, e não publicam, gastam, geram HopLink ou mutam qualquer sistema externo. A UI identifica isso como `LOCAL PERSISTED · NO EXTERNAL EFFECT`.
-
-## Verificação
-
-```bash
 npm test
 npm run typecheck
 npm run lint
 npm run build
+npm run start -- -p 3000
 ```
 
-O seed inclui o card `AF-001`, projeto After Forty, approval pendente, eventos, handoff e artefatos. O arquivo é estado operacional local: não há autenticação, concorrência distribuída, banco, Control Tower, publicação, gasto ou integração externa.
+Acesse `http://localhost:3000`. A interface tem filtro AF-001, detalhe navegável, ações de transição, approval com escopo/impacto/rollback, teste explícito de ator sem permissão, formulário de Handoff e botão de reload/readback. O banner `LOCAL TEST ENVIRONMENT · NO EXTERNAL EFFECT` é obrigatório: nenhuma ação publica, gasta, gera HopLink ou altera produção.
 
-## Fase 2
+`FLUX_DATA_FILE` permite apontar um arquivo JSON de teste. Gravações usam arquivo temporário + rename. Os drafts reais são sincronizados do filesystem e exibidos com caminho e tamanho.
 
-Adicionar autenticação/autorização server-side, storage transacional com locking/backup, contratos de adapters e receipts de execução, observabilidade/correlation IDs, isolamento por projeto e integração externa somente após contrato e autorização datada de Sergio. Até lá, approvals e transições são simulações locais.
+## Produto-alvo e limite
+
+O resultado esperado em `03-arquitetura/resultado-esperado-do-flux.md` é um sistema executor que recebe MD conceitual e entrega banco, backend, frontend, Easypanel e domínio. Ainda não é honesto declarar essa entrega: falta intake de MD, orquestração de agents, banco remoto, Control Tower, auth/RBAC real, RLS, adapter, backup, locking, observabilidade, Easypanel, DNS, domínio público, integrações e smoke/readback externo.
+
+O contrato remoto documentado em `03-arquitetura/runtime-control-tower.md` tem blocker real: Control Tower 404 e gateway Supabase 401 na última validação registrada, sem credencial disponível. Não há secrets neste repositório.
+
+Consulte `ACCEPTANCE-MATRIX.md` e `../08-historico/dashboard-e2e-gap-report.md` para a matriz e o relatório requisito a requisito. Não usar `completed` como sinônimo de build verde.
