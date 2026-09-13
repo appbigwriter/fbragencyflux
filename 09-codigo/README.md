@@ -36,3 +36,14 @@ O resultado esperado em `03-arquitetura/resultado-esperado-do-flux.md` é um sis
 O contrato remoto documentado em `03-arquitetura/runtime-control-tower.md` tem blocker real: Control Tower 404 e gateway Supabase 401 na última validação registrada, sem credencial disponível. Não há secrets neste repositório.
 
 Consulte `ACCEPTANCE-MATRIX.md` e `../08-historico/dashboard-e2e-gap-report.md` para a matriz e o relatório requisito a requisito. Não usar `completed` como sinônimo de build verde.
+
+## Modelo do dashboard
+
+O dashboard mantém quatro escopos separados:
+
+- **Gates do FBR Flux**: exatamente `FLUX-GATE-01` a `FLUX-GATE-04`, com status, decisão, blockers e evidências registradas
+- **Projetos acompanhados**: catálogo dos projetos persistidos, sem transformar um projeto em estado geral do Flux
+- **Pendências por projeto**: cards agrupados pelo projeto de origem; `AF-001` permanece `awaiting_approval` e `AF-002` permanece `review`
+- **Indicadores independentes**: Gates pendentes, cards pendentes, blockers e projetos acompanhados são contados separadamente
+
+Aprovar um Gate do FBR Flux não altera automaticamente cards de projetos. Os paths de evidência são exibidos somente quando existem no estado persistido ou nos artefatos sincronizados do filesystem. O readback após reload deve conservar os status reais de `AF-001` e `AF-002`.

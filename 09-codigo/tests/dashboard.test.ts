@@ -18,10 +18,29 @@ describe('getDashboardSnapshot', () => {
     expect(snapshot.recentEvents.length).toBeGreaterThan(0)
   })
 
+  it('separates Flux gates from After Forty project cards and counts each scope independently', async () => {
+    const snapshot = await getDashboardSnapshot(await testFile())
+    expect(snapshot.gates.map((gate) => gate.id)).toEqual(['FLUX-GATE-01', 'FLUX-GATE-02', 'FLUX-GATE-03', 'FLUX-GATE-04'])
+    expect(snapshot.pendingGates).toBe(0)
+    expect(snapshot.pendingCards).toBe(2)
+    expect(snapshot.blockerCount).toBe(0)
+    expect(snapshot.projectCards['After Forty'].map((card) => card.id)).toEqual(['AF-001', 'AF-002'])
+    expect(snapshot.projectCards['FBR Agency Flux']).toEqual([])
+  })
+
   it('keeps approval, card and artifact details tied to After Forty', async () => {
     const snapshot = await getDashboardSnapshot(await testFile())
     expect(snapshot.cards.find((item) => item.id === 'AF-001')?.project).toBe('After Forty')
     expect(snapshot.approvals.items[0].cardId).toBe('AF-001')
     expect(snapshot.artifacts.every((item) => item.cardId === 'AF-001')).toBe(true)
+  })
+
+  it('reads the separated scopes back after reload without closing project cards', async () => {
+    const file = await testFile()
+    const first = await getDashboardSnapshot(file)
+    const second = await getDashboardSnapshot(file)
+    expect(second.gates.map((gate) => gate.status)).toEqual(first.gates.map((gate) => gate.status))
+    expect(second.cards.find((card) => card.id === 'AF-001')?.status).toBe('awaiting_approval')
+    expect(second.cards.find((card) => card.id === 'AF-002')?.status).toBe('review')
   })
 })

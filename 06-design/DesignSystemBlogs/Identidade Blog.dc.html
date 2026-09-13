@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/nocturne-bd15c425-53b9-4883-b46d-6ecda90ef625/styles.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Space+Grotesk:wght@400;500;700&display=swap">
+<script src="_ds/nocturne-bd15c425-53b9-4883-b46d-6ecda90ef625/_ds_bundle.js"></script>
+<script src="./image-slot.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; }
+  a { color: var(--blog-accent-ink); text-decoration: none; }
+  a:hover { color: var(--blog-accent); text-decoration: underline; }
+  input:focus-visible, button:focus-visible, a:focus-visible { outline: 2px solid var(--blog-accent); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div style="{{ shell }}">
+<div style="min-height:100vh;background:var(--blog-bg);color:var(--blog-text);font-family:Inter,system-ui,sans-serif;font-size:15px;line-height:1.55">
+
+  <div style="position:sticky;top:0;z-index:30;display:grid;gap:8px;padding:10px 20px;background:var(--blog-surface);border-bottom:1px solid var(--blog-line)">
+    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px">
+      <span style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--blog-muted);width:62px">Blog</span>
+      <sc-for list="{{ presets }}" as="p" hint-placeholder-count="4">
+        <button onClick="{{ p.pick }}" style="{{ p.tabStyle }}" style-hover="opacity:.85"><span style="{{ p.dotStyle }}"></span>{{ p.nome }}</button>
+      </sc-for>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px">
+      <span style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--blog-muted);width:62px">Tela</span>
+      <sc-for list="{{ telas }}" as="t" hint-placeholder-count="9">
+        <button onClick="{{ t.pick }}" style="{{ t.tabStyle }}" style-hover="opacity:.85">{{ t.nome }}</button>
+      </sc-for>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px">
+      <span style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--blog-muted);width:62px">Ajustes</span>
+      <sc-for list="{{ modos }}" as="m" hint-placeholder-count="2">
+        <button onClick="{{ m.pick }}" style="{{ m.tabStyle }}" style-hover="opacity:.85">{{ m.nome }}</button>
+      </sc-for>
+      <span style="width:10px"></span>
+      <sc-for list="{{ formatos }}" as="f" hint-placeholder-count="3">
+        <button onClick="{{ f.pick }}" style="{{ f.tabStyle }}" style-hover="opacity:.85">{{ f.nome }}</button>
+      </sc-for>
+      <span style="flex:1"></span>
+      <span style="font-size:11px;color:var(--blog-muted)">{{ resumoTema }}</span>
+    </div>
+  </div>
+
+  <sc-if value="{{ eKit }}" hint-placeholder-val="{{ true }}">
+    <div style="max-width:1180px;margin:0 auto;padding:0 24px 80px">
+      <header style="padding:56px 0 36px;display:grid;gap:14px;max-width:720px">
+        <span style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--blog-accent-ink)">Identidade visual · kit base</span>
+        <h1 style="margin:0;font-family:var(--blog-head);font-weight:500;font-size:42px;line-height:1.08;letter-spacing:-.02em">Um sistema, quatro blogs</h1>
+        <p style="margin:0;font-size:17px;color:var(--blog-muted);text-wrap:pretty">A estrutura, a hierarquia e os componentes são fixos. O que muda de blog para blog são seis variáveis: nome e monograma, matiz do destaque, claro ou escuro, fonte de título, raio dos cantos e densidade. Troque o blog na barra acima e percorra as nove telas.</p>
+      </header>
+
+      <section style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:calc(var(--blog-u)*2);padding:24px 0 48px;border-top:1px solid var(--blog-line)">
+        <div style="display:grid;gap:10px;align-content:start">
+          <h2 style="margin:0;font-family:var(--blog-head);font-weight:500;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--blog-muted)">Rampa do destaque</h2>
+          <div style="display:flex;border-radius:var(--blog-r);overflow:hidden;height:54px">
+            <sc-for list="{{ rampa }}" as="r" hint-placeholder-count="9"><div style="{{ r.style }}"></div></sc-for>
+          </div>
+          <p style="margin:0;font-size:12px;color:var(--blog-muted)">Nove degraus gerados de um matiz só. Trocar o matiz regenera a rampa inteira sem tocar no layout.</p>
+        </div>
+        <div style="display:grid;gap:10px;align-content:start">
+          <h2 style="margin:0;font-family:var(--blog-head);font-weight:500;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--blog-muted)">Papel e tinta</h2>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px">
+            <div style="height:54px;border-radius:var(--blog-r);background:var(--blog-bg);border:1px solid var(--blog-line)"></div>
+            <div style="height:54px;border-radius:var(--blog-r);background:var(--blog-surface);border:1px solid var(--blog-line)"></div>
+            <div style="height:54px;border-radius:var(--blog-r);background:var(--blog-accent-soft);border:1px solid var(--blog-line)"></div>
+            <div style="height:54px;border-radius:var(--blog-r);background:var(--blog-text)"></div>
+          </div>
+          <p style="margin:0;font-size:12px;color:var(--blog-muted)">Fundo, superfície, tinta suave do destaque e texto. Nenhum preto ou branco puro.</p>
+        </div>
+        <div style="display:grid;gap:10px;align-content:start">
+          <h2 style="margin:0;font-family:var(--blog-head);font-weight:500;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--blog-muted)">Marca e tipografia</h2>
+          <div style="display:flex;align-items:center;gap:12px">
+            <span style="display:grid;place-items:center;width:46px;height:46px;border-radius:var(--blog-r);background:var(--blog-accent-soft);color:var(--blog-accent-ink);font-family:var(--blog-head);font-weight:500;font-size:19px">{{ mono }}</span>
+            <span style="font-family:var(--blog-head);font-weight:500;font-size:30px;line-height:1;letter-spacing:-.02em">Aa Gg</span>
+          </div>
+          <div style="font-size:13px;color:var(--blog-muted)">{{ nomeFonte }} nos títulos · Inter no corpo · artigo em 17px / 1.7 em 680px</div>
+        </div>
+      </section>
+
+      <section style="padding:0 0 48px;display:grid;gap:calc(var(--blog-u)*2)">
+        <h2 style="margin:0;font-family:var(--blog-head);font-weight:500;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--blog-muted)">Componentes</h2>
+        <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center">
+          <button style="padding:calc(var(--blog-u)*.8) calc(var(--blog-u)*1.6);border-radius:var(--blog-r);border:1px solid var(--blog-accent);background:transparent;color:var(--blog-accent-ink);font:inherit;font-size:14px;cursor:pointer" style-hover="background:var(--blog-accent-soft)">Ação primária</button>
+          <button style="padding:calc(var(--blog-u)*.8) calc(var(--blog-u)*1.6);border-radius:var(--blog-r);border:1px solid var(--blog-line);background:transparent;color:var(--blog-text);font:inherit;font-size:14px;cursor:pointer" style-hover="border-color:var(--blog-accent)">Secundária</button>
+          <button style="padding:calc(var(--blog-u)*.8) calc(var(--blog-u)*.6);border:0;background:transparent;color:var(--blog-accent-ink);font:inherit;font-size:14px;cursor:pointer;text-decoration:underline;text-underline-offset:3px">Terciária</button>
+          <span style="padding:4px 10px;border-radius:999px;background:var(--blog-accent-soft);color:var(--blog-accent-ink);font-size:11px;letter-spacing:.08em;text-transform:uppercase">Categoria</span>
+          <span style="padding:4px 10px;border-radius:999px;border:1px solid var(--blog-line);color:var(--blog-muted);font-size:11px;letter-spacing:.08em;text-transform:uppercase">Etiqueta</span>
+          <span style="padding:4px 10px;border-radius:999px;border:1px dashed var(--blog-accent);color:var(--blog-accent-ink);font-size:11px;letter-spacing:.08em;text-transform:uppercase">Afiliado</span>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:calc(var(--blog-u)*1.5)">
+          <div style="background:var(--blog-surface);border:1px solid var(--blog-line);border-radius:var(--blog-r-lg);padding:calc(var(--blog-u)*1.5);display:grid;gap:8px">
+            <span style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--blog-accent-ink)">Card de artigo</span>
+            <h3 style="margin:0;font-family:var(--blog-head);font-weight:500;font-size:18px;line-height:1.25">Título em duas linhas, cortado com folga</h3>
+            <span style="font-size:12px;color:var(--blog-muted)">6 min · 12 set</span>
+          </div>
+          <div style="display:grid;gap:8px;align-content:start">
+            <label style="font-size:12px;color:var(--blog-muted)">Campo de e-mail</label>
+            <input type="email" placeholder="voce@email.com" style="padding:calc(var(--blog-u)*.9) calc(var(--blog-u)*1.1);border-radius:var(--blog-r);border:1px solid var(--blog-line);background:var(--blog-surface);color:var(--blog-text);font:inherit;font-size:14px;width:100%;box-sizing:border-box">
+            <span style="font-size:12px;color:var(--blog-muted)">Foco sempre visível: contorno de 2px no destaque.</span>
+          </div>
+          <div style="display:grid;gap:8px;align-content:start;background:var(--blog-accent-soft);border:1px solid var(--blog-accent);border-radius:var(--blog-r-lg);padding:calc(var(--blog-u)*1.3)">
+            <span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--blog-accent-ink)">Bloco de recomendação</span>
+            <span style="font-size:13px;color:var(--blog-muted)">O único componente com fundo tingido. Sempre com a divulgação ao lado do botão.</span>
+          </div>
+          <div style="display:grid;place-items:center;border:1px dashed var(--blog-line);border-radius:var(--blog-r);min-height:100px;color:var(--blog-muted);font-size:11px;letter-spacing:.08em;text-transform:uppercase;text-align:center;padding:10px">Slot de anúncio</div>
+        </div>
+      </section>
+
+      <section style="display:grid;gap:calc(var(--blog-u)*1.4);padding:0 0 24px;border-top:1px solid var(--blog-line)">
+        <h2 style="margin:28px 0 0;font-family:var(--blog-head);font-weight:500;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--blog-muted)">Inventário de anúncios</h2>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:calc(var(--blog-u)*1.4)">
+          <sc-for list="{{ inventario }}" as="s" hint-placeholder-count="5">
+            <div style="display:grid;gap:6px;border:1px solid var(--blog-line);border-radius:var(--blog-r);padding:calc(var(--blog-u)*1.2)">
+              <span style="font-family:var(--blog-head);font-weight:500;font-size:15px">{{ s.nome }}</span>
+              <span style="font-size:12px;color:var(--blog-accent-ink)">{{ s.formato }}</span>
+              <span style="font-size:12px;color:var(--blog-muted)">{{ s.onde }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <p style="margin:0;font-size:12px;color:var(--blog-muted);max-width:680px">Nenhum slot fica acima do título na primeira dobra, nenhum aparece dentro do bloco de afiliado e a página de política declara os dois — as duas regras que mais reprovam pedido no AdSense.</p>
+      </section>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ eBlog }}" hint-placeholder-val="{{ true }}">
+    <div style="max-width:1180px;margin:0 auto;padding:calc(var(--blog-u)*2) 24px 80px">
+      <div style="border:1px solid var(--blog-line);border-radius:var(--blog-r-lg);overflow:hidden;background:var(--blog-bg)">
+
+        <div style="display:flex;flex-wrap:wrap;align-items:center;gap:calc(var(--blog-u)*1.5);padding:calc(var(--blog-u)*1.3) calc(var(--blog-u)*2);border-bottom:1px solid var(--blog-line);background:var(--blog-surface)">
+          <span style="display:flex;align-items:center;gap:10px">
+            <span style="display:grid;place-items:center;width:30px;height:30px;border-radius:var(--blog-r);background:var(--blog-accent-soft);color:var(--blog-accent-ink);font-family:var(--blog-head);font-weight:500;font-size:13px">{{ mono }}</span>
+            <span style="display:grid">
+              <span style="font-family:var(--blog-head);font-weight:500;font-size:18px;letter-spacing:-.01em;line-height:1.1">{{ nome }}</span>
+              <span style="font-size:11px;color:var(--blog-muted)">{{ tagline }}</span>
+            </span>
+          </span>
+          <span style="flex:1"></span>
+          <nav style="display:flex;flex-wrap:wrap;gap:calc(var(--blog-u)*1.3);font-size:13px;color:var(--blog-muted)">
+            <sc-for list="{{ categorias }}" as="c" hint-placeholder-count="4">
+              <a href="#" style="color:inherit" style-hover="color:var(--blog-accent-ink)">{{ c }}</a>
+            </sc-for>
+            <a href="#" style="color:inherit" style-hover="color:var(--blog-accent-ink)">Sobre</a>
+          </nav>
+          <span style="display:flex;align-items:center;gap:6px;border:1px solid var(--blog-line);border-radius:999px;padding:5px 12px;font-size:12px;color:var(--blog-muted)">Buscar</span>
+        </div>
+
+        <sc-if value="{{ eHome }}" hint-placeholder-val="{{ true }}">
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:calc(var(--blog-u)*2);padding:calc(var(--blog-u)*2.4)">
+            <div style="display:grid;gap:14px;align-content:start">
+              <span style="padding:4px 10px;border-radius:999px;background:var(--blog-accent-soft);color:var(--blog-accent-ink);font-size:11px;letter-spacing:.08em;text-transform:uppercase;width:max-content">{{ heroKicker }}</span>
+              <h1 style="margin:0;font-family:var(--blog-head);font-weight:500;font-size:38px;line-height:1.1;letter-spacing:-.02em;text-wrap:pretty">{{ heroTitulo }}</h1>
+              <p style="margin:0;font-size:16px;color:var(--blog-muted);text-wrap:pretty">{{ heroDek }}</p>
+              <div style="display:flex;align-items:center;gap:10px;font-size:12px;color:var(--blog-muted)">
+                <span style="width:26px;height:26px;border-radius:999px;background:var(--blog-accent-soft);display:inline-block"></span>{{ host }} · 12 set · 7 min
+              </div>
+            </div>
+            <div class="{{ classeImagem }}" style="border-radius:var(--blog-r-lg);overflow:hidden;min-height:240px">
+              <image-slot id="blog-hero" shape="rect" placeholder="Imagem de capa"></image-slot>
+            </div>
+          </div>
+          <div style="display:grid;place-items:center;margin:0 calc(var(--blog-u)*2.4) calc(var(--blog-u)*2.4);border:1px dashed var(--blog-line);border-radius:var(--blog-r);min-height:74px;color:var(--blog-muted);font-size:11px;letter-spacing:.08em;text-transform:uppercase">Anúncio · leaderboard responsivo · abaixo da dobra</div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:calc(var(--blog-u)*1.6);padding:0 calc(var(--blog-u)*2.4) calc(var(--blog-u)*2.4)">
+            <sc-for list="{{ posts }}" as="a" hint-placeholder-count="4">
+              <article style="display:grid;gap:10px;align-content:start;background:var(--blog-surface);border:1px solid var(--blog-line);border-radius:var(--blog-r-lg);padding:calc(var(--blog-u)*1.4)">
+                <sc-if value="{{ cardComImagem }}" hint-placeholder-val="{{ true }}">
+                  <div style="height:96px;border-radius:var(--blog-r);background:var(--blog-accent-soft);display:grid;place-items:center;color:var(--blog-muted);font-size:11px;letter-spacing:.08em;text-transform:uppercase">Imagem</div>
+                </sc-if>
+                <span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--blog-accent-ink)">{{ a.cat }}</span>
+                <h3 style="margin:0;font-family:var(--blog-head);font-weight:500;font-size:17px;line-height:1.25;text-wrap:pretty">{{ a.titulo }}</h3>
+                <span style="font-size:12px;color:var(--blog-muted)">{{ a.meta }}</span>
+              </article>
+            </sc-for>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:calc(var(--blog-u)*2);padding:calc(var(--blog-u)*2.4);border-top:1px solid var(--blog-line);background:var(--blog-surface)">
+            <div style="display:grid;gap:10px;align-content:start">
+              <h2 style="margin:0;font-family:var(--blog-head);font-weight:500;font-size:22px;line-height:1.2">Uma carta por semana</h2>
+              <p style="margin:0;font-size:14px;color:var(--blog-muted)">{{ newsPromessa }}</p>
+              <div style="display:flex;flex-wrap:wrap;gap:8px">
+                <input type="email" placeholder="voce@email.com" style="flex:1;min-width:170px;padding:calc(var(--blog-u)*.9) calc(var(--blog-u)*1.1);border-radius:var(--blog-r);border:1px solid var(--blog-line);background:var(--blog-bg);color:var(--blog-text);font:inherit;font-size:14px">
+                <button style="padding:calc(var(--blog-u)*.9) calc(var(--blog-u)*1.5);border-radius:var(--blog-r);border:1px solid var(--blog-accent);background:transparent;color:var(--blog-accent-ink);font:inherit;font-size:14px;cursor:pointer" style-hover="background:var(--blog-accent-soft)">Assinar</button>
+              </div>
+            </div>
+            <div style="display:grid;gap:8px;align-content:start">
+              <span style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--blog-muted)">Mais lidas</span>
+              <sc-for list="{{ posts }}" as="a" hint-placeholder-count="4">
+                <a href="#" style="display:flex;gap:12px;font-size:14px;color:var(--blog-text);padding:6px 0;border-bottom:1px solid var(--blog-line)" style-hover="color:var(--blog-accent-ink)">
+                  <span style="color:var(--blog-muted);font-variant-numeric:tabular-nums">{{ a.n }}</span>{{ a.titulo }}
+                </a>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ eArtigo }}" hint-placeholder-val="{{ true }}">
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:calc(var(--blog-u)*3);padding:calc(var(--blog-u)*2.4)">
+            <div style="display:grid;gap:calc(var(--blog-u)*1.6);max-width:680px">
+              <span style="font-size:12px;color:var(--blog-muted)">{{ nome }} › {{ heroKicker }}</span>
+              <h1 style="margin:0;font-family:var(--blog-head);font-weight:500;font-size:34px;line-height:1.12;letter-spacing:-.02em;text-wrap:pretty">{{ heroTitulo }}</h1>
+              <p style="margin:0;font-size:19px;line-height:1.5;color:var(--blog-muted);text-wrap:pretty">{{ heroDek }}</p>
+              <div style="display:flex;align-items:center;gap:10px;font-size:12px;color:var(--blog-muted);padding-bottom:calc(var(--blog-u)*.8);border-bottom:1px solid var(--blog-line)">
+                <span style="width:26px;height:26px;border-radius:999px;background:var(--blog-accent-soft);display:inline-block"></span>Por {{ host }} · 12 de setembro de 2026 · 7 min
+              </div>
+              <div class="{{ classeImagem }}" style="border-radius:var(--blog-r-lg);overflow:hidden;min-height:260px">
+                <image-slot id="blog-artigo" shape="rect" placeholder="Imagem do artigo"></image-slot>
+              </div>
+              <p style="margin:0;font-size:17px;line-height:1.7;text-wrap:pretty">O corpo do texto roda em 17px com entrelinha 1,7 e largura máxima de 680px — cerca de setenta caracteres por linha. Parágrafos nunca passam de cinco linhas nessa largura.</p>
+              <h2 style="margin:0;font-family:var(--blog-head);font-weight:500;font-size:23px;line-height:1.2">Subtítulo a cada três ou quatro parágrafos</h2>
+              <p style="margin:0;font-size:17px;line-height:1.7;text-wrap:pretty">Subtítulos usam a fonte de título, alinhados à esquerda. Listas, citações e tabelas herdam a mesma tinta e o mesmo raio de cantos do resto do sistema.</p>
+              <blockquote style="margin:0;padding-left:calc(var(--blog-u)*1.5);border-left:2px solid var(--blog-accent);font-family:var(--blog-head);font-size:21px;line-height:1.35">A citação ocupa a largura de leitura e nunca vira imagem: precisa poder ser selecionada e lida por leitores de tela.</blockquote>
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:calc(var(--blog-u)*1.4);align-items:center;border:1px solid var(--blog-accent);border-radius:var(--blog-r-lg);padding:calc(var(--blog-u)*1.4);background:var(--blog-accent-soft)">
+                <div style="display:grid;gap:8px">
+                  <span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--blog-accent-ink)">Recomendação testada</span>
+                  <h3 style="margin:0;font-family:var(--blog-head);font-weight:500;font-size:18px;line-height:1.25">{{ produto }}</h3>
+                  <span style="font-size:12px;color:var(--blog-muted);max-width:360px">{{ disclosure }}</span>
+                </div>
+                <button style="justify-self:start;padding:calc(var(--blog-u)*.9) calc(var(--blog-u)*1.5);border-radius:var(--blog-r);border:1px solid var(--blog-accent);background:transparent;color:var(--blog-accent-ink);font:inherit;font-size:14px;cursor:pointer" style-hover="background:var(--blog-surface)">{{ cta }}</button>
+              </div>
+              <div style="display:grid;place-items:center;border:1px dashed var(--blog-line);border-radius:var(--blog-r);min-height:74px;color:var(--blog-muted);font-size:11px;letter-spacing:.08em;text-transform:uppercase">Anúncio · in-article · entre parágrafos</div>
+              <p style="margin:0;font-size:17px;line-height:1.7;text-wrap:pretty">O bloco de recomendação aparece uma vez por artigo, no meio do texto, sempre com a divulgação visível ao lado do botão. Nenhum anúncio encosta nele.</p>
+            </div>
+            <aside style="display:grid;gap:calc(var(--blog-u)*1.6);align-content:start;font-size:13px;max-width:300px">
+              <div style="display:grid;gap:8px;background:var(--blog-surface);border:1px solid var(--blog-line);border-radius:var(--blog-r-lg);padding:calc(var(--blog-u)*1.3)">
+                <span style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--blog-muted)">Neste artigo</span>
+                <a href="#" style="color:var(--blog-text)" style-hover="color:var(--blog-accent-ink)">O que foi testado</a>
+                <a href="#" style="color:var(--blog-text)" style-hover="color:var(--blog-accent-ink)">Como eu medi</a>
+                <a href="#" style="color:var(--blog-text)" style-hover="color:var(--blog-accent-ink)">O que eu faria diferente</a>
+              </div>
+              <div style="display:grid;place-items:center;border:1px dashed var(--blog-line);border-radius:var(--blog-r);min-height:200px;color:var(--blog-muted);font-size:11px;letter-spacing:.08em;text-transform:uppercase;text-align:center;padding:12px">Anúncio · 300 × 250 · sticky na coluna</div>
+              <div style="display:grid;gap:8px;align-content:start">
+                <span style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--blog-muted)">Do mesmo assunto</span>
+                <sc-for list="{{ posts }}" as="a" hint-placeholder-count="3">
+                  <a href="#" style="color:var(--blog-text);line-height:1.35;padding:6px 0;border-bottom:1px solid var(--blog-line);display:block" style-hover="color:var(--blog-accent-ink)">{{ a.titulo }}</a>
+                </sc-for>
+              </div>
+            </aside>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ eCategoria }}" hint-placeholder-val="{{ true }}">
+          <div style="display:grid;gap:calc(var(--blog-u)*1.6);padding:calc(var(--blog-u)*2.4);border-bottom:1px solid var(--blog-line)">
+            <span style="font-size:12px;color:var(--blog-muted)">{{ nome }} › Categoria</span>
+            <h1 style="margin:0;font-family:var(--blog-head);font-weight:500;font-size:34px;line-height:1.1;letter-spacing:-.02em">{{ heroKicker }}</h1>
+            <p style="margin:0;font-size:16px;color:var(--blog-muted);max-width:620px;text-wrap:pretty">{{ descCategoria }}</p>
+            <div style="display:flex;flex-wrap:wrap;gap:8px">
+              <sc-for list="{{ categorias }}" as="c" hint-placeholder-count="4">
+                <a href="#" style="padding:5px 12px;border-radius:999px;border:1px solid var(--blog-line);color:var(--blog-muted);font-size:12px" style-hover="border-color:var(--blog-accent);color:var(--blog-accent-ink)">{{ c }}</a>
+              </sc-for>
+            </div>
+          </div>
+          <div style="display:grid;gap:calc(var(--blog-u)*1.4);padding:calc(var(--blog-u)*2.4)">
+            <sc-for list="{{ listaLonga }}" as="a" hint-placeholder-count="6">
+              <div style="display:grid;gap:calc(var(--blog-u)*1.4)">
+                <article style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:calc(var(--blog-u)*1.6);align-items:center;padding-bottom:calc(var(--blog-u)*1.4);border-bottom:1px solid var(--blog-line)">
+                  <sc-if value="{{ cardComImagem }}" hint-placeholder-val="{{ true }}">
+                    <div style="height:120px;max-width:220px;border-radius:var(--blog-r);background:var(--blog-accent-soft);display:grid;place-items:center;color:var(--blog-muted);font-size:11px;letter-spacing:.08em;text-transform:uppercase">Imagem</div>
+                  </sc-if>
+                  <div style="display:grid;gap:8px">
+                    <span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--blog-accent-ink)">{{ a.cat }}</span>
+                    <h2 style="margin:0;font-family:var(--blog-head);font-weight:500;font-size:21px;line-height:1.2;text-wrap:pretty">{{ a.titulo }}</h2>
+                    <span style="font-size:12px;color:var(--blog-muted)">{{ host }} · {{ a.meta }}</span>
+                  </div>
+                </article>
+                <sc-if value="{{ a.anuncio }}" hint-placeholder-val="{{ false }}">
+                  <div style="display:grid;place-items:center;border:1px dashed var(--blog-line);border-radius:var(--blog-r);min-height:90px;color:var(--blog-muted);font-size:11px;letter-spacing:.08em;text-transform:uppercase">Anúncio · in-feed · a cada quatro itens</div>
+                </sc-if>
+              </div>
+            </sc-for>
+            <div style="display:flex;gap:8px;align-items:center;padding-top:calc(var(--blog-u)*.8)">
+              <span style="padding:6px 12px;border-radius:var(--blog-r);border:1px solid var(--blog-accent);color:var(--blog-accent-ink);font-size:13px">1</span>
+              <a href="#" style="padding:6px 12px;border-radius:var(--blog-r);border:1px solid var(--blog-line);color:var(--blog-muted);font-size:13px">2</a>
+              <a href="#" style="padding:6px 12px;border-radius:var(--blog-r);border:1px solid var(--blog-line);color:var(--blog-muted);font-size:13px">3</a>
+              <a href="#" style="padding:6px 12px;border-radius:var(--blog-r);border:1px solid var(--blog-line);color:var(--blog-muted);font-size:13px">Próxima</a>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ eReview }}" hint-placeholder-val="{{ true }}">
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:calc(var(--blog-u)*3);padding:calc(var(--blog-u)*2.4)">
+            <div style="display:grid;gap:calc(var(--blog-u)*1.6);max-width:680px">
+              <span style="font-size:12px;color:var(--blog-muted)">{{ nome }} › Review</span>
+              <h1 style="margin:0;font-family:var(--blog-head);font-weight:500;font-size:32px;line-height:1.12;letter-spacing:-.02em;text-wrap:pretty">{{ produto }}</h1>
+              <p style="margin:0;font-size:18px;line-height:1.5;color:var(--blog-muted);text-wrap:pretty">{{ veredito }}</p>
+              <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;font-size:12px;color:var(--blog-muted)">
+                <span style="padding:4px 10px;border-radius:999px;border:1px dashed var(--blog-accent);color:var(--blog-accent-ink);font-size:11px;letter-spacing:.08em;text-transform:uppercase">Contém link de afiliado</span>
+                <span>{{ tempoTeste }}</span>
+              </div>
+              <div class="{{ classeImagem }}" style="border-radius:var(--blog-r-lg);overflow:hidden;min-height:240px">
+                <image-slot id="blog-review" shape="rect" placeholder="Foto do produto em uso"></image-slot>
+              </div>
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:calc(var(--blog-u)*1.2)">
+                <sc-for list="{{ notas }}" as="n" hint-placeholder-count="4">
+                  <div style="display:grid;gap:4px;border:1px solid var(--blog-line);border-radius:var(--blog-r);padding:calc(var(--blog-u)*1.1)">
+                    <span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--blog-muted)">{{ n.label }}</span>
+                    <span style="font-family:var(--blog-head);font-weight:500;font-size:26px;line-height:1;color:var(--blog-accent-ink)">{{ n.valor }}</span>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:calc(var(--blog-u)*1.6)">
+                <div style="display:grid;gap:8px;align-content:start">
+                  <span style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--blog-accent-ink)">A favor</span>
+                  <sc-for list="{{ pros }}" as="t" hint-placeholder-count="3">
+                    <span style="font-size:15px;line-height:1.45;padding-bottom:6px;border-bottom:1px solid var(--blog-line)">{{ t }}</span>
+                  </sc-for>
+                </div>
+                <div style="display:grid;gap:8px;align-content:start">
+                  <span style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--blog-muted)">Contra</span>
+                  <sc-for list="{{ contras }}" as="t" hint-placeholder-count="2">
+                    <span style="font-size:15px;line-height:1.45;padding-bottom:6px;border-bottom:1px solid var(--blog-line)">{{ t }}</span>
+                  </sc-for>
+                </div>
+              </div>
+              <p style="margin:0;font-size:17px;line-height:1.7;text-wrap:pretty">O texto do review segue a mesma medida do artigo. A ficha, as notas e o veredito ficam acima do primeiro anúncio, para que a página entregue a informação antes de monetizar.</p>
+            </div>
+            <aside style="display:grid;gap:calc(var(--blog-u)*1.6);align-content:start;max-width:300px">
+              <div style="display:grid;gap:10px;background:var(--blog-accent-soft);border:1px solid var(--blog-accent);border-radius:var(--blog-r-lg);padding:calc(var(--blog-u)*1.4)">
+                <span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--blog-accent-ink)">Onde comprar</span>
+                <span style="font-family:var(--blog-head);font-weight:500;font-size:24px;line-height:1">{{ preco }}</span>
+                <button style="padding:calc(var(--blog-u)*.9) calc(var(--blog-u)*1.5);border-radius:var(--blog-r);border:1px solid var(--blog-accent);background:transparent;color:var(--blog-accent-ink);font:inherit;font-size:14px;cursor:pointer" style-hover="background:var(--blog-surface)">{{ cta }}</button>
+                <span style="font-size:11px;color:var(--blog-muted)">{{ disclosure }}</span>
+              </div>
+              <div style="display:grid;place-items:center;border:1px dashed var(--blog-line);border-radius:var(--blog-r);min-height:200px;color:var(--blog-muted);font-size:11px;letter-spacing:.08em;text-transform:uppercase;text-align:center;padding:12px">Anúncio · 300 × 250 · abaixo do bloco de compra</div>
+            </aside>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ eSobre }}" hint-placeholder-val="{{ true }}">
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:calc(var(--blog-u)*3);padding:calc(var(--blog-u)*2.8)">
+            <div class="{{ classeImagem }}" style="border-radius:var(--blog-r-lg);overflow:hidden;min-height:320px;max-width:380px">
+              <image-slot id="blog-persona" shape="rect" placeholder="Retrato da persona"></image-slot>
+            </div>
+            <div style="display:grid;gap:calc(var(--blog-u)*1.5);align-content:start;max-width:600px">
+              <span style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--blog-accent-ink)">Quem escreve</span>
+              <h1 style="margin:0;font-family:var(--blog-head);font-weight:500;font-size:36px;line-height:1.1;letter-spacing:-.02em">{{ host }}</h1>
+              <p style="margin:0;font-size:18px;line-height:1.6;text-wrap:pretty">{{ bio }}</p>
+              <div style="display:grid;gap:8px">
+                <sc-for list="{{ sobreItens }}" as="s" hint-placeholder-count="3">
+                  <span style="display:flex;gap:10px;font-size:15px;line-height:1.45;padding-bottom:8px;border-bottom:1px solid var(--blog-line)">
+                    <span style="color:var(--blog-accent-ink)">—</span>{{ s }}
+                  </span>
+                </sc-for>
+              </div>
+              <div style="display:grid;gap:8px;border:1px solid var(--blog-line);border-radius:var(--blog-r-lg);padding:calc(var(--blog-u)*1.4);background:var(--blog-surface)">
+                <span style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--blog-muted)">Transparência</span>
+                <span style="font-size:14px;line-height:1.55;color:var(--blog-muted);text-wrap:pretty">{{ transparencia }}</span>
+              </div>
+              <div style="display:flex;flex-wrap:wrap;gap:10px">
+                <button style="padding:calc(var(--blog-u)*.9) calc(var(--blog-u)*1.5);border-radius:var(--blog-r);border:1px solid var(--blog-accent);background:transparent;color:var(--blog-accent-ink);font:inherit;font-size:14px;cursor:pointer" style-hover="background:var(--blog-accent-soft)">Receber a carta semanal</button>
+                <button style="padding:calc(var(--blog-u)*.9) calc(var(--blog-u)*1.5);border-radius:var(--blog-r);border:1px solid var(--blog-line);background:transparent;color:var(--blog-text);font:inherit;font-size:14px;cursor:pointer" style-hover="border-color:var(--blog-accent)">Falar com {{ primeiroNome }}</button>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ eBusca }}" hint-placeholder-val="{{ true }}">
+          <div style="display:grid;gap:calc(var(--blog-u)*2);padding:calc(var(--blog-u)*2.8);max-width:760px">
+            <h1 style="margin:0;font-family:var(--blog-head);font-weight:500;font-size:30px;line-height:1.1;letter-spacing:-.02em">Buscar em {{ nome }}</h1>
+            <div style="display:flex;flex-wrap:wrap;gap:8px">
+              <input type="search" value="{{ termo }}" style="flex:1;min-width:200px;padding:calc(var(--blog-u)*1) calc(var(--blog-u)*1.2);border-radius:var(--blog-r);border:1px solid var(--blog-accent);background:var(--blog-surface);color:var(--blog-text);font:inherit;font-size:16px">
+              <button style="padding:calc(var(--blog-u)*1) calc(var(--blog-u)*1.6);border-radius:var(--blog-r);border:1px solid var(--blog-accent);background:transparent;color:var(--blog-accent-ink);font:inherit;font-size:14px;cursor:pointer" style-hover="background:var(--blog-accent-soft)">Buscar</button>
+            </div>
+            <span style="font-size:13px;color:var(--blog-muted)">{{ resultadoContagem }}</span>
+            <div style="display:grid;gap:calc(var(--blog-u)*1.2)">
+              <sc-for list="{{ posts }}" as="a" hint-placeholder-count="4">
+                <a href="#" style="display:grid;gap:6px;padding-bottom:calc(var(--blog-u)*1.2);border-bottom:1px solid var(--blog-line);color:var(--blog-text)" style-hover="color:var(--blog-accent-ink)">
+                  <span style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--blog-accent-ink)">{{ a.cat }}</span>
+                  <span style="font-family:var(--blog-head);font-weight:500;font-size:19px;line-height:1.25">{{ a.titulo }}</span>
+                  <span style="font-size:13px;color:var(--blog-muted)">{{ a.meta }}</span>
+                </a>
+              </sc-for>
+            </div>
+            <div style="display:grid;gap:8px;border:1px solid var(--blog-line);border-radius:var(--blog-r-lg);padding:calc(var(--blog-u)*1.4);background:var(--blog-surface)">
+              <span style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--blog-muted)">Nada encontrado</span>
+              <span style="font-size:14px;color:var(--blog-muted)">Estado vazio: sugere as quatro categorias e a carta semanal — nunca uma página em branco, e nunca com anúncio.</span>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ eNews }}" hint-placeholder-val="{{ true }}">
+          <div style="display:grid;gap:calc(var(--blog-u)*2);padding:calc(var(--blog-u)*3.2) calc(var(--blog-u)*2.8);max-width:720px">
+            <span style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--blog-accent-ink)">Newsletter</span>
+            <h1 style="margin:0;font-family:var(--blog-head);font-weight:500;font-size:40px;line-height:1.08;letter-spacing:-.02em;text-wrap:pretty">{{ newsTitulo }}</h1>
+            <p style="margin:0;font-size:18px;line-height:1.6;color:var(--blog-muted);text-wrap:pretty">{{ newsPromessa }}</p>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;max-width:520px">
+              <input type="email" placeholder="voce@email.com" style="flex:1;min-width:200px;padding:calc(var(--blog-u)*1) calc(var(--blog-u)*1.2);border-radius:var(--blog-r);border:1px solid var(--blog-line);background:var(--blog-surface);color:var(--blog-text);font:inherit;font-size:16px">
+              <button style="padding:calc(var(--blog-u)*1) calc(var(--blog-u)*1.6);border-radius:var(--blog-r);border:1px solid var(--blog-accent);background:transparent;color:var(--blog-accent-ink);font:inherit;font-size:15px;cursor:pointer" style-hover="background:var(--blog-accent-soft)">Quero receber</button>
+            </div>
+            <span style="font-size:12px;color:var(--blog-muted)">Uma por semana. Cancelamento em um clique, no rodapé de qualquer edição.</span>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:calc(var(--blog-u)*1.4);padding-top:calc(var(--blog-u)*1.4);border-top:1px solid var(--blog-line)">
+              <div style="display:grid;gap:6px"><span style="font-family:var(--blog-head);font-weight:500;font-size:22px">Terças</span><span style="font-size:13px;color:var(--blog-muted)">Sempre no mesmo dia, de manhã.</span></div>
+              <div style="display:grid;gap:6px"><span style="font-family:var(--blog-head);font-weight:500;font-size:22px">Sem anúncio</span><span style="font-size:13px;color:var(--blog-muted)">A carta não carrega slot de mídia.</span></div>
+              <div style="display:grid;gap:6px"><span style="font-family:var(--blog-head);font-weight:500;font-size:22px">Arquivo aberto</span><span style="font-size:13px;color:var(--blog-muted)">Todas as edições ficam publicadas.</span></div>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ eInst }}" hint-placeholder-val="{{ true }}">
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:calc(var(--blog-u)*3);padding:calc(var(--blog-u)*2.8)">
+            <div style="display:grid;gap:calc(var(--blog-u)*1.6);max-width:680px">
+              <span style="font-size:12px;color:var(--blog-muted)">{{ nome }} › Institucional</span>
+              <h1 style="margin:0;font-family:var(--blog-head);font-weight:500;font-size:32px;line-height:1.12;letter-spacing:-.02em">Política de privacidade</h1>
+              <p style="margin:0;font-size:17px;line-height:1.7;text-wrap:pretty">Esta página declara, em linguagem direta, quais dados o blog coleta, quem os processa e como pedir a exclusão. É a página que o pedido de AdSense e a LGPD exigem, e a única sem qualquer slot de anúncio.</p>
+              <h2 style="margin:0;font-family:var(--blog-head);font-weight:500;font-size:21px;line-height:1.2">Publicidade e cookies</h2>
+              <p style="margin:0;font-size:17px;line-height:1.7;text-wrap:pretty">O blog exibe anúncios de terceiros e usa cookies para medir audiência. O banner de consentimento aparece na primeira visita, com recusa no mesmo peso visual da aceitação.</p>
+              <h2 style="margin:0;font-family:var(--blog-head);font-weight:500;font-size:21px;line-height:1.2">Divulgação de afiliados</h2>
+              <p style="margin:0;font-size:17px;line-height:1.7;text-wrap:pretty">{{ disclosure }} A divulgação também aparece no topo de todo review e ao lado de cada botão de compra.</p>
+            </div>
+            <aside style="display:grid;gap:8px;align-content:start;max-width:300px;background:var(--blog-surface);border:1px solid var(--blog-line);border-radius:var(--blog-r-lg);padding:calc(var(--blog-u)*1.4)">
+              <span style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--blog-muted)">Páginas obrigatórias</span>
+              <a href="#" style="color:var(--blog-text);padding:6px 0;border-bottom:1px solid var(--blog-line)" style-hover="color:var(--blog-accent-ink)">Política de privacidade</a>
+              <a href="#" style="color:var(--blog-text);padding:6px 0;border-bottom:1px solid var(--blog-line)" style-hover="color:var(--blog-accent-ink)">Política de cookies</a>
+              <a href="#" style="color:var(--blog-text);padding:6px 0;border-bottom:1px solid var(--blog-line)" style-hover="color:var(--blog-accent-ink)">Divulgação de afiliados</a>
+              <a href="#" style="color:var(--blog-text);padding:6px 0;border-bottom:1px solid var(--blog-line)" style-hover="color:var(--blog-accent-ink)">Política editorial</a>
+              <a href="#" style="color:var(--blog-text);padding:6px 0" style-hover="color:var(--blog-accent-ink)">Contato</a>
+            </aside>
+          </div>
+        </sc-if>
+
+        <footer style="display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;padding:calc(var(--blog-u)*2) calc(var(--blog-u)*2.4);border-top:1px solid var(--blog-line);background:var(--blog-surface);font-size:12px;color:var(--blog-muted)">
+          <span>{{ nome }} · {{ tagline }} · por {{ host }}</span>
+          <span style="display:flex;gap:16px;flex-wrap:wrap">
+            <a href="#" style="color:inherit">Sobre</a>
+            <a href="#" style="color:inherit">Privacidade</a>
+            <a href="#" style="color:inherit">Afiliados</a>
+            <a href="#" style="color:inherit">Contato</a>
+          </span>
+        </footer>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;blogInicial&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;The Thirties&quot;,&quot;After Forty&quot;,&quot;SharpEye&quot;,&quot;Game Style&quot;],&quot;default&quot;:&quot;The Thirties&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Tema&quot;},&quot;telaInicial&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Kit&quot;,&quot;Home&quot;,&quot;Artigo&quot;,&quot;Categoria&quot;,&quot;Review&quot;,&quot;Sobre&quot;,&quot;Busca&quot;,&quot;Newsletter&quot;,&quot;Institucional&quot;],&quot;default&quot;:&quot;Kit&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Tema&quot;},&quot;densidade&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:0.7,&quot;max&quot;:1.4,&quot;step&quot;:0.05,&quot;default&quot;:1,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Tema&quot;}}">
+class Component extends DCLogic {
+  presets = [
+    { nome: "The Thirties", mono: "T3", host: "Maia Mendes", nicho: "saúde e rotina da mulher na casa dos trinta",
+      tagline: "Saúde e rotina na casa dos trinta", hue: 352, modo: "claro", fonte: "Newsreader", raio: 14, u: 13,
+      categorias: ["Ciclo", "Pele", "Treino", "Carreira"],
+      heroKicker: "Ciclo", heroTitulo: "Rastrear o ciclo por três meses mudou como eu marco reuniões",
+      heroDek: "Um caderno, um aplicativo e o padrão que apareceu na quarta semana.",
+      descCategoria: "Tudo sobre ciclo menstrual: registro, exames que vale pedir e o que mudou na minha rotina depois de entender o padrão.",
+      posts: [
+        { cat: "Pele", titulo: "Retinol aos trinta: como comecei sem descamar", meta: "6 min · 10 set" },
+        { cat: "Treino", titulo: "Quatro semanas de força em casa com uma barra fixa", meta: "9 min · 6 set" },
+        { cat: "Carreira", titulo: "Negociar salário grávida: o que eu perguntei antes", meta: "7 min · 2 set" },
+        { cat: "Ciclo", titulo: "Suplemento de ferro: o exame que pedi primeiro", meta: "5 min · 28 ago" }
+      ],
+      bio: "Maia Mendes escreve The Thirties desde 2023. Testa, registra e publica só o que sobra do que foi testado.",
+      sobreItens: ["Mora em São Paulo e escreve em primeira pessoa", "Testa cada produto por no mínimo três semanas", "Consulta uma médica antes de publicar sobre hormônios"],
+      transparencia: "Nenhuma pauta é paga. Produtos recebidos como amostra vêm marcados no primeiro parágrafo, e a recomendação não muda por causa disso.",
+      produto: "Monitor de ciclo Aurora Ring", preco: "R$ 1.290", cta: "Ver na Amazon", tempoTeste: "94 dias de uso contínuo",
+      veredito: "Vale se você quer o padrão do ciclo junto com sono e temperatura no mesmo gráfico. Não vale como substituto de exame.",
+      notas: [{ label: "Precisão", valor: "4,0" }, { label: "Bateria", valor: "3,5" }, { label: "Aplicativo", valor: "4,5" }, { label: "Preço", valor: "3,0" }],
+      pros: ["Sono e temperatura no mesmo gráfico", "Cinco dias de bateria em uso real", "Exporta os dados em CSV"],
+      contras: ["Assinatura mensal para o histórico completo", "O anel risca com facilidade"],
+      newsTitulo: "O que eu testei nesta semana", newsPromessa: "Um teste, um aprendizado e uma coisa que não funcionou — toda terça." },
+
+    { nome: "After Forty", mono: "AF", host: "Heidi Braun", nicho: "corpo, casa e tempo depois dos quarenta",
+      tagline: "Corpo, casa e tempo depois dos quarenta", hue: 42, modo: "claro", fonte: "Newsreader", raio: 8, u: 14,
+      categorias: ["Perimenopausa", "Força", "Casa", "Leituras"],
+      heroKicker: "Perimenopausa", heroTitulo: "O que mudou no meu sono depois de cortar o café das duas da tarde",
+      heroDek: "Duas semanas de teste, um diário de sono e nenhuma promessa.",
+      descCategoria: "A fase que ninguém explica: sintomas, exames, o que perguntar na consulta e o que eu testei em mim.",
+      posts: [
+        { cat: "Força", titulo: "Comecei com halteres de 2 kg e continuo aqui", meta: "8 min · 11 set" },
+        { cat: "Casa", titulo: "Cozinha pequena: os seis utensílios que sobraram", meta: "6 min · 7 set" },
+        { cat: "Leituras", titulo: "Quatro livros sobre recomeço que não são de autoajuda", meta: "5 min · 3 set" },
+        { cat: "Perimenopausa", titulo: "Ondas de calor no trabalho: o que funcionou para mim", meta: "7 min · 29 ago" }
+      ],
+      bio: "Heidi Braun começou After Forty aos 46, depois de um ano anotando o que ninguém tinha contado a ela.",
+      sobreItens: ["Escreve em primeira pessoa, sempre", "Indica só o que usa há mais de um mês", "Toda afirmação de saúde vem com a fonte no fim do texto"],
+      transparencia: "O blog vive de anúncios e de comissões de afiliados. Nenhuma marca aprova texto antes da publicação.",
+      produto: "Halteres ajustáveis Vello 2–12 kg", preco: "R$ 890", cta: "Ver na Amazon", tempoTeste: "seis meses, quatro treinos por semana",
+      veredito: "Um par resolve o treino de força em casa e ocupa o espaço de dois livros. O encaixe é barulhento e a pega é grossa.",
+      notas: [{ label: "Montagem", valor: "4,5" }, { label: "Travamento", valor: "4,0" }, { label: "Espaço", valor: "5,0" }, { label: "Preço", valor: "3,5" }],
+      pros: ["Um par substitui seis", "Troca de carga em oito segundos", "Cabem debaixo do sofá"],
+      contras: ["Barulho alto no encaixe", "Pega grossa para mãos pequenas"],
+      newsTitulo: "Uma carta de quinta para quem passou dos quarenta", newsPromessa: "O que foi publicado, mais uma nota curta que não virou artigo." },
+
+    { nome: "SharpEye", mono: "SE", host: "Nadia Volkova", nicho: "design pronto para a gráfica",
+      tagline: "Design pronto para a gráfica", hue: 250, modo: "escuro", fonte: "Space Grotesk", raio: 2, u: 10,
+      categorias: ["Pré-impressão", "Cores", "Papel", "Orçamento"],
+      heroKicker: "Pré-impressão", heroTitulo: "Sangria, marcas de corte e o PDF que a gráfica aceita de primeira",
+      heroDek: "O checklist que eu rodo antes de enviar qualquer arquivo para produção.",
+      descCategoria: "O que acontece entre o seu arquivo e a máquina impressora: fechamento de PDF, provas, imposição e os erros que voltam como retrabalho.",
+      posts: [
+        { cat: "Cores", titulo: "CMYK não é uma conversão, é uma decisão", meta: "9 min · 12 set" },
+        { cat: "Papel", titulo: "Gramatura, opacidade e por que o cliente achou fino", meta: "7 min · 8 set" },
+        { cat: "Orçamento", titulo: "Como pedir orçamento de impressão sem retrabalho", meta: "6 min · 4 set" },
+        { cat: "Pré-impressão", titulo: "Fontes não convertidas: o erro mais caro do briefing", meta: "5 min · 30 ago" }
+      ],
+      bio: "Nadia Volkova é designer de produção gráfica. Escreve SharpEye para quem entrega arquivo para impressão toda semana.",
+      sobreItens: ["Quatorze anos em pré-impressão", "Revisa arquivos reais enviados por leitores", "Publica os PDFs de exemplo de cada artigo"],
+      transparencia: "O blog é mantido por uma gráfica parceira, citada em todo artigo em que ela aparece. Recomendação técnica e anúncio ficam em blocos separados.",
+      produto: "Espectrofotômetro de bolso ColorCheck Mini", preco: "R$ 4.200", cta: "Pedir orçamento na gráfica", tempoTeste: "onze tiragens acompanhadas",
+      veredito: "Encerra a discussão de cor com o cliente em uma medição. O software é o ponto fraco e o preço só se paga em volume.",
+      notas: [{ label: "Precisão", valor: "4,5" }, { label: "Software", valor: "3,0" }, { label: "Portabilidade", valor: "4,5" }, { label: "Preço", valor: "2,5" }],
+      pros: ["Fecha a discussão de cor em uma medição", "Perfis ICC próprios em minutos", "Cabe no bolso da mochila"],
+      contras: ["Software só em inglês", "Calibração exige a base original"],
+      newsTitulo: "Um arquivo por semana, revisado", newsPromessa: "Um erro de fechamento real, o que ele custaria e como corrigir em dois minutos." },
+
+    { nome: "Game Style", mono: "GS", host: "Tara Lindqvist", nicho: "setup, periféricos e desempenho",
+      tagline: "Setup, periféricos e desempenho", hue: 158, modo: "escuro", fonte: "Space Grotesk", raio: 6, u: 11,
+      categorias: ["Periféricos", "Setup", "Desempenho", "Jogos"],
+      heroKicker: "Periféricos", heroTitulo: "Mouse leve ou mouse pesado: o teste em trinta horas de FPS",
+      heroDek: "Precisão, cansaço no pulso e o que mudou depois da terceira hora.",
+      descCategoria: "Mouse, teclado, headset e mousepad testados em sessão longa, não em bancada. Dados brutos no fim de cada artigo.",
+      posts: [
+        { cat: "Setup", titulo: "Mesa de 120 cm: o layout que sobrou depois de seis tentativas", meta: "7 min · 12 set" },
+        { cat: "Desempenho", titulo: "144 Hz sem placa nova: onde ganhar quadros", meta: "10 min · 9 set" },
+        { cat: "Jogos", titulo: "Três jogos para testar periférico novo", meta: "5 min · 5 set" },
+        { cat: "Periféricos", titulo: "Headset com fio ainda faz sentido", meta: "6 min · 31 ago" }
+      ],
+      bio: "Tara Lindqvist joga FPS competitivo desde 2016 e testa periféricos em sessões longas, não em bancada.",
+      sobreItens: ["Mais de trezentas horas de teste por ano", "Publica os dados brutos de cada sessão", "Nada entra em review sem passar pela mesa"],
+      transparencia: "Parte dos links leva à FBR Games, que paga comissão por venda. Nenhum produto ganha nota melhor por isso.",
+      produto: "Mouse Vector 58 g Wireless", preco: "R$ 649", cta: "Ver na FBR Games", tempoTeste: "trinta horas em partida ranqueada",
+      veredito: "Leve sem casco furado e estável em 1000 Hz. O software é pesado e o cabo de carga é curto demais.",
+      notas: [{ label: "Sensor", valor: "4,5" }, { label: "Peso", valor: "5,0" }, { label: "Bateria", valor: "3,5" }, { label: "Preço", valor: "4,0" }],
+      pros: ["58 g sem furos no casco", "Latência estável em 1000 Hz", "Dois perfis salvos no próprio mouse"],
+      contras: ["Software pesado e instável", "Cabo de carga curto"],
+      newsTitulo: "O que entrou e o que saiu da mesa", newsPromessa: "Um periférico testado, os números da semana e o que eu devolvi." }
+  ];
+
+  telasLista = ["Kit", "Home", "Artigo", "Categoria", "Review", "Sobre", "Busca", "Newsletter", "Institucional"];
+  modosLista = ["Tema do blog", "Claro", "Escuro"];
+  formatosLista = ["Card com imagem", "Card só texto"];
+
+  fontes = {
+    "Inter": 'Inter, system-ui, sans-serif',
+    "Newsreader": '"Newsreader", Georgia, serif',
+    "Space Grotesk": '"Space Grotesk", Inter, sans-serif'
+  };
+
+  rampaEscala = [[.97,.020],[.93,.045],[.865,.075],[.775,.110],[.690,.125],[.600,.115],[.500,.100],[.400,.085],[.300,.065]];
+
+  inventario = [
+    { nome: "Leaderboard", formato: "responsivo, máx. 970 × 250", onde: "home e categoria, sempre abaixo da dobra" },
+    { nome: "In-feed", formato: "fluido", onde: "categoria e busca, a cada quatro itens da lista" },
+    { nome: "In-article", formato: "fluido", onde: "artigo e review, entre parágrafos, longe do bloco de afiliado" },
+    { nome: "Retângulo lateral", formato: "300 × 250", onde: "coluna do artigo e do review, abaixo do sumário" },
+    { nome: "Sem anúncio", formato: "—", onde: "sobre, newsletter, institucional e estados vazios" }
+  ];
+
+  constructor(props) {
+    super(props);
+    const i = Math.max(0, this.presets.map(p => p.nome).indexOf(props.blogInicial));
+    const t = Math.max(0, this.telasLista.indexOf(props.telaInicial));
+    this.state = { i, t, modo: 0, fmt: 0 };
+  }
+
+  aba(ativo) {
+    return {
+      display: "flex", alignItems: "center", gap: "7px", font: "inherit", fontSize: "12.5px",
+      padding: "5px 11px", cursor: "pointer", borderRadius: "999px",
+      border: "1px solid " + (ativo ? "var(--blog-accent)" : "var(--blog-line)"),
+      background: ativo ? "var(--blog-accent-soft)" : "transparent",
+      color: ativo ? "var(--blog-accent-ink)" : "var(--blog-muted)"
+    };
+  }
+
+  renderVals() {
+    const s = this.state;
+    const p = this.presets[s.i];
+    const h = p.hue;
+    const ok = (l, c) => "oklch(" + l + " " + c + " " + h + ")";
+    const claro = s.modo === 0 ? p.modo === "claro" : s.modo === 1;
+    const u = Math.round(p.u * (this.props.densidade ?? 1) * 10) / 10;
+    const tela = this.telasLista[s.t];
+
+    const shell = {
+      "--blog-bg": claro ? ok(0.985, 0.008) : ok(0.215, 0.022),
+      "--blog-surface": claro ? ok(0.955, 0.014) : ok(0.265, 0.026),
+      "--blog-text": claro ? ok(0.28, 0.025) : ok(0.945, 0.010),
+      "--blog-muted": claro ? ok(0.52, 0.025) : ok(0.715, 0.018),
+      "--blog-line": claro ? ok(0.885, 0.014) : ok(0.345, 0.022),
+      "--blog-accent": claro ? ok(0.56, 0.145) : ok(0.69, 0.125),
+      "--blog-accent-ink": claro ? ok(0.45, 0.135) : ok(0.855, 0.075),
+      "--blog-accent-soft": claro ? ok(0.955, 0.030) : ok(0.325, 0.050),
+      "--blog-u": u + "px",
+      "--blog-r": p.raio + "px",
+      "--blog-r-lg": Math.round(p.raio * 1.8) + "px",
+      "--blog-head": this.fontes[p.fonte]
+    };
+
+    const posts = p.posts.map((a, n) => ({ ...a, n: "0" + (n + 1) }));
+    const listaLonga = posts.concat(posts).slice(0, 6).map((a, n) => ({ ...a, anuncio: n === 3 }));
+
+    return {
+      shell,
+      rampa: this.rampaEscala.map(r => ({ style: { flex: 1, background: "oklch(" + r[0] + " " + r[1] + " " + h + ")" } })),
+      presets: this.presets.map((q, n) => ({
+        nome: q.nome,
+        pick: () => this.setState({ i: n }),
+        tabStyle: this.aba(n === s.i),
+        dotStyle: { width: "9px", height: "9px", borderRadius: "999px", display: "inline-block", background: "oklch(0.65 0.14 " + q.hue + ")" }
+      })),
+      telas: this.telasLista.map((nome, n) => ({ nome, pick: () => this.setState({ t: n }), tabStyle: this.aba(n === s.t) })),
+      modos: this.modosLista.map((nome, n) => ({ nome, pick: () => this.setState({ modo: n }), tabStyle: this.aba(n === s.modo) })),
+      formatos: this.formatosLista.map((nome, n) => ({ nome, pick: () => this.setState({ fmt: n }), tabStyle: this.aba(n === s.fmt) })),
+
+      eKit: tela === "Kit", eBlog: tela !== "Kit",
+      eHome: tela === "Home", eArtigo: tela === "Artigo", eCategoria: tela === "Categoria",
+      eReview: tela === "Review", eSobre: tela === "Sobre", eBusca: tela === "Busca",
+      eNews: tela === "Newsletter", eInst: tela === "Institucional",
+      cardComImagem: s.fmt === 0,
+      classeImagem: claro ? "" : "lighten",
+
+      nome: p.nome, mono: p.mono, host: p.host, primeiroNome: p.host.split(" ")[0],
+      tagline: p.tagline, categorias: p.categorias,
+      heroKicker: p.heroKicker, heroTitulo: p.heroTitulo, heroDek: p.heroDek,
+      descCategoria: p.descCategoria, posts, listaLonga,
+      bio: p.bio, sobreItens: p.sobreItens, transparencia: p.transparencia,
+      produto: p.produto, preco: p.preco, cta: p.cta, veredito: p.veredito,
+      notas: p.notas, pros: p.pros, contras: p.contras, tempoTeste: p.tempoTeste,
+      disclosure: "Link de afiliado: se você comprar por aqui, o blog recebe comissão e o preço para você é o mesmo.",
+      newsTitulo: p.newsTitulo, newsPromessa: p.newsPromessa,
+      termo: p.heroKicker.toLowerCase(),
+      resultadoContagem: "4 resultados para “" + p.heroKicker.toLowerCase() + "”",
+      nomeFonte: p.fonte,
+      inventario: this.inventario,
+      resumoTema: p.nicho + " · matiz " + h + "° · cantos " + p.raio + "px · densidade " + u + "px"
+    };
+  }
+}
+</script>
+</body>
+</html>

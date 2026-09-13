@@ -25,7 +25,22 @@ Na versão 2.0, o Flux guiará os workflows de gestão, acompanhamento e governa
 
 A governança manterá os processos em evolução contínua, aprimorando e adaptando workflows, responsabilidades, skills, critérios, métricas e Gates conforme novas realidades, necessidades, riscos e aprendizados dos projetos. Mudanças relevantes deverão ter motivo, evidência, impacto, owner, versão, critérios de aceite e aprovação quando exigida
 
+## Entradas obrigatórias de novos projetos
+
+Todo projeto ou blog deve chegar ao intake com:
+
+- arquivo conceitual
+- Design System base ou referência formal ao sistema compartilhado
+- escopo visual
+- persona, nicho e público
+- critérios de aceite visual
+
+A Íris valida essa entrada e encaminha a adaptação ao owner técnico. Sem Design System ou referência formal, a identidade visual fica pendente de concepção e não deve ser presumida
+
+A regra detalhada está em `06-design/regra-design-system-no-intake.md`
+
 ## Estrutura
+
 
 ```text
 /01-conceitual
