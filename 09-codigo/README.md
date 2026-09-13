@@ -1,6 +1,6 @@
 # FBR Agency Flux executor — estado atual
 
-Este código é o executor local verificável do Flux, não a entrega remota completa. Ele lê o estado persistido fora de `src`, importa os drafts reais de `08-historico/afterforty/drafts`, mostra Gates, artefatos, Handoffs e eventos, e permite transições, decisões locais de Sergio e criação de Handoffs com readback.
+Este código é o executor local verificável do Flux, não a entrega remota completa. Ele lê o estado persistido fora de `src`, importa os drafts reais de `08-historico/afterforty/drafts`, mostra Gates, artefatos, Handoffs e eventos. Mutations usam sessão server-side: decisões exigem papel `gatekeeper`, transições `operator`, Handoffs `coordinator`; o actor nunca é aceito do body. O login local é explicitamente local-only e exige `FLUX_LOCAL_LOGIN_ACTOR` + `FLUX_LOCAL_LOGIN_SECRET` via ambiente
 
 ## Escopo local
 
@@ -17,7 +17,7 @@ Acesse `http://localhost:3000`. A interface tem filtro AF-001, detalhe navegáve
 
 ### Gates transversais do Flux
 
-`GET /api/flux/gates` retorna exatamente os quatro Gates persistidos do `FBR Agency Flux`; `After Forty`/`AF-001` é apenas caso de exemplo. `POST /api/flux/gates/:id/decision` aceita `approved`, `rejected` ou `changes_requested` somente com `{ "actor": "Sergio", "scope": "local" }`. A decisão é conceitual/local, idempotência é fail-closed para Gate já decidido e `externalActionAuthorized` permanece `false`. Aprovar não executa deploy, publicação, DNS, HopLink, gasto, migration ou integração externa
+`GET /api/flux/gates` retorna exatamente os quatro Gates persistidos do `FBR Agency Flux`; `POST /api/flux/gates/:id/decision` exige sessão autenticada com papel `gatekeeper` e aceita apenas a decisão no body. A identidade é derivada server-side da sessão; `actor` e `scope` enviados pelo cliente são ignorados. A decisão é conceitual/local, idempotência é fail-closed para Gate já decidido e `externalActionAuthorized` permanece `false`. Aprovar não executa deploy, publicação, DNS, HopLink, gasto, migration ou integração externa
 
 Smoke local reproduzível:
 

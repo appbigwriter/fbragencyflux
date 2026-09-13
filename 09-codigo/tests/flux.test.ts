@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it } from 'vitest'
 import { mkdtemp, readFile, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { approveApproval, getSnapshot, transitionCard } from '../src/lib/flux-repository'
+import { approveApproval, getSnapshot, transitionCard, validNextStatuses } from '../src/lib/flux-repository'
 
 const tempDirs: string[] = []
 
@@ -29,9 +29,11 @@ describe('Flux persisted repository', () => {
 
   it('allows a valid transition and records an event', async () => {
     const file = await testFile()
-    const result = await transitionCard('AF-001', 'review', { actor: 'Íris', scope: 'local' }, file)
-    expect(result.card.status).toBe('review')
-    expect(result.event.action).toContain('review')
+    const current = (await getSnapshot(file)).cards.find((card) => card.id === 'AF-001')!
+    const next = validNextStatuses(current.status)[0]
+    const result = await transitionCard('AF-001', next, { actor: 'Íris', scope: 'local' }, file)
+    expect(result.card.status).toBe(next)
+    expect(result.event.action).toContain(next)
     expect((await getSnapshot(file)).recentEvents.at(-1)?.cardId).toBe('AF-001')
   })
 
