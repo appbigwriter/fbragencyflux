@@ -46,4 +46,4 @@ O dashboard mantém quatro escopos separados:
 - **Pendências por projeto**: cards agrupados pelo projeto de origem; `AF-001` permanece `awaiting_approval` e `AF-002` permanece `review`
 - **Indicadores independentes**: Gates pendentes, cards pendentes, blockers e projetos acompanhados são contados separadamente
 
-Aprovar um Gate do FBR Flux não altera automaticamente cards de projetos. Os paths de evidência são exibidos somente quando existem no estado persistido ou nos artefatos sincronizados do filesystem. O readback após reload deve conservar os status reais de `AF-001` e `AF-002`.
+Aprovar um Gate do FBR Flux não altera automaticamente cards de projetos. A atividade rotineira de agents e Handoffs é somente observacional/operacional e não cria approvals artificiais. Jobs derivados do filesystem aparecem como `filesystem/Handoff readback`; esse readback é histórico, não tempo real. A interface atualiza por polling de 5 segundos. O runtime Hermes/dispatcher ainda não fornece stream de eventos ao dashboard, portanto tempo real completo permanece um blocker técnico; o adapter local aceita heartbeats e eventos via `PATCH /api/flux/jobs/:id`.
