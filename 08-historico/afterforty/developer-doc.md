@@ -7,10 +7,10 @@
 - **Slug:** `afterforty`
 - **Tipo de Negócio:** `blog`
 - **Template Base:** `blog_standard` (v1.0.0)
-- **Schema Provisionado (Isolamento):** `blog_afterforty`
+- **Schema documentado (não verificado externamente):** `blog_afterforty`
 - **Domínio Oficial:** `afterforty.fbr.news`
 - **Idioma:** `en`
-- **Status:** `active`
+- **Status documental:** `documented_only` — sem readback externo nesta auditoria
 - **Namespace de Secrets <secret-ref:runtime>
 
 ---

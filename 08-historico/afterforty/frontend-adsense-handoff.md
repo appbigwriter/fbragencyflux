@@ -11,10 +11,10 @@ Este documento serve para o dev implementar o layout, o renderer dos blocos e a 
 - Slug: afterforty
 - Tipo: blog
 - Template: blog_standard
-- Schema provisionado: blog_afterforty
+- Schema documentado (não verificado externamente): blog_afterforty
 - Dominio: afterforty.fbr.news
 - Idioma: en
-- Status: active
+- Status documental: documented_only — sem readback externo nesta auditoria
 
 ## 3. Estrutura de anuncios
 
