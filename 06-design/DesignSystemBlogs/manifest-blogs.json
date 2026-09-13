@@ -1,0 +1,45 @@
+{
+  "base": {
+    "name": "Nocturne",
+    "path": "_base/Nocturne",
+    "source": "_ds/nocturne-bd15c425-53b9-4883-b46d-6ecda90ef625",
+    "rule": "shared-read-only-by-default"
+  },
+  "blogs": [
+    {
+      "id": "after-forty",
+      "name": "After Forty",
+      "path": "after-forty",
+      "base": "_base/Nocturne",
+      "status": "defined",
+      "persona": "Heidi Braun",
+      "domain": "afterforty.fbr.news",
+      "publisher": "FBR News",
+      "audience": "40+",
+      "language": "en",
+      "market": "US/global",
+      "categories": ["Skin & Beauty", "Recovery & Wellness", "Home Fitness"]
+    },
+    {
+      "id": "blog-02",
+      "name": "NAME_PENDING",
+      "path": "blog-02",
+      "base": "_base/Nocturne",
+      "status": "name_pending"
+    },
+    {
+      "id": "blog-03",
+      "name": "NAME_PENDING",
+      "path": "blog-03",
+      "base": "_base/Nocturne",
+      "status": "name_pending"
+    },
+    {
+      "id": "blog-04",
+      "name": "NAME_PENDING",
+      "path": "blog-04",
+      "base": "_base/Nocturne",
+      "status": "name_pending"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="420" viewBox="0 0 960 420" role="img" aria-labelledby="title desc">
+  <title id="title">DRAFT / NOT FINAL — After Forty editorial nameplate</title>
+  <desc id="desc">Concept sheet with horizontal, compact, and monochrome typographic lockups.</desc>
+  <rect width="960" height="420" fill="#161826"/>
+  <g fill="#e9e9ed" font-family="Newsreader, Georgia, serif" font-weight="500">
+    <text x="48" y="48" font-family="Inter, sans-serif" font-size="14" letter-spacing="2" fill="#a7a1db">DRAFT / NOT FINAL · DIRECTION 01</text>
+    <text x="72" y="145" font-size="72">After Forty</text>
+    <text x="566" y="178" font-family="Inter, sans-serif" font-size="18" letter-spacing="1" fill="#a7a1db">by Heidi Braun</text>
+    <text x="72" y="300" font-size="54">After</text>
+    <text x="72" y="354" font-size="54">Forty</text>
+    <text x="264" y="354" font-family="Inter, sans-serif" font-size="16" letter-spacing="1" fill="#a7a1db">by Heidi Braun</text>
+  </g>
+  <path d="M72 184H500" stroke="#9184d9" stroke-width="2"/>
+  <g fill="#f3f5fe" font-family="Newsreader, Georgia, serif" font-size="32">
+    <text x="700" y="320">After Forty</text>
+  </g>
+  <text x="700" y="350" font-family="Inter, sans-serif" font-size="12" letter-spacing="1" fill="#f3f5fe">BY HEIDI BRAUN</text>
+  <text x="48" y="400" font-family="Inter, sans-serif" font-size="12" fill="#a7a1db">MONOCHROME SAMPLE · EXISTING NOCTURNE ROLES ONLY</text>
+</svg>

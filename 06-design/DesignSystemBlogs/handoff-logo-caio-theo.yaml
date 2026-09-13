@@ -1,0 +1,22 @@
+de: "Lia"
+para: "Caio/Théo"
+card: "FBR-FLUX-DESIGN-SYSTEM-AF-LOGO"
+status: "PROPOSAL_FOR_APPROVAL"
+objetivo_do_job: "Receber as direções aprovadas e preparar eventual implementação da adaptação sem tocar na fonte-base"
+entregavel: "Logo proposals e SVGs conceituais em F:/Projetos/_FBR/FBR Agency Flux/06-design/DesignSystemBlogs/after-forty/"
+decisoes_suposições:
+  - "FATO: a camada After Forty deve apontar para ../_base/Nocturne/ e não duplicar ou modificar seus arquivos"
+  - "DECISÃO: nenhum SVG é arte-final ou autorização de implementação"
+  - "ALTERNATIVAS: implementar somente a direção que Sergio aprovar; manter as outras como referências rejeitáveis"
+  - "HIPÓTESE: a composição final pode exigir ajustes de espaçamento após teste real com Newsreader"
+pendencias_blockers:
+  - "Blocker: Sergio ainda não aprovou uma direção"
+  - "Caio/Théo — validar contraste, tamanho mínimo, fallback font e integração de tokens após aprovação"
+  - "Íris — fornecer contexto de implementação e gate atualizado"
+gate: "entrada condicionada à aprovação de Sergio; sem alteração técnica neste handoff"
+criterios_de_aceite_evidencia:
+  - "Implementação futura não altera _base/Nocturne/"
+  - "Lockup final preserva After Forty e by Heidi Braun quando aprovados"
+  - "Variantes horizontal, compacta e monocromática passam smoke visual e parse SVG"
+  - "Contraste é documentado por fundo e estado de uso"
+  - "Nenhum claim editorial ou persona adicional é introduzido"

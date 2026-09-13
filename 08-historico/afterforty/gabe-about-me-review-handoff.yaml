@@ -1,0 +1,93 @@
+status: "CORRECTION_READY_FOR_REVIEW"
+de: "Caio"
+para: "Gabe"
+card: "AF-ABOUT-001"
+objetivo do job: "Revisar o readback de C1 e C2 na copy About Me sem ampliar claims, sem inserir links comerciais e sem publicar"
+entregável: "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/about-me-copy-draft.md; F:/Projetos/_FBR/FBR Blogs/After Forty/content/copy/about-me.md"
+decisões/suposições:
+  - "FATO: persona fictícia, sem credenciais, depoimentos, before/after ou resultado pessoal inventado"
+  - "FATO: About Me não contém produto, SKU, affiliate URL, HopLink ou CTA de compra"
+  - "DECISÃO: não bloquear por ausência de estudo científico; bloquear somente C1 e C2"
+  - "DECISÃO: remover a linguagem de processo não comprovada e não usar journalism como credencial"
+  - "FATO: C1 e C2 foram aplicados nas duas cópias; publicação continua sem autorização"
+pendências/blockers:
+  - "Gabe — alta — confirmar C1/C2 e claims após readback"
+  - "Lia — alta — revisar a redação inglesa após C1/C2, preservando o disclaimer literal"
+  - "Gestor Editorial — alta — confirmar o enquadramento institucional e a sequência de aprovação"
+  - "Íris — alta — encaminhar C1/C2 aos owners e manter publicação bloqueada"
+  - "Kora — alta — registrar arquivo, versão, contagens e readback dos dois artefatos"
+  - "Sergio — crítica — aprovar publicação somente em gate separado, explícito e datado"
+gate: "revisão G3 local; execução de correção condicionada; sem publicação/mutação"
+critérios de aceite/evidência:
+  - "C1 removido ou reescrito sem afirmar pre-publication brand approval não comprovado"
+  - "C2 distingue registros internos de links públicos; nenhuma disponibilidade do domínio é inferida"
+  - "Persona continua explicitamente fictícia e não clínica"
+  - "Não aparecem credenciais, depoimentos, before/after, garantias, tratamento, cura ou resultado individual"
+  - "Não há affiliate URL, HopLink ou CTA de compra"
+  - "Sources permanecem rastreáveis e datadas"
+  - "Disclaimer oficial permanece exatamente como último texto em 2/2 cópias"
+  - "Sergio publication gate permanece pendente"
+
+handoffs:
+  - de: "Gabe"
+    para: "Gestor Editorial"
+    card: "AF-ABOUT-001"
+    objetivo do job: "Confirmar o processo editorial factual e o enquadramento não promocional"
+    entregável: "gabe-about-me-review.md"
+    decisões/suposições:
+      - "FATO: design brief registra ausência de pre-publication brand approval"
+      - "DECISÃO: não manter afirmação contraditória sem evidência operacional"
+    pendências/blockers:
+      - "alta — confirmar texto permitido para processo editorial"
+    gate: "revisão"
+    critérios de aceite/evidência:
+      - "A copy não contradiz o contexto nem usa processo não comprovado como fato"
+  - de: "Gabe"
+    para: "Lia"
+    card: "AF-ABOUT-001"
+    objetivo do job: "Revisar inglês, disclosure e clareza após as correções"
+    entregável: "about-me-copy-draft.md"
+    decisões/suposições:
+      - "FATO: disclaimer oficial deve ser preservado literalmente"
+    pendências/blockers:
+      - "alta — validar a distinção entre registros internos e links públicos"
+    gate: "revisão"
+    critérios de aceite/evidência:
+      - "Texto claro, sem credencial implícita ou promessa"
+  - de: "Gabe"
+    para: "Íris"
+    card: "AF-ABOUT-001"
+    objetivo do job: "Orquestrar retorno aos owners e impedir avanço externo"
+    entregável: "gabe-about-me-review-handoff.yaml"
+    decisões/suposições:
+      - "DECISÃO: status condicional não é autorização de publicação"
+    pendências/blockers:
+      - "crítica — manter publication gate de Sergio pendente"
+    gate: "entrada"
+    critérios de aceite/evidência:
+      - "Todos os owners e blockers têm encaminhamento rastreável"
+  - de: "Gabe"
+    para: "Kora"
+    card: "AF-ABOUT-001"
+    objetivo do job: "Registrar estado, contagem e evidência do review"
+    entregável: "gabe-about-me-review.md"
+    decisões/suposições:
+      - "FATO: 2 cópias auditadas; 6 handoffs declarados"
+    pendências/blockers:
+      - "alta — registrar readback após C1/C2"
+    gate: "registro"
+    critérios de aceite/evidência:
+      - "Contagens e caminhos conferem no filesystem"
+  - de: "Gabe"
+    para: "Sergio"
+    card: "AF-ABOUT-001"
+    objetivo do job: "Dar ciência do resultado sem presumir autorização"
+    entregável: "gabe-about-me-review.md"
+    decisões/suposições:
+      - "FATO: nenhum efeito externo foi executado"
+      - "DECISÃO: publicação exige gate específico e datado"
+    pendências/blockers:
+      - "crítica — decidir eventual publicação somente após C1/C2 e readback"
+    gate: "revisão"
+    critérios de aceite/evidência:
+      - "Nenhuma ação externa é inferida deste handoff"

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="420" viewBox="0 0 960 420" role="img" aria-labelledby="title desc">
+  <title id="title">DRAFT / NOT FINAL — After Forty open horizon rule</title>
+  <desc id="desc">Concept sheet with a typographic lockup and extending editorial rule.</desc>
+  <rect width="960" height="420" fill="#161826"/>
+  <text x="48" y="48" font-family="Inter, sans-serif" font-size="14" letter-spacing="2" fill="#a7a1db">DRAFT / NOT FINAL · DIRECTION 03</text>
+  <g fill="#e9e9ed" font-family="Newsreader, Georgia, serif" font-weight="500">
+    <text x="72" y="144" font-size="72">After Forty</text>
+    <text x="72" y="181" font-family="Inter, sans-serif" font-size="17" letter-spacing="1" fill="#a7a1db">by Heidi Braun</text>
+    <text x="72" y="322" font-size="48">After Forty</text>
+    <text x="72" y="349" font-family="Inter, sans-serif" font-size="12" letter-spacing="1" fill="#f3f5fe">BY HEIDI BRAUN</text>
+  </g>
+  <path d="M72 210H850" stroke="#9184d9" stroke-width="2"/>
+  <path d="M72 366H410" stroke="#f3f5fe" stroke-width="1"/>
+  <text x="48" y="400" font-family="Inter, sans-serif" font-size="12" fill="#a7a1db">MONOCHROME SAMPLE · EXISTING NOCTURNE ROLES ONLY</text>
+</svg>

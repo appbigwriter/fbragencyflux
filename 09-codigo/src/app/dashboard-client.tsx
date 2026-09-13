@@ -1,11 +1,11 @@
 'use client'
 import { useEffect, useState } from 'react'
-import type { DashboardSnapshot, Card, CardStatus, Gate } from '../lib/flux-repository'
+import type { DashboardSnapshot, Card, CardStatus, Gate, AgentRun } from '../lib/flux-repository'
 import type { SessionActor } from '../lib/auth'
 import styles from './page.module.css'
 const labels: Record<string,string> = { active:'Ativo', blocked:'Bloqueado', planned:'Planejado', ready:'Pronto', in_progress:'Em execução', review:'Em revisão', awaiting_approval:'Aguardando aprovação', approved:'Aprovado local', rejected:'Rejeitado local', changes_requested:'Alteração solicitada', executing:'Executando', verifying:'Verificando', completed:'Concluído', failed:'Falhou' }
 export default function DashboardClient({ initial }: { initial: DashboardSnapshot }) {
- const [snapshot,setSnapshot]=useState(initial); const [query,setQuery]=useState(''); const [selected,setSelected]=useState<Card|null>(null); const [message,setMessage]=useState(''); const [session,setSession]=useState<SessionActor|null>(null); const [loginActor,setLoginActor]=useState(''); const [loginSecret,setLoginSecret]=useState('')
+ const [snapshot,setSnapshot]=useState(initial); const [query,setQuery]=useState(''); const [agentFilter,setAgentFilter]=useState(''); const [statusFilter,setStatusFilter]=useState(''); const [cardFilter,setCardFilter]=useState(''); const [selected,setSelected]=useState<Card|null>(null); const [message,setMessage]=useState(''); const [session,setSession]=useState<SessionActor|null>(null); const [loginActor,setLoginActor]=useState(''); const [loginSecret,setLoginSecret]=useState('')
  useEffect(()=>{fetch('/api/auth/session').then(r=>r.ok?r.json():null).then(setSession)},[])
  async function refresh(){ const r=await fetch('/api/flux/snapshot',{cache:'no-store'}); setSnapshot(await r.json()); }
  async function login(e:React.FormEvent){e.preventDefault(); const r=await fetch('/api/auth/login',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({actor:loginActor,secret:loginSecret})}); const b=await r.json(); if(!r.ok){setMessage(`${b.error}: ${b.message}`);return} setSession(b); setLoginSecret(''); setMessage('Sessão autenticada')}

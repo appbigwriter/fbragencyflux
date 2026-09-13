@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="420" viewBox="0 0 960 420" role="img" aria-labelledby="title desc">
+  <title id="title">DRAFT / NOT FINAL — After Forty AF reading frame</title>
+  <desc id="desc">Concept sheet with open-frame AF symbol and horizontal, compact, and monochrome lockups.</desc>
+  <rect width="960" height="420" fill="#161826"/>
+  <text x="48" y="48" font-family="Inter, sans-serif" font-size="14" letter-spacing="2" fill="#a7a1db">DRAFT / NOT FINAL · DIRECTION 02</text>
+  <g fill="none" stroke="#9184d9" stroke-width="3">
+    <path d="M72 92V178H158"/><path d="M158 92H72"/>
+    <path d="M72 260V348H158"/><path d="M158 260H72"/>
+  </g>
+  <g fill="#e9e9ed" font-family="Newsreader, Georgia, serif" font-weight="500">
+    <text x="87" y="153" font-size="48">AF</text>
+    <text x="260" y="145" font-size="70">After Forty</text>
+    <text x="264" y="177" font-family="Inter, sans-serif" font-size="17" letter-spacing="1" fill="#a7a1db">by Heidi Braun</text>
+    <text x="84" y="315" font-size="46">AF</text>
+  </g>
+  <text x="60" y="382" font-family="Inter, sans-serif" font-size="12" letter-spacing="1" fill="#f3f5fe">MONOCHROME SAMPLE · OPEN FRAME / ONE INK</text>
+  <g fill="#f3f5fe" font-family="Newsreader, Georgia, serif" font-size="30"><text x="280" y="300">After Forty</text></g>
+  <text x="282" y="328" font-family="Inter, sans-serif" font-size="12" letter-spacing="1" fill="#f3f5fe">BY HEIDI BRAUN</text>
+</svg>

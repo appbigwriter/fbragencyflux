@@ -1,0 +1,16 @@
+/* After Forty adaptation layer
+   Base: ../_base/Nocturne/styles.css
+   Only values explicitly present in the existing After Forty preset are mapped here
+*/
+@import url("../_base/Nocturne/styles.css");
+
+:root {
+  --font-heading: "Newsreader", system-ui, sans-serif;
+  --font-body: "Newsreader", system-ui, sans-serif;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 8px;
+}
+
+/* The preset's hue: 42 is recorded in the source material, but no new color
+   value is inferred here. Nocturne color tokens remain inherited. */
