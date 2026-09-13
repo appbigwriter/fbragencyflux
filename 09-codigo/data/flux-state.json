@@ -21,11 +21,11 @@
       "id": "AF-001",
       "title": "Validar fundação editorial After Forty",
       "project": "After Forty",
-      "status": "in_progress",
+      "status": "awaiting_approval",
       "assignee": "Íris",
       "priority": "high",
       "detail": "Briefing, escopo e critérios de aceite para revisão local",
-      "updatedAt": "2026-09-12T19:54:36.419Z",
+      "updatedAt": "2026-09-13T10:52:27.951Z",
       "acceptanceCriteria": [
         "12 artigos importados",
         "fontes e evidências vinculadas",
@@ -86,6 +86,37 @@
       "actor": "Gabe",
       "action": "transicionou AF-001 para review (LOCAL)",
       "cardId": "AF-001"
+    },
+    {
+      "id": "event-1789296599042",
+      "time": "2026-09-13T10:49:59.041Z",
+      "actor": "Íris",
+      "action": "transicionou AF-001 para review (LOCAL)",
+      "cardId": "AF-001",
+      "correlationId": "local-1789296599042-s7lqd3",
+      "fromStatus": "in_progress",
+      "toStatus": "review",
+      "reason": "operational transition"
+    },
+    {
+      "id": "event-1789296747951",
+      "time": "2026-09-13T10:52:27.951Z",
+      "actor": "Íris",
+      "action": "transicionou AF-001 para awaiting_approval (LOCAL)",
+      "cardId": "AF-001",
+      "correlationId": "local-1789296747951-cgpmtl",
+      "fromStatus": "review",
+      "toStatus": "awaiting_approval",
+      "reason": "operational transition"
+    },
+    {
+      "id": "event-1789296994183",
+      "time": "2026-09-13T10:56:34.183Z",
+      "actor": "Sergio",
+      "action": "registrou decisão approved para FLUX-GATE-01 (LOCAL DECISION / NO EXTERNAL EFFECT)",
+      "cardId": "FLUX-001",
+      "correlationId": "local-1789296994183",
+      "reason": "Decisão conceitual local não autoriza execução externa"
     }
   ],
   "handoffs": [
@@ -247,7 +278,7 @@
       "project": "FBR Agency Flux",
       "title": "Concepção e escopo do Flux",
       "requiredDecision": "Confirmar concepção, escopo, critérios de aceite e ownership do ciclo atual",
-      "status": "pending",
+      "status": "approved",
       "impact": "Define a base transversal; não executa jobs nem integrações",
       "cost": "Nenhum custo local; custo externo não autorizado",
       "scope": "concepção, escopo, critérios e ownership · decisão local",
@@ -262,7 +293,9 @@
       "externalActionAuthorized": false,
       "blockers": [
         "Concepção exige revisão e decisão explícita de Sergio"
-      ]
+      ],
+      "decidedAt": "2026-09-13T10:56:34.183Z",
+      "decidedBy": "Sergio"
     },
     {
       "id": "FLUX-GATE-02",
