@@ -810,4 +810,12 @@ evidencia:
   - 09-codigo/src/lib/flux-repository.ts
   - 09-codigo/src/app/dashboard-client.tsx
 status: DRAFT_FOR_VALIDATION
+
+## Estado local — Jobs operacional e home executiva (2026-09-14)
+- Implementado `/jobs` humano e operacional: resumo real por status/origem/live-historical/stale/activeBlocker, filtros por projeto/card/agent/status/owner/origem/ciclo/stale/blocker, prioridade limitada a 6, lista completa e painel de detalhe.
+- O detalhe distingue explicitamente `review`, `blocked`, `stale`, `historical`, `filesystem readback` e `realtime`, preservando objective, role, timestamps, lastSeen, progress, currentStep, artefatos, evidências, Handoffs, riscos, blockers, nextStep, correlationId e source.
+- Ações locais disponíveis apenas com dados declarados: retomada de job histórico usa owner/nextStep existentes; encaminhamento exige owner/nextStep e blocker ativo; readback não conclui trabalho nem inventa owner.
+- Home limitada a resumo executivo, projetos/cards prioritários, gates pendentes/recentes, atenção e últimos cinco eventos, com links `/handoffs` e `/jobs`.
+- Critérios automatizados em `09-codigo/tests/jobs-ui.test.ts`: contagens, filtros, limite de seis, detalhe, distinção histórico/live e stale/readback.
+- Pendência de validação: execução da suíte completa, typecheck, lint, build e Docker Smoke devem ser registrados no histórico após rodar.
 ```
