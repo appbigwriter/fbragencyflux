@@ -39,7 +39,7 @@ export class SupabaseFluxRepository implements FluxStateRepository {
   private endpoint() { return `${this.baseUrl}/rest/v1/flux_state` }
   private headers(extra: Record<string, string> = {}) { return { apikey: this.serviceRoleKey, Authorization: `Bearer ${this.serviceRoleKey}`, 'content-type': 'application/json', ...extra } }
   async load() { const response = await fetch(`${this.endpoint()}?state_key=eq.${encodeURIComponent(this.key)}&select=state`, { headers: this.headers(), cache: 'no-store' }); if (!response.ok) throw persistenceDiagnostic('read', response.status); const rows = await response.json() as Array<{ state: FluxState }>; return rows[0]?.state || null }
-  async save(state: FluxState) { const response = await fetch(this.endpoint(), { method: 'POST', headers: this.headers({ Prefer: 'resolution=merge-duplicates,return=minimal' }), body: JSON.stringify({ state_key: this.key, state, updated_at: new Date().toISOString() }) }); if (!response.ok) throw persistenceDiagnostic('write', response.status) }
+  async save(state: FluxState) { const response = await fetch(`${this.endpoint()}?on_conflict=state_key`, { method: 'POST', headers: this.headers({ Prefer: 'resolution=merge-duplicates,return=minimal' }), body: JSON.stringify({ state_key: this.key, state, updated_at: new Date().toISOString() }) }); if (!response.ok) throw persistenceDiagnostic('write', response.status) }
 }
 export function configuredRepository(file?: string): FluxStateRepository {
   if (file) return new JsonFluxRepository(path.resolve(file))

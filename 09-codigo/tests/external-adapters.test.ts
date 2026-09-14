@@ -46,6 +46,13 @@ describe('Supabase persistence diagnostics', () => {
     expect(JSON.stringify(fetchMock.mock.calls[0][1])).toContain(secret)
   })
 
+  it('declares state_key as the Supabase upsert conflict target', async () => {
+    const fetchMock = vi.fn().mockResolvedValue(new Response('', { status: 201 }))
+    vi.stubGlobal('fetch', fetchMock)
+    await new SupabaseFluxRepository('https://project.supabase.co', 'secret', 'fbr-agency-flux').save(state)
+    expect(fetchMock.mock.calls[0][0]).toBe('https://project.supabase.co/rest/v1/flux_state?on_conflict=state_key')
+  })
+
   it('rejects malformed Supabase URLs before making a request', async () => {
     expect(() => new SupabaseFluxRepository('not-a-url', 'key')).toThrow(/URL/i)
   })

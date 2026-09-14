@@ -15,6 +15,22 @@ npm run start -- -p 3000
 
 Acesse `http://localhost:3000`. A interface tem filtro AF-001, detalhe navegável, ações de transição, approval com escopo/impacto/rollback, os exatamente 4 Gates transversais do FBR Agency Flux, confirmação visual de decisão local, teste explícito de ator sem permissão, formulário de Handoff e botão de reload/readback. O banner `LOCAL TEST ENVIRONMENT · NO EXTERNAL EFFECT` é obrigatório: nenhuma ação publica, gasta, gera HopLink ou altera produção.
 
+## Bootstrap do estado real no Supabase
+
+O snapshot `data/flux-state.json` só pode ser enviado pelo processo autorizado dentro do container Easypanel, com os secrets configurados no runtime Environment/Secrets. O comando não aceita aliases, Build Args ou credenciais na linha de comando:
+
+```bash
+npm run seed:flux-state -- --confirm-seed
+```
+
+No terminal do container Easypanel, execute exatamente o comando acima. O runtime deve fornecer `FLUX_SUPABASE_URL` e `FLUX_SUPABASE_SERVICE_ROLE_KEY`; não cole os valores no repositório, no Dockerfile, no comando ou no chat. Para uma substituição deliberada de estado existente, use a segunda confirmação explícita:
+
+```bash
+npm run seed:flux-state -- --confirm-seed --force-replace
+```
+
+O comando faz GET prévio por `state_key=fbr-agency-flux`, recusa sobrescrever uma linha existente sem `--force-replace`, faz POST upsert e executa GET de readback. Não exibe estado, URL completa, headers ou secrets. Sucesso exige uma saída JSON com `status` igual a `seeded` (ou `replaced` quando autorizado), `receipt` igual a `readback:200` e contagens coerentes com o snapshot; qualquer outro status é falha operacional
+
 ### Gates transversais do Flux
 
 `GET /api/flux/gates` retorna exatamente os quatro Gates persistidos do `FBR Agency Flux`; `POST /api/flux/gates/:id/decision` exige sessão autenticada com papel `gatekeeper` e aceita apenas a decisão no body. A identidade é derivada server-side da sessão; `actor` e `scope` enviados pelo cliente são ignorados. A decisão é conceitual/local, idempotência é fail-closed para Gate já decidido e `externalActionAuthorized` permanece `false`. Aprovar não executa deploy, publicação, DNS, HopLink, gasto, migration ou integração externa
