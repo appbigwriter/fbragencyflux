@@ -53,6 +53,19 @@ hooks:
 
 Hermes signs the raw body with `sha256=<HMAC-SHA256>` in `X-Hermes-Signature-256`, includes `X-Hermes-Delivery`/`delivery_id`, retries connection errors and 5xx once, and does not follow redirects or retry 4xx. The Flux sink verifies the signature before parsing and uses `delivery_id` as `eventId`; duplicate protection is currently process-local in `dispatchIncoming`. A durable production inbox keyed by `eventId` is still required before treating this as cross-restart delivery
 
+## Supabase 401 checklist — exact operational resolution
+
+When repository diagnostics report `PERSISTENCE_UNAUTHORIZED` / HTTP 401, resolve only with this checklist:
+
+- [ ] Service role key is from the same Supabase project as `FLUX_SUPABASE_URL` / `SUPABASE_URL`
+- [ ] Service role key is configured in the runtime Environment/Secrets used by the server process
+- [ ] Migration `011` is applied in that same Supabase project
+- [ ] The key is not supplied as a Build Arg
+- [ ] The key is not an anon key, Control Tower token, or Easypanel token
+- [ ] Readback is performed with the local smoke script and confirms GET status plus `state_key` receipt; do not print the key, headers, or complete URL
+
+Production must not fall back to JSON to hide a Supabase authentication failure. No remote Supabase validation is claimed by this local implementation; a readback is evidence only when an operator runs it with the correct runtime secrets
+
 ## Local verification
 
 - `npm test -- --run tests/external-adapters.test.ts tests/hermes-webhook.test.ts`: required verification after implementation
