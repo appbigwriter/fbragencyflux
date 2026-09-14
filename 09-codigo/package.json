@@ -12,6 +12,7 @@
     "supabase:persistence:smoke": "node scripts/supabase-persistence-smoke.mjs",
     "seed:flux-state": "node scripts/seed-flux-state.mjs",
     "reset:flux-state": "node scripts/reset-flux-state.mjs",
+    "worker:iris": "node scripts/iris-worker.mjs",
     "ingest:flux-history": "vite-node scripts/ingest-flux-history.ts"
   },
   "dependencies": {

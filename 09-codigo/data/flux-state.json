@@ -9,5 +9,7 @@
   "artifacts": [],
   "blockers": [],
   "jobs": [],
-  "agentRuns": []
+  "agentRuns": [],
+  "requiredActions": [],
+  "coordinator": {}
 }

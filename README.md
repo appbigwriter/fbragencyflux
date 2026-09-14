@@ -37,6 +37,8 @@ Todo projeto ou blog deve chegar ao intake com:
 
 A Íris valida essa entrada e encaminha a adaptação ao owner técnico. Sem Design System ou referência formal, a identidade visual fica pendente de concepção e não deve ser presumida
 
+A operação de coordenação está disponível em `09-codigo/npm run worker:iris -- --once` (`--dry-run` não persiste nem encaminha). A regra é zero silent idle: diante de um muro, o agente registra blocker/próximo passo e a Íris cria encaminhamento, atividade paralela, HOLD ou consulta explícita a Sergio. A ausência do emissor outbound Hermes é registrada como `DISPATCHER_OUTBOUND_NOT_CONFIGURED`; nenhum acionamento é afirmado sem receipt/readback.
+
 A regra detalhada está em `06-design/regra-design-system-no-intake.md`
 
 ## Estrutura
