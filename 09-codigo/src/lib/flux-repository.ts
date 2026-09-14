@@ -49,7 +49,7 @@ export function normalizeBlocker(input: BlockerInput, sourceId?: string): Blocke
 
 export class FluxError extends Error { constructor(public code: string, message: string, public status = 400) { super(message) } }
 const transitions: Record<CardStatus, CardStatus[]> = { planned: ['ready'], ready: ['in_progress'], in_progress: ['review', 'blocked'], review: ['awaiting_approval', 'in_progress', 'blocked'], blocked: ['ready', 'in_progress'], awaiting_approval: ['approved', 'blocked'], approved: ['executing'], executing: ['verifying', 'failed'], verifying: ['completed', 'failed'], completed: [], failed: ['in_progress'] }
-const allowedActors = new Set(['Sergio', 'Íris', 'Gabe', 'Kora', 'Théo', 'Bia', 'Lia', 'Caio', 'Vito', 'Rick', 'Rafa'])
+const allowedActors = new Set(['Sergio', 'Íris', 'Gabe', 'Kora', 'Théo', 'Bia', 'Lia', 'Caio', 'Vito', 'Rick', 'Rafa', 'Hermes'])
 const root = path.resolve(process.cwd(), '..')
 const historyRoot = path.join(root, '08-historico', 'afterforty')
 const afterFortyPackage = path.resolve(root, '..', 'FBR Blogs', 'After Forty')
