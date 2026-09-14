@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it } from 'vitest'
 import { mkdtemp, readFile, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { approveApproval, getSnapshot, transitionCard, validNextStatuses } from '../src/lib/flux-repository'
+import { approveApproval, classifyFilesystemRun, getSnapshot, transitionCard, validNextStatuses } from '../src/lib/flux-repository'
 
 const tempDirs: string[] = []
 
@@ -17,6 +17,22 @@ async function testFile() {
 }
 
 describe('Flux persisted repository', () => {
+  it('classifies file-derived text without a structured open blocker as review, not blocked', () => {
+    const run = classifyFilesystemRun('review pending Gate; no operational blocker declared', 'history.md')
+    expect(run.status).toBe('review')
+    expect(run.activeBlocker).toBe(false)
+    expect(run.historical).toBe(true)
+    expect(run.sourceType).toBe('filesystem')
+    expect(run.blockers).toEqual([])
+  })
+
+  it('keeps a structured open blocker active and exposes its cause', () => {
+    const run = classifyFilesystemRun('status: open\nblocker: owner waiting for evidence\nowner: Gabe\nnextAction: review\nresolutionPlan: compare source', 'history.md')
+    expect(run.status).toBe('blocked')
+    expect(run.activeBlocker).toBe(true)
+    expect(run.blockers[0]).toContain('owner waiting for evidence')
+  })
+
   it('seeds AF-001 and persists the snapshot outside src', async () => {
     const file = await testFile()
     const snapshot = await getSnapshot(file)

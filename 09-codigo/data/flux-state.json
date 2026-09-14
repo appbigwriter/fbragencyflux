@@ -375,9 +375,9 @@
       "agent": "Bia",
       "role": "Bia",
       "objective": "Pesquisar contexto e mercado atual de Skin & Beauty, Recovery & Wellness e Home Fitness, com foco em Protein / Creatine for 40+, separando fatos, hipóteses, lacunas e evidência de ingrediente versus produto final",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.842Z",
-      "lastSeen": "2026-09-14T08:23:40.842Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.833Z",
+      "lastSeen": "2026-09-14T08:57:34.833Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/bia-market-research.md — versão 1.0, status RESEARCH_COMPLETE_PENDING_EDITORIAL_AND_COMPLIANCE_REVIEW"
       ],
@@ -401,6 +401,9 @@
       "nextStep": "Arquivo acessível no caminho declarado e versionado",
       "correlationId": "filesystem-bia-market-research.md-1",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -411,9 +414,9 @@
       "agent": "Bia",
       "role": "Bia",
       "objective": "Fornecer contexto factual e hipóteses de investigação para as três categorias, sem decidir a pauta comercial ou o produto associado",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.842Z",
-      "lastSeen": "2026-09-14T08:23:40.842Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.833Z",
+      "lastSeen": "2026-09-14T08:57:34.833Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/bia-market-research.md — versão 1.0; matriz por categoria, fontes S1–S9 e lacunas"
       ],
@@ -436,6 +439,9 @@
       "nextStep": "Usar somente fatos compatíveis com S1–S9 e repetir a limitação de escopo",
       "correlationId": "filesystem-bia-market-research.md-2",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -446,9 +452,9 @@
       "agent": "Bia",
       "role": "Bia",
       "objective": "Entregar base auditável para revisão de evidência, claims, compliance e separação entre ingrediente e produto final",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.842Z",
-      "lastSeen": "2026-09-14T08:23:40.842Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.833Z",
+      "lastSeen": "2026-09-14T08:57:34.833Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/bia-market-research.md — versão 1.0; fontes datadas, limitações e matriz de risco editorial"
       ],
@@ -472,6 +478,9 @@
       "nextStep": "Cada claim proposto deve apontar para a fonte específica e sua população/protocolo",
       "correlationId": "filesystem-bia-market-research.md-3",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -482,9 +491,9 @@
       "agent": "Caio",
       "role": "Caio",
       "objective": "Execute Revisão G3 on seven local conditional English drafts for exact ID scope, E1/E2 separation, attributed claims, source fit, prohibited-claim controls, exact disclaimer, and SEM PRODUTO status",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.851Z",
-      "lastSeen": "2026-09-14T08:23:40.851Z",
+      "status": "completed",
+      "updatedAt": "2026-09-14T08:57:34.839Z",
+      "lastSeen": "2026-09-14T08:57:34.839Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/drafts/drafts-flexible-index.md and the seven new Markdown drafts — version 1.0"
       ],
@@ -508,6 +517,9 @@
       "nextStep": "Each new file maps one-to-one to one requested ID and no other new ID exists",
       "correlationId": "filesystem-drafts-flexible-index.md-1",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -518,9 +530,9 @@
       "agent": "Caio",
       "role": "Caio",
       "objective": "Receive seven local conditional drafts exactly within the editorial association matrix, preserve SB-02 SEM PRODUTO, and route the package to G3 without inferring publication approval",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.851Z",
-      "lastSeen": "2026-09-14T08:23:40.851Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.839Z",
+      "lastSeen": "2026-09-14T08:57:34.839Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/drafts/drafts-flexible-index.md and seven new English drafts — version 1.0"
       ],
@@ -544,6 +556,9 @@
       "nextStep": "Index contains exactly seven new IDs and status for each",
       "correlationId": "filesystem-drafts-flexible-index.md-2",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -554,9 +569,9 @@
       "agent": "Caio",
       "role": "Caio",
       "objective": "Revalidate only the six authorized Amazon listing identities, selected variants, labels, serving or attribute fields, warnings when observed, and volatile facts without commercial mutation",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.851Z",
-      "lastSeen": "2026-09-14T08:23:40.851Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.839Z",
+      "lastSeen": "2026-09-14T08:57:34.839Z",
       "artifactRefs": [
         "A dated local readback covering B0725JP4TN, B0744JV661, B00XM2MXK8, B01BVACFAK, B07978VPPH, and B002DYIZEE"
       ],
@@ -579,6 +594,9 @@
       "nextStep": "Each authorized ASIN appears with URL, variant, access date, and limitations",
       "correlationId": "filesystem-drafts-flexible-index.md-3",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -589,9 +607,9 @@
       "agent": "Caio",
       "role": "Caio",
       "objective": "Orchestrate the seven-draft local package to G3 while preserving the exact association decision, the five prior files, and the external-action block",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.851Z",
-      "lastSeen": "2026-09-14T08:23:40.851Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.839Z",
+      "lastSeen": "2026-09-14T08:57:34.839Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/drafts/drafts-flexible-index.md and seven new drafts — local only"
       ],
@@ -614,6 +632,9 @@
       "nextStep": "Seven IDs, six authorized ASINs maximum, and SB-02 SEM PRODUTO are explicit",
       "correlationId": "filesystem-drafts-flexible-index.md-4",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -624,9 +645,9 @@
       "agent": "Caio",
       "role": "Caio",
       "objective": "Register the local seven-draft delivery, statuses, paths, preservation evidence, and pending owners without creating external records or mutating infrastructure",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.851Z",
-      "lastSeen": "2026-09-14T08:23:40.851Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.839Z",
+      "lastSeen": "2026-09-14T08:57:34.839Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/drafts/drafts-flexible-index.md — version 1.0"
       ],
@@ -651,6 +672,9 @@
       "nextStep": "Filesystem readback confirms seven new article files plus this index",
       "correlationId": "filesystem-drafts-flexible-index.md-5",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -661,9 +685,9 @@
       "agent": "Caio",
       "role": "Caio",
       "objective": "Review five conditional English educational drafts for claim accuracy, source fit, exact disclaimer, and compliance with the PASS limits in the G3 review",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.851Z",
-      "lastSeen": "2026-09-14T08:23:40.851Z",
+      "status": "completed",
+      "updatedAt": "2026-09-14T08:57:34.839Z",
+      "lastSeen": "2026-09-14T08:57:34.839Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/drafts/ — version 1.0; five Markdown drafts and this index"
       ],
@@ -689,6 +713,9 @@
       "nextStep": "Five expected draft files exist and map one-to-one to SB-04, RW-02, RW-04, HF-01, and HF-03",
       "correlationId": "filesystem-drafts-index.md-1",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -699,9 +726,9 @@
       "agent": "Caio",
       "role": "Caio",
       "objective": "Receive five conditional drafts for editorial integration and correction while preserving the PASS scope, SEM PRODUTO status, source traceability, and publication block",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.852Z",
-      "lastSeen": "2026-09-14T08:23:40.852Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.839Z",
+      "lastSeen": "2026-09-14T08:57:34.839Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/drafts/drafts-index.md and the five Markdown files — version 1.0"
       ],
@@ -727,6 +754,9 @@
       "nextStep": "Index lists exactly five created IDs and seven not-written blocked IDs",
       "correlationId": "filesystem-drafts-index.md-2",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -737,9 +767,9 @@
       "agent": "Caio",
       "role": "Caio",
       "objective": "Register the local delivery of five conditional drafts, maintain the seven-item blocker list, and route the package to Gabe and Gestor Editorial without inferring approval",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.852Z",
-      "lastSeen": "2026-09-14T08:23:40.852Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.840Z",
+      "lastSeen": "2026-09-14T08:57:34.840Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/drafts/drafts-index.md — version 1.0; directory contains five drafts"
       ],
@@ -764,6 +794,9 @@
       "nextStep": "Filesystem readback confirms exactly six files in drafts: five article files plus drafts-index.md",
       "correlationId": "filesystem-drafts-index.md-3",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -774,9 +807,9 @@
       "agent": "Gestor Editorial After Forty",
       "role": "Gestor Editorial After Forty",
       "objective": "Preparar drafts locais condicionais somente para SB-01, SB-03, RW-01, RW-03, HF-02 e HF-04, mantendo SB-02 SEM PRODUTO e sem inventar claims",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.855Z",
-      "lastSeen": "2026-09-14T08:23:40.855Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.840Z",
+      "lastSeen": "2026-09-14T08:57:34.840Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/editorial-flexible-product-associations.md — versão 1.0"
       ],
@@ -799,6 +832,9 @@
       "nextStep": "Cada draft novo usa somente o ID e ASIN autorizado nesta matriz",
       "correlationId": "filesystem-editorial-flexible-product-associations.md-1",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -809,9 +845,9 @@
       "agent": "Gestor Editorial After Forty",
       "role": "Gestor Editorial After Forty",
       "objective": "Revalidar, sem mutação comercial, os seis listings já selecionados como exemplos educacionais/comparativos",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.855Z",
-      "lastSeen": "2026-09-14T08:23:40.855Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.840Z",
+      "lastSeen": "2026-09-14T08:57:34.840Z",
       "artifactRefs": [
         "Readback complementar local com URL pública, ASIN literal, variante, rótulo, serving/atributos, warnings quando observados, data e limitações"
       ],
@@ -834,6 +870,9 @@
       "nextStep": "Seis ASINs aparecem exatamente uma vez cada",
       "correlationId": "filesystem-editorial-flexible-product-associations.md-2",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -844,9 +883,9 @@
       "agent": "Gestor Editorial After Forty",
       "role": "Gestor Editorial After Forty",
       "objective": "Auditar a aplicação da política flexível nos sete IDs, com foco em classe E1/E2, claims permitidos/proibidos, disclosure e separação ingrediente versus SKU",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.855Z",
-      "lastSeen": "2026-09-14T08:23:40.855Z",
+      "status": "completed",
+      "updatedAt": "2026-09-14T08:57:34.840Z",
+      "lastSeen": "2026-09-14T08:57:34.840Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/editorial-flexible-product-associations.md — versão 1.0"
       ],
@@ -869,6 +908,9 @@
       "nextStep": "As sete decisões, classes, claims e owners são verificáveis no artefato",
       "correlationId": "filesystem-editorial-flexible-product-associations.md-3",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -879,9 +921,9 @@
       "agent": "Gestor Editorial After Forty",
       "role": "Gestor Editorial After Forty",
       "objective": "Orquestrar o resultado editorial do AF-001 para G3 sem inferir aprovação de Sergio e sem alterar os cinco drafts existentes",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.855Z",
-      "lastSeen": "2026-09-14T08:23:40.855Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.840Z",
+      "lastSeen": "2026-09-14T08:57:34.840Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/editorial-flexible-product-associations.md — versão 1.0"
       ],
@@ -904,6 +946,9 @@
       "nextStep": "Readback confirma sete IDs, seis ASINs no máximo e SB-02 SEM PRODUTO",
       "correlationId": "filesystem-editorial-flexible-product-associations.md-4",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -914,9 +959,9 @@
       "agent": "Gestor Editorial After Forty",
       "role": "Gestor Editorial After Forty",
       "objective": "Registrar o artefato local, a decisão dos sete IDs, os owners e os blockers no histórico do AF-001, preservando os cinco drafts",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.855Z",
-      "lastSeen": "2026-09-14T08:23:40.855Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.840Z",
+      "lastSeen": "2026-09-14T08:57:34.840Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/editorial-flexible-product-associations.md — versão 1.0"
       ],
@@ -941,6 +986,9 @@
       "nextStep": "Arquivo existe no caminho declarado e contém exatamente sete IDs únicos",
       "correlationId": "filesystem-editorial-flexible-product-associations.md-5",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -951,9 +999,9 @@
       "agent": "Gestor Editorial After Forty",
       "role": "Gestor Editorial After Forty",
       "objective": "Auditar a matriz editorial de 12 pautas, as associações provisórias de produto, claims previstos, fontes, disclaimer e disclosure antes de qualquer draft avançar para publicação",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.856Z",
-      "lastSeen": "2026-09-14T08:23:40.856Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.841Z",
+      "lastSeen": "2026-09-14T08:57:34.841Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/editorial-product-plan.md — versão 1.0"
       ],
@@ -978,6 +1026,9 @@
       "nextStep": "Pass-fail por artigo e por claim, com fonte específica, população/protocolo e limitação",
       "correlationId": "filesystem-editorial-product-plan.md-1",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -988,9 +1039,9 @@
       "agent": "Gestor Editorial After Forty",
       "role": "Gestor Editorial After Forty",
       "objective": "Preparar, somente após a matriz ser aceita no fluxo, briefs/copy drafts em inglês para as 12 pautas sem inventar claims, depoimentos, credenciais ou resultados",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.856Z",
-      "lastSeen": "2026-09-14T08:23:40.856Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.841Z",
+      "lastSeen": "2026-09-14T08:57:34.841Z",
       "artifactRefs": [
         "Matriz de entrada: F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/editorial-product-plan.md — versão 1.0; drafts ainda não escritos"
       ],
@@ -1014,6 +1065,9 @@
       "nextStep": "Cada draft mantém o ID/categoria/keyword da matriz",
       "correlationId": "filesystem-editorial-product-plan.md-2",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -1024,9 +1078,9 @@
       "agent": "Gestor Editorial After Forty",
       "role": "Gestor Editorial After Forty",
       "objective": "Preparar direção visual e, se solicitado no G3, rascunhos de criativos alinhados às 12 pautas, sem fabricar before/after, resultado médico ou identidade diferente de Heidi",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.856Z",
-      "lastSeen": "2026-09-14T08:23:40.856Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.841Z",
+      "lastSeen": "2026-09-14T08:57:34.841Z",
       "artifactRefs": [
         "Matriz de entrada: F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/editorial-product-plan.md — versão 1.0; assets ainda não criados"
       ],
@@ -1050,6 +1104,9 @@
       "nextStep": "Cada asset tem ID, finalidade, versão, texto e vínculo à pauta",
       "correlationId": "filesystem-editorial-product-plan.md-3",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -1060,9 +1117,9 @@
       "agent": "Gestor Editorial After Forty",
       "role": "Gestor Editorial After Forty",
       "objective": "Registrar o resultado do G2 no estado local do AF-001 e encaminhar a matriz, owners, dependências e blockers para G3 sem criar card externo nem autorizar publicação/gasto",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.857Z",
-      "lastSeen": "2026-09-14T08:23:40.857Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.841Z",
+      "lastSeen": "2026-09-14T08:57:34.841Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/editorial-product-plan.md — versão 1.0; matriz e quatro Handoffs YAML"
       ],
@@ -1096,6 +1153,9 @@
       "nextStep": "Contagem programática confirma 12 IDs únicos e 4 por categoria",
       "correlationId": "filesystem-editorial-product-plan.md-4",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -1106,9 +1166,9 @@
       "agent": "Caio",
       "role": "Caio",
       "objective": "Revisar o readback de C1 e C2 na copy About Me sem ampliar claims, sem inserir links comerciais e sem publicar",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.863Z",
-      "lastSeen": "2026-09-14T08:23:40.863Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.843Z",
+      "lastSeen": "2026-09-14T08:57:34.843Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/about-me-copy-draft.md; F:/Projetos/_FBR/FBR Blogs/After Forty/content/copy/about-me.md"
       ],
@@ -1137,6 +1197,9 @@
       "nextStep": "C1 removido ou reescrito sem afirmar pre-publication brand approval não comprovado",
       "correlationId": "filesystem-gabe-about-me-review-handoff.yaml-1",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -1147,9 +1210,9 @@
       "agent": "Gabe",
       "role": "Gabe",
       "objective": "Corrigir a matriz editorial conforme o parecer G3, preservando apenas ângulos e associações sustentados por evidência rastreável, sem autorizar publicação ou gasto",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.865Z",
-      "lastSeen": "2026-09-14T08:23:40.865Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.846Z",
+      "lastSeen": "2026-09-14T08:57:34.846Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/gabe-compliance-review.md — versão 1.0 — G3_BLOCKED_PENDING_REMEDIATION_AND_SERGIO_GATES"
       ],
@@ -1174,6 +1237,9 @@
       "nextStep": "Cada pauta tem veredito, evidência, fonte, severidade, owner e correção neste arquivo",
       "correlationId": "filesystem-gabe-compliance-review.md-1",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -1184,9 +1250,9 @@
       "agent": "Gabe",
       "role": "Gabe",
       "objective": "Registrar o parecer G3 e manter o fluxo bloqueado nos itens sem evidência suficiente, encaminhando owners e critérios de readback",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.865Z",
-      "lastSeen": "2026-09-14T08:23:40.865Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.846Z",
+      "lastSeen": "2026-09-14T08:57:34.846Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/gabe-compliance-review.md — versão 1.0"
       ],
@@ -1210,6 +1276,9 @@
       "nextStep": "Readback registra 12 pautas e a distribuição PASS/FAIL/BLOCKED sem alterar o parecer",
       "correlationId": "filesystem-gabe-compliance-review.md-2",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -1220,9 +1289,9 @@
       "agent": "Gabe",
       "role": "Gabe",
       "objective": "Atualizar o estado local do AF-001 com o parecer G3, owners, blockers e dependências, sem criar card externo ou executar mutação",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.865Z",
-      "lastSeen": "2026-09-14T08:23:40.865Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.846Z",
+      "lastSeen": "2026-09-14T08:57:34.846Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/gabe-compliance-review.md — versão 1.0; parecer e Handoffs completos"
       ],
@@ -1246,6 +1315,9 @@
       "nextStep": "Arquivo existe no caminho declarado e mantém a matriz de vereditos",
       "correlationId": "filesystem-gabe-compliance-review.md-3",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -1256,9 +1328,9 @@
       "agent": "Gabe",
       "role": "Gabe",
       "objective": "Preparar copy/drafts somente para pautas aceitas no escopo PASS ou após desbloqueio formal, em inglês, sem claims não sustentados, mantendo disclaimer, Sources e disclosure",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.865Z",
-      "lastSeen": "2026-09-14T08:23:40.865Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.846Z",
+      "lastSeen": "2026-09-14T08:57:34.846Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/gabe-compliance-review.md — versão 1.0; matriz de limites e vereditos"
       ],
@@ -1283,6 +1355,9 @@
       "nextStep": "Cada frase factual tem fonte específica e datada em Sources",
       "correlationId": "filesystem-gabe-compliance-review.md-4",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -1293,9 +1368,9 @@
       "agent": "Gabe",
       "role": "Gabe",
       "objective": "Manter direção visual e eventuais assets em rascunho, sem fabricar testemunho, before/after, resultado médico ou associação comercial para pauta bloqueada",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.865Z",
-      "lastSeen": "2026-09-14T08:23:40.865Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.846Z",
+      "lastSeen": "2026-09-14T08:57:34.846Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/gabe-compliance-review.md — versão 1.0; limites de persona e status G3"
       ],
@@ -1319,6 +1394,9 @@
       "nextStep": "Cada asset tem ID de pauta, finalidade e versão",
       "correlationId": "filesystem-gabe-compliance-review.md-5",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -1329,9 +1407,9 @@
       "agent": "Gabe",
       "role": "Gabe",
       "objective": "Receber a revisão G3 de cinco drafts condicionais, manter os cinco em revisão editorial dentro dos limites e não iniciar publicação, monetização ou associação de produto",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.866Z",
-      "lastSeen": "2026-09-14T08:23:40.866Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.847Z",
+      "lastSeen": "2026-09-14T08:57:34.847Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/gabe-drafts-review.md — versão 1.0 — G3_PASS_CONDITIONAL_DRAFTS_REMAIN_IN_REVIEW"
       ],
@@ -1358,6 +1436,9 @@
       "nextStep": "Readback confirma os cinco IDs exatos, únicos, com veredito PASS condicional",
       "correlationId": "filesystem-gabe-drafts-review.md-1",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -1368,9 +1449,9 @@
       "agent": "Gabe",
       "role": "Gabe",
       "objective": "Manter e editar os cinco drafts condicionais em inglês sem claims não sustentados, preservando Sources, disclaimer, persona fictícia e ausência de afiliado",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.866Z",
-      "lastSeen": "2026-09-14T08:23:40.866Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.847Z",
+      "lastSeen": "2026-09-14T08:57:34.847Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/gabe-drafts-review.md — versão 1.0; auditoria claim a claim e correções por ID"
       ],
@@ -1397,6 +1478,9 @@
       "nextStep": "Os cinco IDs permanecem estáveis e a contagem continua 5",
       "correlationId": "filesystem-gabe-drafts-review.md-2",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -1407,9 +1491,9 @@
       "agent": "Gabe",
       "role": "Gabe",
       "objective": "Registrar o resultado G3 dos cinco drafts condicionais, preservar o bloqueio dos sete itens fora de escopo e encaminhar owners e evidências sem inferir autorização",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.866Z",
-      "lastSeen": "2026-09-14T08:23:40.866Z",
+      "status": "completed",
+      "updatedAt": "2026-09-14T08:57:34.847Z",
+      "lastSeen": "2026-09-14T08:57:34.847Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/gabe-drafts-review.md — versão 1.0"
       ],
@@ -1434,6 +1518,9 @@
       "nextStep": "Readback confirma exatamente 5 IDs auditados e zero duplicatas",
       "correlationId": "filesystem-gabe-drafts-review.md-3",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -1444,9 +1531,9 @@
       "agent": "Gabe",
       "role": "Gabe",
       "objective": "Atualizar o histórico local do AF-001 com o parecer G3 dos cinco drafts condicionais, owners, blockers e critérios de readback, sem mutação externa",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.866Z",
-      "lastSeen": "2026-09-14T08:23:40.866Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.847Z",
+      "lastSeen": "2026-09-14T08:57:34.847Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/gabe-drafts-review.md — versão 1.0; parecer e Handoffs completos"
       ],
@@ -1472,6 +1559,9 @@
       "nextStep": "Arquivo existe no caminho declarado e contém os quatro Handoffs YAML completos",
       "correlationId": "filesystem-gabe-drafts-review.md-4",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -1482,9 +1572,9 @@
       "agent": "Gabe",
       "role": "Gabe",
       "objective": "Aplicar somente correções de copy compatíveis com a Revisão G3 final dos 12 drafts locais, sem publicar ou inserir links comerciais",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.868Z",
-      "lastSeen": "2026-09-14T08:23:40.868Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.848Z",
+      "lastSeen": "2026-09-14T08:57:34.848Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/gabe-final-g3-review.md"
       ],
@@ -1505,6 +1595,9 @@
       "nextStep": "Aguardando próxima instrução registrada",
       "correlationId": "filesystem-gabe-final-g3-review.md-1",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -1515,9 +1608,9 @@
       "agent": "Gabe",
       "role": "Gabe",
       "objective": "Preservar o enquadramento editorial dos 12 drafts e aplicar apenas correções proporcionais ao claim que exceder a evidência",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.868Z",
-      "lastSeen": "2026-09-14T08:23:40.868Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.848Z",
+      "lastSeen": "2026-09-14T08:57:34.848Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/gabe-final-g3-review.md e os 12 drafts locais"
       ],
@@ -1537,6 +1630,9 @@
       "nextStep": "Aguardando próxima instrução registrada",
       "correlationId": "filesystem-gabe-final-g3-review.md-2",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -1547,9 +1643,9 @@
       "agent": "Gabe",
       "role": "Gabe",
       "objective": "Revalidar os seis listings usados como exemplos, sem gerar HopLink, comprar, escolher oferta ou mutar estado externo",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.868Z",
-      "lastSeen": "2026-09-14T08:23:40.868Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.848Z",
+      "lastSeen": "2026-09-14T08:57:34.848Z",
       "artifactRefs": [
         "Readback local datado de B0725JP4TN, B0744JV661, B00XM2MXK8, B01BVACFAK, B07978VPPH e B002DYIZEE"
       ],
@@ -1569,6 +1665,9 @@
       "nextStep": "Aguardando próxima instrução registrada",
       "correlationId": "filesystem-gabe-final-g3-review.md-3",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -1579,9 +1678,9 @@
       "agent": "Gabe",
       "role": "Gabe",
       "objective": "Registrar e encaminhar a Revisão G3 final dos 12 drafts sem inferir aceite editorial final ou autorização de Sergio",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.868Z",
-      "lastSeen": "2026-09-14T08:23:40.868Z",
+      "status": "completed",
+      "updatedAt": "2026-09-14T08:57:34.848Z",
+      "lastSeen": "2026-09-14T08:57:34.848Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/gabe-final-g3-review.md"
       ],
@@ -1601,6 +1700,9 @@
       "nextStep": "Aguardando próxima instrução registrada",
       "correlationId": "filesystem-gabe-final-g3-review.md-4",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -1611,9 +1713,9 @@
       "agent": "Gabe",
       "role": "Gabe",
       "objective": "Registrar o artefato local e a evidência da Revisão G3 final sem criar registro externo ou executar mutação",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.868Z",
-      "lastSeen": "2026-09-14T08:23:40.868Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.848Z",
+      "lastSeen": "2026-09-14T08:57:34.848Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/gabe-final-g3-review.md; pasta drafts/ com 12 artigos e 2 índices"
       ],
@@ -1633,6 +1735,9 @@
       "nextStep": "Aguardando próxima instrução registrada",
       "correlationId": "filesystem-gabe-final-g3-review.md-5",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -1643,9 +1748,9 @@
       "agent": "Gabe",
       "role": "Gabe",
       "objective": "Submeter o resultado da auditoria G3 para ciência e eventual decisão futura, sem pedir ou presumir autorização implícita",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.868Z",
-      "lastSeen": "2026-09-14T08:23:40.868Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.848Z",
+      "lastSeen": "2026-09-14T08:57:34.848Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/gabe-final-g3-review.md"
       ],
@@ -1665,6 +1770,9 @@
       "nextStep": "Aguardando próxima instrução registrada",
       "correlationId": "filesystem-gabe-final-g3-review.md-6",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -1675,9 +1783,9 @@
       "agent": "Gabe",
       "role": "Gabe",
       "objective": "Aplicar a reauditoria flexível aos sete IDs, reescrever o enquadramento editorial e manter bloqueados somente os claims que excedem a evidência",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.869Z",
-      "lastSeen": "2026-09-14T08:23:40.869Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.849Z",
+      "lastSeen": "2026-09-14T08:57:34.849Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/gabe-flexible-reassessment.md — versão 1.0"
       ],
@@ -1702,6 +1810,9 @@
       "nextStep": "Os sete IDs aparecem uma vez cada com veredito, classe, fonte, owner e correção",
       "correlationId": "filesystem-gabe-flexible-reassessment.md-1",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -1712,9 +1823,9 @@
       "agent": "Gabe",
       "role": "Gabe",
       "objective": "Preparar drafts locais condicionais em inglês dentro dos limites por ID, sem claims médicos, garantia ou resultado individual",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.869Z",
-      "lastSeen": "2026-09-14T08:23:40.869Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.849Z",
+      "lastSeen": "2026-09-14T08:57:34.849Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/gabe-flexible-reassessment.md — matriz editorial e lista de claims removidos"
       ],
@@ -1738,6 +1849,9 @@
       "nextStep": "Cada frase factual possui fonte compatível e data",
       "correlationId": "filesystem-gabe-flexible-reassessment.md-2",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -1748,9 +1862,9 @@
       "agent": "Gabe",
       "role": "Gabe",
       "objective": "Revalidar somente os fatos voláteis dos seis listings candidatos, sem gerar HopLink ou escolher produto final",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.870Z",
-      "lastSeen": "2026-09-14T08:23:40.870Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.849Z",
+      "lastSeen": "2026-09-14T08:57:34.849Z",
       "artifactRefs": [
         "Readback local de URL, ASIN, variante, rótulo, serving, warnings, certificação declarada e data; anexar ao retorno do AF-001"
       ],
@@ -1773,6 +1887,9 @@
       "nextStep": "Cada item tem URL/ASIN/variante e data de acesso",
       "correlationId": "filesystem-gabe-flexible-reassessment.md-3",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -1783,9 +1900,9 @@
       "agent": "Gabe",
       "role": "Gabe",
       "objective": "Registrar a reauditoria G3 condicional, encaminhar os sete vereditos e manter o fluxo sem publicação, gasto ou mutação",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.870Z",
-      "lastSeen": "2026-09-14T08:23:40.870Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.849Z",
+      "lastSeen": "2026-09-14T08:57:34.849Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/gabe-flexible-reassessment.md — versão 1.0"
       ],
@@ -1809,6 +1926,9 @@
       "nextStep": "Readback confirma exatamente os sete IDs e seus vereditos",
       "correlationId": "filesystem-gabe-flexible-reassessment.md-4",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -1819,9 +1939,9 @@
       "agent": "Gabe",
       "role": "Gabe",
       "objective": "Registrar o artefato local e o estado G3_CONDITIONAL_REASSESSMENT_NO_PUBLICATION_OR_SPEND_AUTHORIZATION sem criar card externo ou executar mutação",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.870Z",
-      "lastSeen": "2026-09-14T08:23:40.870Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.849Z",
+      "lastSeen": "2026-09-14T08:57:34.849Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/gabe-flexible-reassessment.md — versão 1.0"
       ],
@@ -1847,6 +1967,9 @@
       "nextStep": "Arquivo existe no caminho declarado e contém sete IDs únicos",
       "correlationId": "filesystem-gabe-flexible-reassessment.md-5",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -1857,9 +1980,9 @@
       "agent": "Íris",
       "role": "Íris",
       "objective": "Criar e manter a decomposição, dependências, owners e Gates do intake After Forty sem executar ações fora do escopo autorizado",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.871Z",
-      "lastSeen": "2026-09-14T08:23:40.871Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.850Z",
+      "lastSeen": "2026-09-14T08:57:34.850Z",
       "artifactRefs": [
         "Card AF-001 no FBR Agency Flux, com jobs deste documento, status e dependências; versão inicial do histórico em 08-historico/afterforty/iris-intake-handoff.md"
       ],
@@ -1879,6 +2002,9 @@
       "nextStep": "Card AF-001 existe com owner, jobs, dependências, riscos e Gates; evidência: readback do card",
       "correlationId": "filesystem-iris-intake-handoff.md-1",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -1889,9 +2015,9 @@
       "agent": "Íris",
       "role": "Íris",
       "objective": "Pesquisar contexto e mercado relevante para as três categorias, separando fatos, hipóteses, fontes, datas e lacunas",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.871Z",
-      "lastSeen": "2026-09-14T08:23:40.871Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.850Z",
+      "lastSeen": "2026-09-14T08:57:34.850Z",
       "artifactRefs": [
         "Brief de pesquisa versionado no histórico do projeto, com fontes datadas e vínculo explícito a cada afirmação; caminho a definir por Kora"
       ],
@@ -1911,6 +2037,9 @@
       "nextStep": "Cada fato tem fonte e data",
       "correlationId": "filesystem-iris-intake-handoff.md-2",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -1921,9 +2050,9 @@
       "agent": "Íris",
       "role": "Íris",
       "objective": "Transformar o intake validado em produto-pauta e agenda editorial, respeitando evidência, disclaimer e compliance",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.871Z",
-      "lastSeen": "2026-09-14T08:23:40.871Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.850Z",
+      "lastSeen": "2026-09-14T08:57:34.850Z",
       "artifactRefs": [
         "Matriz de pautas e decisões editoriais para 12 artigos, com produto-pauta identificado somente quando houver evidência e decisão registrada"
       ],
@@ -1944,6 +2073,9 @@
       "nextStep": "Matriz contém 12 pautas, 4 por categoria, ou marca explicitamente o que permanece pendente",
       "correlationId": "filesystem-iris-intake-handoff.md-3",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -1954,9 +2086,9 @@
       "agent": "Íris",
       "role": "Íris",
       "objective": "Apresentar opções de Amazon Associates e ClickBank com fontes, riscos, claims, comissão/recorrência/reembolso quando aplicável e data da fonte",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.871Z",
-      "lastSeen": "2026-09-14T08:23:40.871Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.850Z",
+      "lastSeen": "2026-09-14T08:57:34.850Z",
       "artifactRefs": [
         "Relatório de opções versionado, separado por Amazon Associates e ClickBank, sem escolha final de produto"
       ],
@@ -1977,6 +2109,9 @@
       "nextStep": "Cada opção tem URL/fonte, data de consulta, escopo, riscos e limitações",
       "correlationId": "filesystem-iris-intake-handoff.md-4",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -1987,9 +2122,9 @@
       "agent": "Íris",
       "role": "Íris",
       "objective": "Preparar plano de teste de tráfego dentro do teto de USD 50, sem ativar campanha",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.871Z",
-      "lastSeen": "2026-09-14T08:23:40.871Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.850Z",
+      "lastSeen": "2026-09-14T08:57:34.850Z",
       "artifactRefs": [
         "Plano de mídia com hipótese, canais, segmentação, criativos necessários, métricas mínimas, teto e plano de parada; ativação permanece pendente"
       ],
@@ -2010,6 +2145,9 @@
       "nextStep": "Plano não excede USD 50 e contém controle de gasto e parada",
       "correlationId": "filesystem-iris-intake-handoff.md-5",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -2020,9 +2158,9 @@
       "agent": "Íris",
       "role": "Íris",
       "objective": "Preparar copy editorial e de apoio aos criativos, em inglês, factual e compatível com a persona fictícia",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.871Z",
-      "lastSeen": "2026-09-14T08:23:40.871Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.850Z",
+      "lastSeen": "2026-09-14T08:57:34.850Z",
       "artifactRefs": [
         "Rascunhos versionados de títulos, ângulos, descrições e copy de campanha vinculados às pautas aprovadas"
       ],
@@ -2043,6 +2181,9 @@
       "nextStep": "Copy está vinculada a fontes ou marcada como placeholder sem claim factual",
       "correlationId": "filesystem-iris-intake-handoff.md-6",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -2053,9 +2194,9 @@
       "agent": "Íris",
       "role": "Íris",
       "objective": "Propor direção e rascunhos de criativos consistentes com a character bible, sem publicação",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.872Z",
-      "lastSeen": "2026-09-14T08:23:40.872Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.850Z",
+      "lastSeen": "2026-09-14T08:57:34.850Z",
       "artifactRefs": [
         "Brief visual e assets de rascunho versionados, preservando a mesma identidade facial e a paleta do projeto"
       ],
@@ -2076,6 +2217,9 @@
       "nextStep": "Assets mantêm identidade visual consistente e não fabricam testemunho",
       "correlationId": "filesystem-iris-intake-handoff.md-7",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -2086,9 +2230,9 @@
       "agent": "Íris",
       "role": "Íris",
       "objective": "Criar variações controladas dos criativos aprováveis para teste, sem alterar fatos ou claims",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.872Z",
-      "lastSeen": "2026-09-14T08:23:40.872Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.850Z",
+      "lastSeen": "2026-09-14T08:57:34.850Z",
       "artifactRefs": [
         "Pacote de variações versionado, com matriz de hipótese visual e vínculo a copy/fonte"
       ],
@@ -2109,6 +2253,9 @@
       "nextStep": "Variações são identificadas e comparáveis sem claims novos não revisados",
       "correlationId": "filesystem-iris-intake-handoff.md-8",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -2119,9 +2266,9 @@
       "agent": "Íris",
       "role": "Íris",
       "objective": "Pesquisar opções Amazon Associates aplicáveis às pautas, com dados atuais, fontes e limitações",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.872Z",
-      "lastSeen": "2026-09-14T08:23:40.872Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.850Z",
+      "lastSeen": "2026-09-14T08:57:34.850Z",
       "artifactRefs": [
         "Tabela de opções Amazon com URL, data, categoria, evidência do produto, disponibilidade observada e riscos; sem decisão final"
       ],
@@ -2142,6 +2289,9 @@
       "nextStep": "Cada linha tem fonte/URL e data de consulta",
       "correlationId": "filesystem-iris-intake-handoff.md-9",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -2152,9 +2302,9 @@
       "agent": "Íris",
       "role": "Íris",
       "objective": "Preparar rascunhos de integração de produto e disclosure para pautas após decisão do Gestor Editorial",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.872Z",
-      "lastSeen": "2026-09-14T08:23:40.872Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.851Z",
+      "lastSeen": "2026-09-14T08:57:34.851Z",
       "artifactRefs": [
         "Rascunho de bloco/listing editorial com identificador de produto confirmado, link, disclosure e campos de evidência; não publicar"
       ],
@@ -2175,6 +2325,9 @@
       "nextStep": "Todo campo factual tem fonte e data",
       "correlationId": "filesystem-iris-intake-handoff.md-10",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -2185,9 +2338,9 @@
       "agent": "Íris",
       "role": "Íris",
       "objective": "Auditar rascunhos Amazon quanto a dados, links, disclosure, claims e consistência com o produto-pauta decidido",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.872Z",
-      "lastSeen": "2026-09-14T08:23:40.872Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.851Z",
+      "lastSeen": "2026-09-14T08:57:34.851Z",
       "artifactRefs": [
         "Checklist e relatório de QA com evidências, falhas, severidade, owner e decisão pass/fail"
       ],
@@ -2208,6 +2361,9 @@
       "nextStep": "Checklist cobre link, produto, fonte/data, disclosure, claims e estado de publicação",
       "correlationId": "filesystem-iris-intake-handoff.md-11",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -2218,9 +2374,9 @@
       "agent": "Íris",
       "role": "Íris",
       "objective": "Auditar evidências, claims, SEO, disclosure e prontidão dos artigos, criativos, listings e plano de tráfego",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.872Z",
-      "lastSeen": "2026-09-14T08:23:40.872Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.851Z",
+      "lastSeen": "2026-09-14T08:57:34.851Z",
       "artifactRefs": [
         "Relatório de auditoria com pass/fail, fontes, claims bloqueados, correções e Gate recomendado"
       ],
@@ -2241,6 +2397,9 @@
       "nextStep": "Cada claim relevante aponta para fonte compatível, atual e datada",
       "correlationId": "filesystem-iris-intake-handoff.md-12",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -2251,9 +2410,9 @@
       "agent": "Íris",
       "role": "Íris",
       "objective": "Preparar proposta de provisionamento e schema somente dentro do escopo que Kora/Sergio autorizarem",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.872Z",
-      "lastSeen": "2026-09-14T08:23:40.872Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.851Z",
+      "lastSeen": "2026-09-14T08:57:34.851Z",
       "artifactRefs": [
         "Especificação técnica e plano de provisionamento em staging, sem executar criação, alteração ou publicação"
       ],
@@ -2297,6 +2456,9 @@
       "nextStep": "Plano lista escopo, entradas, saídas, riscos, rollback e aprovação necessária",
       "correlationId": "filesystem-iris-intake-handoff.md-13",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -2307,9 +2469,9 @@
       "agent": "Kora",
       "role": "Kora",
       "objective": "Iniciar pesquisa de contexto, mercado e opções de Amazon Associates/afiliados para After Forty, sem decidir produto-pauta e sem executar ações externas",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.873Z",
-      "lastSeen": "2026-09-14T08:23:40.873Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.851Z",
+      "lastSeen": "2026-09-14T08:57:34.851Z",
       "artifactRefs": [
         "kora-project-plan.md — plano AF-001 registrado localmente em F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/"
       ],
@@ -2331,6 +2493,9 @@
       "nextStep": "Bia entrega fatos, hipóteses, fontes, datas e lacunas por categoria",
       "correlationId": "filesystem-kora-project-plan.md-1",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -2341,9 +2506,9 @@
       "agent": "Rick",
       "role": "Rick / Amazon Research",
       "objective": "Jobs 04 e 09 — apresentar opções rastreáveis de Amazon Associates e ClickBank para Skin & Beauty, Recovery & Wellness e Home Fitness, incluindo Protein / Creatine for 40+, sem escolher produto-pauta",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.874Z",
-      "lastSeen": "2026-09-14T08:23:40.874Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.852Z",
+      "lastSeen": "2026-09-14T08:57:34.852Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/rick-affiliate-options.md — versão 1, coleta em 2026-09-12"
       ],
@@ -2380,6 +2545,9 @@
       "nextStep": "Arquivo separa Amazon e ClickBank e cobre Skin & Beauty, Recovery & Wellness e Home Fitness, com o tema Protein / Creatine for 40+",
       "correlationId": "filesystem-rick-affiliate-options.md-1",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -2390,9 +2558,9 @@
       "agent": "Rick",
       "role": "Rick / Amazon Research",
       "objective": "Entregar readback rastreável dos seis listings candidatos para decisão editorial e Revisão G3, sem escolher produto-pauta e sem executar mutação externa",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.877Z",
-      "lastSeen": "2026-09-14T08:23:40.877Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.853Z",
+      "lastSeen": "2026-09-14T08:57:34.853Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/rick-listing-readback.md — versão 1.0"
       ],
@@ -2418,6 +2586,9 @@
       "nextStep": "Os seis IDs aparecem exatamente uma vez cada e correspondem às seis URLs públicas consultadas",
       "correlationId": "filesystem-rick-listing-readback-handoff.yaml-0",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -2428,9 +2599,9 @@
       "agent": "Rick",
       "role": "Rick / Amazon Research",
       "objective": "Entregar readback rastreável dos seis listings candidatos para decisão editorial e Revisão G3, sem escolher produto-pauta e sem executar mutação externa",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.878Z",
-      "lastSeen": "2026-09-14T08:23:40.878Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.853Z",
+      "lastSeen": "2026-09-14T08:57:34.853Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/rick-listing-readback.md — versão 1.0 — acesso 2026-09-12 14:08 -03"
       ],
@@ -2456,6 +2627,9 @@
       "nextStep": "Os seis IDs aparecem exatamente uma vez cada e correspondem às seis URLs públicas consultadas",
       "correlationId": "filesystem-rick-listing-readback.md-1",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     }
@@ -2468,9 +2642,9 @@
       "agent": "Bia",
       "role": "Bia",
       "objective": "Pesquisar contexto e mercado atual de Skin & Beauty, Recovery & Wellness e Home Fitness, com foco em Protein / Creatine for 40+, separando fatos, hipóteses, lacunas e evidência de ingrediente versus produto final",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.842Z",
-      "lastSeen": "2026-09-14T08:23:40.842Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.833Z",
+      "lastSeen": "2026-09-14T08:57:34.833Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/bia-market-research.md — versão 1.0, status RESEARCH_COMPLETE_PENDING_EDITORIAL_AND_COMPLIANCE_REVIEW"
       ],
@@ -2494,6 +2668,9 @@
       "nextStep": "Arquivo acessível no caminho declarado e versionado",
       "correlationId": "filesystem-bia-market-research.md-1",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -2504,9 +2681,9 @@
       "agent": "Bia",
       "role": "Bia",
       "objective": "Fornecer contexto factual e hipóteses de investigação para as três categorias, sem decidir a pauta comercial ou o produto associado",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.842Z",
-      "lastSeen": "2026-09-14T08:23:40.842Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.833Z",
+      "lastSeen": "2026-09-14T08:57:34.833Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/bia-market-research.md — versão 1.0; matriz por categoria, fontes S1–S9 e lacunas"
       ],
@@ -2529,6 +2706,9 @@
       "nextStep": "Usar somente fatos compatíveis com S1–S9 e repetir a limitação de escopo",
       "correlationId": "filesystem-bia-market-research.md-2",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -2539,9 +2719,9 @@
       "agent": "Bia",
       "role": "Bia",
       "objective": "Entregar base auditável para revisão de evidência, claims, compliance e separação entre ingrediente e produto final",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.842Z",
-      "lastSeen": "2026-09-14T08:23:40.842Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.833Z",
+      "lastSeen": "2026-09-14T08:57:34.833Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/bia-market-research.md — versão 1.0; fontes datadas, limitações e matriz de risco editorial"
       ],
@@ -2565,6 +2745,9 @@
       "nextStep": "Cada claim proposto deve apontar para a fonte específica e sua população/protocolo",
       "correlationId": "filesystem-bia-market-research.md-3",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -2575,9 +2758,9 @@
       "agent": "Caio",
       "role": "Caio",
       "objective": "Execute Revisão G3 on seven local conditional English drafts for exact ID scope, E1/E2 separation, attributed claims, source fit, prohibited-claim controls, exact disclaimer, and SEM PRODUTO status",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.851Z",
-      "lastSeen": "2026-09-14T08:23:40.851Z",
+      "status": "completed",
+      "updatedAt": "2026-09-14T08:57:34.839Z",
+      "lastSeen": "2026-09-14T08:57:34.839Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/drafts/drafts-flexible-index.md and the seven new Markdown drafts — version 1.0"
       ],
@@ -2601,6 +2784,9 @@
       "nextStep": "Each new file maps one-to-one to one requested ID and no other new ID exists",
       "correlationId": "filesystem-drafts-flexible-index.md-1",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -2611,9 +2797,9 @@
       "agent": "Caio",
       "role": "Caio",
       "objective": "Receive seven local conditional drafts exactly within the editorial association matrix, preserve SB-02 SEM PRODUTO, and route the package to G3 without inferring publication approval",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.851Z",
-      "lastSeen": "2026-09-14T08:23:40.851Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.839Z",
+      "lastSeen": "2026-09-14T08:57:34.839Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/drafts/drafts-flexible-index.md and seven new English drafts — version 1.0"
       ],
@@ -2637,6 +2823,9 @@
       "nextStep": "Index contains exactly seven new IDs and status for each",
       "correlationId": "filesystem-drafts-flexible-index.md-2",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -2647,9 +2836,9 @@
       "agent": "Caio",
       "role": "Caio",
       "objective": "Revalidate only the six authorized Amazon listing identities, selected variants, labels, serving or attribute fields, warnings when observed, and volatile facts without commercial mutation",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.851Z",
-      "lastSeen": "2026-09-14T08:23:40.851Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.839Z",
+      "lastSeen": "2026-09-14T08:57:34.839Z",
       "artifactRefs": [
         "A dated local readback covering B0725JP4TN, B0744JV661, B00XM2MXK8, B01BVACFAK, B07978VPPH, and B002DYIZEE"
       ],
@@ -2672,6 +2861,9 @@
       "nextStep": "Each authorized ASIN appears with URL, variant, access date, and limitations",
       "correlationId": "filesystem-drafts-flexible-index.md-3",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -2682,9 +2874,9 @@
       "agent": "Caio",
       "role": "Caio",
       "objective": "Orchestrate the seven-draft local package to G3 while preserving the exact association decision, the five prior files, and the external-action block",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.851Z",
-      "lastSeen": "2026-09-14T08:23:40.851Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.839Z",
+      "lastSeen": "2026-09-14T08:57:34.839Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/drafts/drafts-flexible-index.md and seven new drafts — local only"
       ],
@@ -2707,6 +2899,9 @@
       "nextStep": "Seven IDs, six authorized ASINs maximum, and SB-02 SEM PRODUTO are explicit",
       "correlationId": "filesystem-drafts-flexible-index.md-4",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -2717,9 +2912,9 @@
       "agent": "Caio",
       "role": "Caio",
       "objective": "Register the local seven-draft delivery, statuses, paths, preservation evidence, and pending owners without creating external records or mutating infrastructure",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.851Z",
-      "lastSeen": "2026-09-14T08:23:40.851Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.839Z",
+      "lastSeen": "2026-09-14T08:57:34.839Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/drafts/drafts-flexible-index.md — version 1.0"
       ],
@@ -2744,6 +2939,9 @@
       "nextStep": "Filesystem readback confirms seven new article files plus this index",
       "correlationId": "filesystem-drafts-flexible-index.md-5",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -2754,9 +2952,9 @@
       "agent": "Caio",
       "role": "Caio",
       "objective": "Review five conditional English educational drafts for claim accuracy, source fit, exact disclaimer, and compliance with the PASS limits in the G3 review",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.851Z",
-      "lastSeen": "2026-09-14T08:23:40.851Z",
+      "status": "completed",
+      "updatedAt": "2026-09-14T08:57:34.839Z",
+      "lastSeen": "2026-09-14T08:57:34.839Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/drafts/ — version 1.0; five Markdown drafts and this index"
       ],
@@ -2782,6 +2980,9 @@
       "nextStep": "Five expected draft files exist and map one-to-one to SB-04, RW-02, RW-04, HF-01, and HF-03",
       "correlationId": "filesystem-drafts-index.md-1",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -2792,9 +2993,9 @@
       "agent": "Caio",
       "role": "Caio",
       "objective": "Receive five conditional drafts for editorial integration and correction while preserving the PASS scope, SEM PRODUTO status, source traceability, and publication block",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.852Z",
-      "lastSeen": "2026-09-14T08:23:40.852Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.839Z",
+      "lastSeen": "2026-09-14T08:57:34.839Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/drafts/drafts-index.md and the five Markdown files — version 1.0"
       ],
@@ -2820,6 +3021,9 @@
       "nextStep": "Index lists exactly five created IDs and seven not-written blocked IDs",
       "correlationId": "filesystem-drafts-index.md-2",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -2830,9 +3034,9 @@
       "agent": "Caio",
       "role": "Caio",
       "objective": "Register the local delivery of five conditional drafts, maintain the seven-item blocker list, and route the package to Gabe and Gestor Editorial without inferring approval",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.852Z",
-      "lastSeen": "2026-09-14T08:23:40.852Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.840Z",
+      "lastSeen": "2026-09-14T08:57:34.840Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/drafts/drafts-index.md — version 1.0; directory contains five drafts"
       ],
@@ -2857,6 +3061,9 @@
       "nextStep": "Filesystem readback confirms exactly six files in drafts: five article files plus drafts-index.md",
       "correlationId": "filesystem-drafts-index.md-3",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -2867,9 +3074,9 @@
       "agent": "Gestor Editorial After Forty",
       "role": "Gestor Editorial After Forty",
       "objective": "Preparar drafts locais condicionais somente para SB-01, SB-03, RW-01, RW-03, HF-02 e HF-04, mantendo SB-02 SEM PRODUTO e sem inventar claims",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.855Z",
-      "lastSeen": "2026-09-14T08:23:40.855Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.840Z",
+      "lastSeen": "2026-09-14T08:57:34.840Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/editorial-flexible-product-associations.md — versão 1.0"
       ],
@@ -2892,6 +3099,9 @@
       "nextStep": "Cada draft novo usa somente o ID e ASIN autorizado nesta matriz",
       "correlationId": "filesystem-editorial-flexible-product-associations.md-1",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -2902,9 +3112,9 @@
       "agent": "Gestor Editorial After Forty",
       "role": "Gestor Editorial After Forty",
       "objective": "Revalidar, sem mutação comercial, os seis listings já selecionados como exemplos educacionais/comparativos",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.855Z",
-      "lastSeen": "2026-09-14T08:23:40.855Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.840Z",
+      "lastSeen": "2026-09-14T08:57:34.840Z",
       "artifactRefs": [
         "Readback complementar local com URL pública, ASIN literal, variante, rótulo, serving/atributos, warnings quando observados, data e limitações"
       ],
@@ -2927,6 +3137,9 @@
       "nextStep": "Seis ASINs aparecem exatamente uma vez cada",
       "correlationId": "filesystem-editorial-flexible-product-associations.md-2",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -2937,9 +3150,9 @@
       "agent": "Gestor Editorial After Forty",
       "role": "Gestor Editorial After Forty",
       "objective": "Auditar a aplicação da política flexível nos sete IDs, com foco em classe E1/E2, claims permitidos/proibidos, disclosure e separação ingrediente versus SKU",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.855Z",
-      "lastSeen": "2026-09-14T08:23:40.855Z",
+      "status": "completed",
+      "updatedAt": "2026-09-14T08:57:34.840Z",
+      "lastSeen": "2026-09-14T08:57:34.840Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/editorial-flexible-product-associations.md — versão 1.0"
       ],
@@ -2962,6 +3175,9 @@
       "nextStep": "As sete decisões, classes, claims e owners são verificáveis no artefato",
       "correlationId": "filesystem-editorial-flexible-product-associations.md-3",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -2972,9 +3188,9 @@
       "agent": "Gestor Editorial After Forty",
       "role": "Gestor Editorial After Forty",
       "objective": "Orquestrar o resultado editorial do AF-001 para G3 sem inferir aprovação de Sergio e sem alterar os cinco drafts existentes",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.855Z",
-      "lastSeen": "2026-09-14T08:23:40.855Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.840Z",
+      "lastSeen": "2026-09-14T08:57:34.840Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/editorial-flexible-product-associations.md — versão 1.0"
       ],
@@ -2997,6 +3213,9 @@
       "nextStep": "Readback confirma sete IDs, seis ASINs no máximo e SB-02 SEM PRODUTO",
       "correlationId": "filesystem-editorial-flexible-product-associations.md-4",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -3007,9 +3226,9 @@
       "agent": "Gestor Editorial After Forty",
       "role": "Gestor Editorial After Forty",
       "objective": "Registrar o artefato local, a decisão dos sete IDs, os owners e os blockers no histórico do AF-001, preservando os cinco drafts",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.855Z",
-      "lastSeen": "2026-09-14T08:23:40.855Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.840Z",
+      "lastSeen": "2026-09-14T08:57:34.840Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/editorial-flexible-product-associations.md — versão 1.0"
       ],
@@ -3034,6 +3253,9 @@
       "nextStep": "Arquivo existe no caminho declarado e contém exatamente sete IDs únicos",
       "correlationId": "filesystem-editorial-flexible-product-associations.md-5",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -3044,9 +3266,9 @@
       "agent": "Gestor Editorial After Forty",
       "role": "Gestor Editorial After Forty",
       "objective": "Auditar a matriz editorial de 12 pautas, as associações provisórias de produto, claims previstos, fontes, disclaimer e disclosure antes de qualquer draft avançar para publicação",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.856Z",
-      "lastSeen": "2026-09-14T08:23:40.856Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.841Z",
+      "lastSeen": "2026-09-14T08:57:34.841Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/editorial-product-plan.md — versão 1.0"
       ],
@@ -3071,6 +3293,9 @@
       "nextStep": "Pass-fail por artigo e por claim, com fonte específica, população/protocolo e limitação",
       "correlationId": "filesystem-editorial-product-plan.md-1",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -3081,9 +3306,9 @@
       "agent": "Gestor Editorial After Forty",
       "role": "Gestor Editorial After Forty",
       "objective": "Preparar, somente após a matriz ser aceita no fluxo, briefs/copy drafts em inglês para as 12 pautas sem inventar claims, depoimentos, credenciais ou resultados",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.856Z",
-      "lastSeen": "2026-09-14T08:23:40.856Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.841Z",
+      "lastSeen": "2026-09-14T08:57:34.841Z",
       "artifactRefs": [
         "Matriz de entrada: F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/editorial-product-plan.md — versão 1.0; drafts ainda não escritos"
       ],
@@ -3107,6 +3332,9 @@
       "nextStep": "Cada draft mantém o ID/categoria/keyword da matriz",
       "correlationId": "filesystem-editorial-product-plan.md-2",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -3117,9 +3345,9 @@
       "agent": "Gestor Editorial After Forty",
       "role": "Gestor Editorial After Forty",
       "objective": "Preparar direção visual e, se solicitado no G3, rascunhos de criativos alinhados às 12 pautas, sem fabricar before/after, resultado médico ou identidade diferente de Heidi",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.856Z",
-      "lastSeen": "2026-09-14T08:23:40.856Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.841Z",
+      "lastSeen": "2026-09-14T08:57:34.841Z",
       "artifactRefs": [
         "Matriz de entrada: F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/editorial-product-plan.md — versão 1.0; assets ainda não criados"
       ],
@@ -3143,6 +3371,9 @@
       "nextStep": "Cada asset tem ID, finalidade, versão, texto e vínculo à pauta",
       "correlationId": "filesystem-editorial-product-plan.md-3",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -3153,9 +3384,9 @@
       "agent": "Gestor Editorial After Forty",
       "role": "Gestor Editorial After Forty",
       "objective": "Registrar o resultado do G2 no estado local do AF-001 e encaminhar a matriz, owners, dependências e blockers para G3 sem criar card externo nem autorizar publicação/gasto",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.857Z",
-      "lastSeen": "2026-09-14T08:23:40.857Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.841Z",
+      "lastSeen": "2026-09-14T08:57:34.841Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/editorial-product-plan.md — versão 1.0; matriz e quatro Handoffs YAML"
       ],
@@ -3189,6 +3420,9 @@
       "nextStep": "Contagem programática confirma 12 IDs únicos e 4 por categoria",
       "correlationId": "filesystem-editorial-product-plan.md-4",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -3199,9 +3433,9 @@
       "agent": "Caio",
       "role": "Caio",
       "objective": "Revisar o readback de C1 e C2 na copy About Me sem ampliar claims, sem inserir links comerciais e sem publicar",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.863Z",
-      "lastSeen": "2026-09-14T08:23:40.863Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.843Z",
+      "lastSeen": "2026-09-14T08:57:34.843Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/about-me-copy-draft.md; F:/Projetos/_FBR/FBR Blogs/After Forty/content/copy/about-me.md"
       ],
@@ -3230,6 +3464,9 @@
       "nextStep": "C1 removido ou reescrito sem afirmar pre-publication brand approval não comprovado",
       "correlationId": "filesystem-gabe-about-me-review-handoff.yaml-1",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -3240,9 +3477,9 @@
       "agent": "Gabe",
       "role": "Gabe",
       "objective": "Corrigir a matriz editorial conforme o parecer G3, preservando apenas ângulos e associações sustentados por evidência rastreável, sem autorizar publicação ou gasto",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.865Z",
-      "lastSeen": "2026-09-14T08:23:40.865Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.846Z",
+      "lastSeen": "2026-09-14T08:57:34.846Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/gabe-compliance-review.md — versão 1.0 — G3_BLOCKED_PENDING_REMEDIATION_AND_SERGIO_GATES"
       ],
@@ -3267,6 +3504,9 @@
       "nextStep": "Cada pauta tem veredito, evidência, fonte, severidade, owner e correção neste arquivo",
       "correlationId": "filesystem-gabe-compliance-review.md-1",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -3277,9 +3517,9 @@
       "agent": "Gabe",
       "role": "Gabe",
       "objective": "Registrar o parecer G3 e manter o fluxo bloqueado nos itens sem evidência suficiente, encaminhando owners e critérios de readback",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.865Z",
-      "lastSeen": "2026-09-14T08:23:40.865Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.846Z",
+      "lastSeen": "2026-09-14T08:57:34.846Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/gabe-compliance-review.md — versão 1.0"
       ],
@@ -3303,6 +3543,9 @@
       "nextStep": "Readback registra 12 pautas e a distribuição PASS/FAIL/BLOCKED sem alterar o parecer",
       "correlationId": "filesystem-gabe-compliance-review.md-2",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -3313,9 +3556,9 @@
       "agent": "Gabe",
       "role": "Gabe",
       "objective": "Atualizar o estado local do AF-001 com o parecer G3, owners, blockers e dependências, sem criar card externo ou executar mutação",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.865Z",
-      "lastSeen": "2026-09-14T08:23:40.865Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.846Z",
+      "lastSeen": "2026-09-14T08:57:34.846Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/gabe-compliance-review.md — versão 1.0; parecer e Handoffs completos"
       ],
@@ -3339,6 +3582,9 @@
       "nextStep": "Arquivo existe no caminho declarado e mantém a matriz de vereditos",
       "correlationId": "filesystem-gabe-compliance-review.md-3",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -3349,9 +3595,9 @@
       "agent": "Gabe",
       "role": "Gabe",
       "objective": "Preparar copy/drafts somente para pautas aceitas no escopo PASS ou após desbloqueio formal, em inglês, sem claims não sustentados, mantendo disclaimer, Sources e disclosure",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.865Z",
-      "lastSeen": "2026-09-14T08:23:40.865Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.846Z",
+      "lastSeen": "2026-09-14T08:57:34.846Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/gabe-compliance-review.md — versão 1.0; matriz de limites e vereditos"
       ],
@@ -3376,6 +3622,9 @@
       "nextStep": "Cada frase factual tem fonte específica e datada em Sources",
       "correlationId": "filesystem-gabe-compliance-review.md-4",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -3386,9 +3635,9 @@
       "agent": "Gabe",
       "role": "Gabe",
       "objective": "Manter direção visual e eventuais assets em rascunho, sem fabricar testemunho, before/after, resultado médico ou associação comercial para pauta bloqueada",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.865Z",
-      "lastSeen": "2026-09-14T08:23:40.865Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.846Z",
+      "lastSeen": "2026-09-14T08:57:34.846Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/gabe-compliance-review.md — versão 1.0; limites de persona e status G3"
       ],
@@ -3412,6 +3661,9 @@
       "nextStep": "Cada asset tem ID de pauta, finalidade e versão",
       "correlationId": "filesystem-gabe-compliance-review.md-5",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -3422,9 +3674,9 @@
       "agent": "Gabe",
       "role": "Gabe",
       "objective": "Receber a revisão G3 de cinco drafts condicionais, manter os cinco em revisão editorial dentro dos limites e não iniciar publicação, monetização ou associação de produto",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.866Z",
-      "lastSeen": "2026-09-14T08:23:40.866Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.847Z",
+      "lastSeen": "2026-09-14T08:57:34.847Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/gabe-drafts-review.md — versão 1.0 — G3_PASS_CONDITIONAL_DRAFTS_REMAIN_IN_REVIEW"
       ],
@@ -3451,6 +3703,9 @@
       "nextStep": "Readback confirma os cinco IDs exatos, únicos, com veredito PASS condicional",
       "correlationId": "filesystem-gabe-drafts-review.md-1",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -3461,9 +3716,9 @@
       "agent": "Gabe",
       "role": "Gabe",
       "objective": "Manter e editar os cinco drafts condicionais em inglês sem claims não sustentados, preservando Sources, disclaimer, persona fictícia e ausência de afiliado",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.866Z",
-      "lastSeen": "2026-09-14T08:23:40.866Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.847Z",
+      "lastSeen": "2026-09-14T08:57:34.847Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/gabe-drafts-review.md — versão 1.0; auditoria claim a claim e correções por ID"
       ],
@@ -3490,6 +3745,9 @@
       "nextStep": "Os cinco IDs permanecem estáveis e a contagem continua 5",
       "correlationId": "filesystem-gabe-drafts-review.md-2",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -3500,9 +3758,9 @@
       "agent": "Gabe",
       "role": "Gabe",
       "objective": "Registrar o resultado G3 dos cinco drafts condicionais, preservar o bloqueio dos sete itens fora de escopo e encaminhar owners e evidências sem inferir autorização",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.866Z",
-      "lastSeen": "2026-09-14T08:23:40.866Z",
+      "status": "completed",
+      "updatedAt": "2026-09-14T08:57:34.847Z",
+      "lastSeen": "2026-09-14T08:57:34.847Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/gabe-drafts-review.md — versão 1.0"
       ],
@@ -3527,6 +3785,9 @@
       "nextStep": "Readback confirma exatamente 5 IDs auditados e zero duplicatas",
       "correlationId": "filesystem-gabe-drafts-review.md-3",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -3537,9 +3798,9 @@
       "agent": "Gabe",
       "role": "Gabe",
       "objective": "Atualizar o histórico local do AF-001 com o parecer G3 dos cinco drafts condicionais, owners, blockers e critérios de readback, sem mutação externa",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.866Z",
-      "lastSeen": "2026-09-14T08:23:40.866Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.847Z",
+      "lastSeen": "2026-09-14T08:57:34.847Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/gabe-drafts-review.md — versão 1.0; parecer e Handoffs completos"
       ],
@@ -3565,6 +3826,9 @@
       "nextStep": "Arquivo existe no caminho declarado e contém os quatro Handoffs YAML completos",
       "correlationId": "filesystem-gabe-drafts-review.md-4",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -3575,9 +3839,9 @@
       "agent": "Gabe",
       "role": "Gabe",
       "objective": "Aplicar somente correções de copy compatíveis com a Revisão G3 final dos 12 drafts locais, sem publicar ou inserir links comerciais",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.868Z",
-      "lastSeen": "2026-09-14T08:23:40.868Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.848Z",
+      "lastSeen": "2026-09-14T08:57:34.848Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/gabe-final-g3-review.md"
       ],
@@ -3598,6 +3862,9 @@
       "nextStep": "Aguardando próxima instrução registrada",
       "correlationId": "filesystem-gabe-final-g3-review.md-1",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -3608,9 +3875,9 @@
       "agent": "Gabe",
       "role": "Gabe",
       "objective": "Preservar o enquadramento editorial dos 12 drafts e aplicar apenas correções proporcionais ao claim que exceder a evidência",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.868Z",
-      "lastSeen": "2026-09-14T08:23:40.868Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.848Z",
+      "lastSeen": "2026-09-14T08:57:34.848Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/gabe-final-g3-review.md e os 12 drafts locais"
       ],
@@ -3630,6 +3897,9 @@
       "nextStep": "Aguardando próxima instrução registrada",
       "correlationId": "filesystem-gabe-final-g3-review.md-2",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -3640,9 +3910,9 @@
       "agent": "Gabe",
       "role": "Gabe",
       "objective": "Revalidar os seis listings usados como exemplos, sem gerar HopLink, comprar, escolher oferta ou mutar estado externo",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.868Z",
-      "lastSeen": "2026-09-14T08:23:40.868Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.848Z",
+      "lastSeen": "2026-09-14T08:57:34.848Z",
       "artifactRefs": [
         "Readback local datado de B0725JP4TN, B0744JV661, B00XM2MXK8, B01BVACFAK, B07978VPPH e B002DYIZEE"
       ],
@@ -3662,6 +3932,9 @@
       "nextStep": "Aguardando próxima instrução registrada",
       "correlationId": "filesystem-gabe-final-g3-review.md-3",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -3672,9 +3945,9 @@
       "agent": "Gabe",
       "role": "Gabe",
       "objective": "Registrar e encaminhar a Revisão G3 final dos 12 drafts sem inferir aceite editorial final ou autorização de Sergio",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.868Z",
-      "lastSeen": "2026-09-14T08:23:40.868Z",
+      "status": "completed",
+      "updatedAt": "2026-09-14T08:57:34.848Z",
+      "lastSeen": "2026-09-14T08:57:34.848Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/gabe-final-g3-review.md"
       ],
@@ -3694,6 +3967,9 @@
       "nextStep": "Aguardando próxima instrução registrada",
       "correlationId": "filesystem-gabe-final-g3-review.md-4",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -3704,9 +3980,9 @@
       "agent": "Gabe",
       "role": "Gabe",
       "objective": "Registrar o artefato local e a evidência da Revisão G3 final sem criar registro externo ou executar mutação",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.868Z",
-      "lastSeen": "2026-09-14T08:23:40.868Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.848Z",
+      "lastSeen": "2026-09-14T08:57:34.848Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/gabe-final-g3-review.md; pasta drafts/ com 12 artigos e 2 índices"
       ],
@@ -3726,6 +4002,9 @@
       "nextStep": "Aguardando próxima instrução registrada",
       "correlationId": "filesystem-gabe-final-g3-review.md-5",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -3736,9 +4015,9 @@
       "agent": "Gabe",
       "role": "Gabe",
       "objective": "Submeter o resultado da auditoria G3 para ciência e eventual decisão futura, sem pedir ou presumir autorização implícita",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.868Z",
-      "lastSeen": "2026-09-14T08:23:40.868Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.848Z",
+      "lastSeen": "2026-09-14T08:57:34.848Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/gabe-final-g3-review.md"
       ],
@@ -3758,6 +4037,9 @@
       "nextStep": "Aguardando próxima instrução registrada",
       "correlationId": "filesystem-gabe-final-g3-review.md-6",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -3768,9 +4050,9 @@
       "agent": "Gabe",
       "role": "Gabe",
       "objective": "Aplicar a reauditoria flexível aos sete IDs, reescrever o enquadramento editorial e manter bloqueados somente os claims que excedem a evidência",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.869Z",
-      "lastSeen": "2026-09-14T08:23:40.869Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.849Z",
+      "lastSeen": "2026-09-14T08:57:34.849Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/gabe-flexible-reassessment.md — versão 1.0"
       ],
@@ -3795,6 +4077,9 @@
       "nextStep": "Os sete IDs aparecem uma vez cada com veredito, classe, fonte, owner e correção",
       "correlationId": "filesystem-gabe-flexible-reassessment.md-1",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -3805,9 +4090,9 @@
       "agent": "Gabe",
       "role": "Gabe",
       "objective": "Preparar drafts locais condicionais em inglês dentro dos limites por ID, sem claims médicos, garantia ou resultado individual",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.869Z",
-      "lastSeen": "2026-09-14T08:23:40.869Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.849Z",
+      "lastSeen": "2026-09-14T08:57:34.849Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/gabe-flexible-reassessment.md — matriz editorial e lista de claims removidos"
       ],
@@ -3831,6 +4116,9 @@
       "nextStep": "Cada frase factual possui fonte compatível e data",
       "correlationId": "filesystem-gabe-flexible-reassessment.md-2",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -3841,9 +4129,9 @@
       "agent": "Gabe",
       "role": "Gabe",
       "objective": "Revalidar somente os fatos voláteis dos seis listings candidatos, sem gerar HopLink ou escolher produto final",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.870Z",
-      "lastSeen": "2026-09-14T08:23:40.870Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.849Z",
+      "lastSeen": "2026-09-14T08:57:34.849Z",
       "artifactRefs": [
         "Readback local de URL, ASIN, variante, rótulo, serving, warnings, certificação declarada e data; anexar ao retorno do AF-001"
       ],
@@ -3866,6 +4154,9 @@
       "nextStep": "Cada item tem URL/ASIN/variante e data de acesso",
       "correlationId": "filesystem-gabe-flexible-reassessment.md-3",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -3876,9 +4167,9 @@
       "agent": "Gabe",
       "role": "Gabe",
       "objective": "Registrar a reauditoria G3 condicional, encaminhar os sete vereditos e manter o fluxo sem publicação, gasto ou mutação",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.870Z",
-      "lastSeen": "2026-09-14T08:23:40.870Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.849Z",
+      "lastSeen": "2026-09-14T08:57:34.849Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/gabe-flexible-reassessment.md — versão 1.0"
       ],
@@ -3902,6 +4193,9 @@
       "nextStep": "Readback confirma exatamente os sete IDs e seus vereditos",
       "correlationId": "filesystem-gabe-flexible-reassessment.md-4",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -3912,9 +4206,9 @@
       "agent": "Gabe",
       "role": "Gabe",
       "objective": "Registrar o artefato local e o estado G3_CONDITIONAL_REASSESSMENT_NO_PUBLICATION_OR_SPEND_AUTHORIZATION sem criar card externo ou executar mutação",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.870Z",
-      "lastSeen": "2026-09-14T08:23:40.870Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.849Z",
+      "lastSeen": "2026-09-14T08:57:34.849Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/gabe-flexible-reassessment.md — versão 1.0"
       ],
@@ -3940,6 +4234,9 @@
       "nextStep": "Arquivo existe no caminho declarado e contém sete IDs únicos",
       "correlationId": "filesystem-gabe-flexible-reassessment.md-5",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -3950,9 +4247,9 @@
       "agent": "Íris",
       "role": "Íris",
       "objective": "Criar e manter a decomposição, dependências, owners e Gates do intake After Forty sem executar ações fora do escopo autorizado",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.871Z",
-      "lastSeen": "2026-09-14T08:23:40.871Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.850Z",
+      "lastSeen": "2026-09-14T08:57:34.850Z",
       "artifactRefs": [
         "Card AF-001 no FBR Agency Flux, com jobs deste documento, status e dependências; versão inicial do histórico em 08-historico/afterforty/iris-intake-handoff.md"
       ],
@@ -3972,6 +4269,9 @@
       "nextStep": "Card AF-001 existe com owner, jobs, dependências, riscos e Gates; evidência: readback do card",
       "correlationId": "filesystem-iris-intake-handoff.md-1",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -3982,9 +4282,9 @@
       "agent": "Íris",
       "role": "Íris",
       "objective": "Pesquisar contexto e mercado relevante para as três categorias, separando fatos, hipóteses, fontes, datas e lacunas",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.871Z",
-      "lastSeen": "2026-09-14T08:23:40.871Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.850Z",
+      "lastSeen": "2026-09-14T08:57:34.850Z",
       "artifactRefs": [
         "Brief de pesquisa versionado no histórico do projeto, com fontes datadas e vínculo explícito a cada afirmação; caminho a definir por Kora"
       ],
@@ -4004,6 +4304,9 @@
       "nextStep": "Cada fato tem fonte e data",
       "correlationId": "filesystem-iris-intake-handoff.md-2",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -4014,9 +4317,9 @@
       "agent": "Íris",
       "role": "Íris",
       "objective": "Transformar o intake validado em produto-pauta e agenda editorial, respeitando evidência, disclaimer e compliance",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.871Z",
-      "lastSeen": "2026-09-14T08:23:40.871Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.850Z",
+      "lastSeen": "2026-09-14T08:57:34.850Z",
       "artifactRefs": [
         "Matriz de pautas e decisões editoriais para 12 artigos, com produto-pauta identificado somente quando houver evidência e decisão registrada"
       ],
@@ -4037,6 +4340,9 @@
       "nextStep": "Matriz contém 12 pautas, 4 por categoria, ou marca explicitamente o que permanece pendente",
       "correlationId": "filesystem-iris-intake-handoff.md-3",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -4047,9 +4353,9 @@
       "agent": "Íris",
       "role": "Íris",
       "objective": "Apresentar opções de Amazon Associates e ClickBank com fontes, riscos, claims, comissão/recorrência/reembolso quando aplicável e data da fonte",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.871Z",
-      "lastSeen": "2026-09-14T08:23:40.871Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.850Z",
+      "lastSeen": "2026-09-14T08:57:34.850Z",
       "artifactRefs": [
         "Relatório de opções versionado, separado por Amazon Associates e ClickBank, sem escolha final de produto"
       ],
@@ -4070,6 +4376,9 @@
       "nextStep": "Cada opção tem URL/fonte, data de consulta, escopo, riscos e limitações",
       "correlationId": "filesystem-iris-intake-handoff.md-4",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -4080,9 +4389,9 @@
       "agent": "Íris",
       "role": "Íris",
       "objective": "Preparar plano de teste de tráfego dentro do teto de USD 50, sem ativar campanha",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.871Z",
-      "lastSeen": "2026-09-14T08:23:40.871Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.850Z",
+      "lastSeen": "2026-09-14T08:57:34.850Z",
       "artifactRefs": [
         "Plano de mídia com hipótese, canais, segmentação, criativos necessários, métricas mínimas, teto e plano de parada; ativação permanece pendente"
       ],
@@ -4103,6 +4412,9 @@
       "nextStep": "Plano não excede USD 50 e contém controle de gasto e parada",
       "correlationId": "filesystem-iris-intake-handoff.md-5",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -4113,9 +4425,9 @@
       "agent": "Íris",
       "role": "Íris",
       "objective": "Preparar copy editorial e de apoio aos criativos, em inglês, factual e compatível com a persona fictícia",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.871Z",
-      "lastSeen": "2026-09-14T08:23:40.871Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.850Z",
+      "lastSeen": "2026-09-14T08:57:34.850Z",
       "artifactRefs": [
         "Rascunhos versionados de títulos, ângulos, descrições e copy de campanha vinculados às pautas aprovadas"
       ],
@@ -4136,6 +4448,9 @@
       "nextStep": "Copy está vinculada a fontes ou marcada como placeholder sem claim factual",
       "correlationId": "filesystem-iris-intake-handoff.md-6",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -4146,9 +4461,9 @@
       "agent": "Íris",
       "role": "Íris",
       "objective": "Propor direção e rascunhos de criativos consistentes com a character bible, sem publicação",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.872Z",
-      "lastSeen": "2026-09-14T08:23:40.872Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.850Z",
+      "lastSeen": "2026-09-14T08:57:34.850Z",
       "artifactRefs": [
         "Brief visual e assets de rascunho versionados, preservando a mesma identidade facial e a paleta do projeto"
       ],
@@ -4169,6 +4484,9 @@
       "nextStep": "Assets mantêm identidade visual consistente e não fabricam testemunho",
       "correlationId": "filesystem-iris-intake-handoff.md-7",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -4179,9 +4497,9 @@
       "agent": "Íris",
       "role": "Íris",
       "objective": "Criar variações controladas dos criativos aprováveis para teste, sem alterar fatos ou claims",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.872Z",
-      "lastSeen": "2026-09-14T08:23:40.872Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.850Z",
+      "lastSeen": "2026-09-14T08:57:34.850Z",
       "artifactRefs": [
         "Pacote de variações versionado, com matriz de hipótese visual e vínculo a copy/fonte"
       ],
@@ -4202,6 +4520,9 @@
       "nextStep": "Variações são identificadas e comparáveis sem claims novos não revisados",
       "correlationId": "filesystem-iris-intake-handoff.md-8",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -4212,9 +4533,9 @@
       "agent": "Íris",
       "role": "Íris",
       "objective": "Pesquisar opções Amazon Associates aplicáveis às pautas, com dados atuais, fontes e limitações",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.872Z",
-      "lastSeen": "2026-09-14T08:23:40.872Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.850Z",
+      "lastSeen": "2026-09-14T08:57:34.850Z",
       "artifactRefs": [
         "Tabela de opções Amazon com URL, data, categoria, evidência do produto, disponibilidade observada e riscos; sem decisão final"
       ],
@@ -4235,6 +4556,9 @@
       "nextStep": "Cada linha tem fonte/URL e data de consulta",
       "correlationId": "filesystem-iris-intake-handoff.md-9",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -4245,9 +4569,9 @@
       "agent": "Íris",
       "role": "Íris",
       "objective": "Preparar rascunhos de integração de produto e disclosure para pautas após decisão do Gestor Editorial",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.872Z",
-      "lastSeen": "2026-09-14T08:23:40.872Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.851Z",
+      "lastSeen": "2026-09-14T08:57:34.851Z",
       "artifactRefs": [
         "Rascunho de bloco/listing editorial com identificador de produto confirmado, link, disclosure e campos de evidência; não publicar"
       ],
@@ -4268,6 +4592,9 @@
       "nextStep": "Todo campo factual tem fonte e data",
       "correlationId": "filesystem-iris-intake-handoff.md-10",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -4278,9 +4605,9 @@
       "agent": "Íris",
       "role": "Íris",
       "objective": "Auditar rascunhos Amazon quanto a dados, links, disclosure, claims e consistência com o produto-pauta decidido",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.872Z",
-      "lastSeen": "2026-09-14T08:23:40.872Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.851Z",
+      "lastSeen": "2026-09-14T08:57:34.851Z",
       "artifactRefs": [
         "Checklist e relatório de QA com evidências, falhas, severidade, owner e decisão pass/fail"
       ],
@@ -4301,6 +4628,9 @@
       "nextStep": "Checklist cobre link, produto, fonte/data, disclosure, claims e estado de publicação",
       "correlationId": "filesystem-iris-intake-handoff.md-11",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -4311,9 +4641,9 @@
       "agent": "Íris",
       "role": "Íris",
       "objective": "Auditar evidências, claims, SEO, disclosure e prontidão dos artigos, criativos, listings e plano de tráfego",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.872Z",
-      "lastSeen": "2026-09-14T08:23:40.872Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.851Z",
+      "lastSeen": "2026-09-14T08:57:34.851Z",
       "artifactRefs": [
         "Relatório de auditoria com pass/fail, fontes, claims bloqueados, correções e Gate recomendado"
       ],
@@ -4334,6 +4664,9 @@
       "nextStep": "Cada claim relevante aponta para fonte compatível, atual e datada",
       "correlationId": "filesystem-iris-intake-handoff.md-12",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -4344,9 +4677,9 @@
       "agent": "Íris",
       "role": "Íris",
       "objective": "Preparar proposta de provisionamento e schema somente dentro do escopo que Kora/Sergio autorizarem",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.872Z",
-      "lastSeen": "2026-09-14T08:23:40.872Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.851Z",
+      "lastSeen": "2026-09-14T08:57:34.851Z",
       "artifactRefs": [
         "Especificação técnica e plano de provisionamento em staging, sem executar criação, alteração ou publicação"
       ],
@@ -4390,6 +4723,9 @@
       "nextStep": "Plano lista escopo, entradas, saídas, riscos, rollback e aprovação necessária",
       "correlationId": "filesystem-iris-intake-handoff.md-13",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -4400,9 +4736,9 @@
       "agent": "Kora",
       "role": "Kora",
       "objective": "Iniciar pesquisa de contexto, mercado e opções de Amazon Associates/afiliados para After Forty, sem decidir produto-pauta e sem executar ações externas",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.873Z",
-      "lastSeen": "2026-09-14T08:23:40.873Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.851Z",
+      "lastSeen": "2026-09-14T08:57:34.851Z",
       "artifactRefs": [
         "kora-project-plan.md — plano AF-001 registrado localmente em F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/"
       ],
@@ -4424,6 +4760,9 @@
       "nextStep": "Bia entrega fatos, hipóteses, fontes, datas e lacunas por categoria",
       "correlationId": "filesystem-kora-project-plan.md-1",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -4434,9 +4773,9 @@
       "agent": "Rick",
       "role": "Rick / Amazon Research",
       "objective": "Jobs 04 e 09 — apresentar opções rastreáveis de Amazon Associates e ClickBank para Skin & Beauty, Recovery & Wellness e Home Fitness, incluindo Protein / Creatine for 40+, sem escolher produto-pauta",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.874Z",
-      "lastSeen": "2026-09-14T08:23:40.874Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.852Z",
+      "lastSeen": "2026-09-14T08:57:34.852Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/rick-affiliate-options.md — versão 1, coleta em 2026-09-12"
       ],
@@ -4473,6 +4812,9 @@
       "nextStep": "Arquivo separa Amazon e ClickBank e cobre Skin & Beauty, Recovery & Wellness e Home Fitness, com o tema Protein / Creatine for 40+",
       "correlationId": "filesystem-rick-affiliate-options.md-1",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -4483,9 +4825,9 @@
       "agent": "Rick",
       "role": "Rick / Amazon Research",
       "objective": "Entregar readback rastreável dos seis listings candidatos para decisão editorial e Revisão G3, sem escolher produto-pauta e sem executar mutação externa",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.877Z",
-      "lastSeen": "2026-09-14T08:23:40.877Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.853Z",
+      "lastSeen": "2026-09-14T08:57:34.853Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/rick-listing-readback.md — versão 1.0"
       ],
@@ -4511,6 +4853,9 @@
       "nextStep": "Os seis IDs aparecem exatamente uma vez cada e correspondem às seis URLs públicas consultadas",
       "correlationId": "filesystem-rick-listing-readback-handoff.yaml-0",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     },
@@ -4521,9 +4866,9 @@
       "agent": "Rick",
       "role": "Rick / Amazon Research",
       "objective": "Entregar readback rastreável dos seis listings candidatos para decisão editorial e Revisão G3, sem escolher produto-pauta e sem executar mutação externa",
-      "status": "blocked",
-      "updatedAt": "2026-09-14T08:23:40.878Z",
-      "lastSeen": "2026-09-14T08:23:40.878Z",
+      "status": "review",
+      "updatedAt": "2026-09-14T08:57:34.853Z",
+      "lastSeen": "2026-09-14T08:57:34.853Z",
       "artifactRefs": [
         "F:/Projetos/_FBR/FBR Agency Flux/08-historico/afterforty/rick-listing-readback.md — versão 1.0 — acesso 2026-09-12 14:08 -03"
       ],
@@ -4549,6 +4894,9 @@
       "nextStep": "Os seis IDs aparecem exatamente uma vez cada e correspondem às seis URLs públicas consultadas",
       "correlationId": "filesystem-rick-listing-readback.md-1",
       "source": "filesystem/Handoff readback",
+      "sourceType": "filesystem",
+      "historical": true,
+      "activeBlocker": false,
       "verification": "verified",
       "lastEvent": "handoff_sent"
     }
