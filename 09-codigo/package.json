@@ -10,7 +10,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "supabase:persistence:smoke": "node scripts/supabase-persistence-smoke.mjs",
-    "seed:flux-state": "node scripts/seed-flux-state.mjs"
+    "seed:flux-state": "node scripts/seed-flux-state.mjs",
+    "reset:flux-state": "node scripts/reset-flux-state.mjs"
   },
   "dependencies": {
     "next": "16.3.4",
