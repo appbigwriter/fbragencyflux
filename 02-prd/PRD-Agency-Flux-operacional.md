@@ -9,6 +9,12 @@ Nenhuma aprovação deste documento autoriza commit, push, deploy, migration, pu
 
 ---
 
+## After Forty — intake E2E inicial (2026-09-14)
+
+O piloto After Forty foi reiniciado localmente após o reset do estado `fbr-agency-flux`. O pacote operacional verificável está em `08-historico/afterforty/e2e-intake-operacional.md`; o fixture está em `09-codigo/data/after-forty-intake.fixture.json`. O estado inicial contém somente o projeto After Forty, o card AF-001, quatro jobs `ready`, dois Handoffs `received`, quatro Gates pendentes e blockers abertos com owner, nextAction, resolutionPlan e evidência. Nenhum job foi executado e nenhuma migration, provisionamento, deploy, DNS, publicação ou gasto ocorreu.
+
+O escopo confirmado é publisher FBR News, responsável Sergio Castro, inglês, EUA/global, domínio `afterforty.fbr.news`, público 40+, categorias Skin & Beauty, Recovery & Wellness e Home Fitness, e 12 artigos iniciais. O produto-pauta específico permanece ausente e não deve ser inventado. Bia e Rick/Amazon Research são paralelizáveis após o registro Kora; Théo está com o próximo job pronto para preparar a proposta técnica, condicionado aos Gates e sem mutação remota.
+
 ## 1. Resumo executivo
 
 O FBR Agency Flux é a camada transversal que recebe a concepção de um projeto, organiza escopo, agentes, skills, workflows, dependências, Handoffs, evidências e Gates e mantém Sergio informado sobre o estado real da execução

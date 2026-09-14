@@ -131,6 +131,12 @@ E2E significa testar o fluxo completo em condições operacionais, usando a inte
 
 O teste After Forty só será declarado concluído quando uma pessoa conseguir operar o fluxo pela interface, provocar transições válidas e inválidas, registrar Handoffs e approvals, recarregar e confirmar o estado, observar os artefatos reais e reproduzir os resultados sem depender de mock ou explicação verbal do agente
 
+### Estado inicial do novo E2E After Forty
+
+A preparação local pode usar `09-codigo/data/after-forty-intake.fixture.json` como fixture explícita, desde que seja identificada como estado inicial e não como execução. O estado mínimo deve conter apenas o projeto After Forty, `AF-001`, jobs iniciais em `planned`/`ready`, Handoffs de intake em `received`, Gates pendentes e blockers com `cause`, `owner`, `nextAction`, `resolutionPlan` e evidência. O job de Théo prepara a proposta técnica, mas não executa migration ou provisionamento remoto. Nenhum status `ready`/`received` equivale a trabalho realizado, aprovação ou autorização externa.
+
+O fluxo local de lançamento é: `After Forty → intake Íris → Kanban Kora → jobs paralelos Bia/Rick → Handoffs → blockers/soluções → Gates → job de proposta Théo`. Banco, frontend, backend, deploy, domínio e publicação permanecem posteriores e condicionados a Gates específicos e readback.
+
 A entrega final deve separar:
 
 - implementado

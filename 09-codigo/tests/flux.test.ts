@@ -65,11 +65,11 @@ describe('Flux persisted repository', () => {
 
   it('records Sergio approval with a timestamp and supports readback', async () => {
     const file = await testFile()
-    const result = await approveApproval('approval-af-001', 'approved', { actor: 'Sergio', scope: 'local' }, file)
+    const result = await approveApproval('approval-af-intake-local', 'approved', { actor: 'Sergio', scope: 'local' }, file)
     expect(result.approval.status).toBe('approved')
     expect(result.approval.decidedAt).toMatch(/T/)
     const snapshot = await getSnapshot(file)
-    expect(snapshot.approvals.items.find((item) => item.id === 'approval-af-001')?.status).toBe('approved')
+    expect(snapshot.approvals.items.find((item) => item.id === 'approval-af-intake-local')?.status).toBe('approved')
     expect(snapshot.recentEvents[0]?.actor).toBe('Sergio')
   })
 })

@@ -131,7 +131,7 @@ async function syncArtifacts(state: FluxState): Promise<FluxState> {
   for (const name of names) { const sourcePath = path.join(draftDir, name); const info = await stat(sourcePath); if (!existing.has(sourcePath)) state.artifacts.push({ id: `artifact-${name.replace(/[^a-z0-9]/gi, '-')}`, cardId, name, kind: 'real-filesystem-article', status: 'available', path: sourcePath, sourcePath, size: info.size }) }
   return state
 }
-async function load(file?: string): Promise<FluxState> {
+async function load(file?: string, importHistory = process.env.FLUX_IMPORT_HISTORY === '1'): Promise<FluxState> {
   const repository = configuredRepository(file)
   let state = await repository.load()
   if (!state) {
@@ -141,7 +141,9 @@ async function load(file?: string): Promise<FluxState> {
   }
   state.projects = state.projects || []; state.cards = state.cards || []; state.artifacts = state.artifacts || []
   state.handoffs = state.handoffs || []; state.events = state.events || []; state.approvals = state.approvals || []
-  state = await syncArtifacts(state); await syncAgentRuns(state); await syncHandoffs(state, file ? [] : undefined)
+  // Historical filesystem data is an archive, not an implicit state source.
+  // Import only through the explicit command or FLUX_IMPORT_HISTORY=1.
+  if (importHistory) { await syncAgentRuns(state); await syncHandoffs(state) }
   state.artifacts = state.artifacts || []; state.handoffs = state.handoffs || []; state.events = state.events || []; state.approvals = state.approvals || []
   if (!state.gates) { state.gates = seededGates.map((gate) => ({ ...gate, evidence: [...gate.evidence], blockers: [...gate.blockers] })); await save(state, file) }
   if (state.artifacts.length || state.jobs) await save(state, file)
@@ -149,6 +151,13 @@ async function load(file?: string): Promise<FluxState> {
 }
 async function save(state: FluxState, file?: string): Promise<void> { await configuredRepository(file).save(state) }
 export async function getState(file?: string) { return load(file) }
+export async function importHistory(file?: string): Promise<FluxState> {
+  const state = await load(file, false)
+  await syncAgentRuns(state)
+  await syncHandoffs(state)
+  await save(state, file)
+  return state
+}
 export async function getJobs(file?: string, filters: { agent?: string; status?: string; card?: string } = {}) { const jobs = (await load(file)).jobs || []; return jobs.filter((job) => (!filters.agent || job.agent === filters.agent) && (!filters.status || job.status === filters.status) && (!filters.card || job.cardId === filters.card)).map((job) => ({ ...job, stale: Boolean(job.lastSeen && Date.now() - Date.parse(job.lastSeen) > 30000) })) }
 export async function getJob(id: string, file?: string) { const job = (await load(file)).jobs?.find((item) => item.jobId === id); if (!job) throw new FluxError('JOB_NOT_FOUND', `Job ${id} not found`, 404); return job }
 const runFields = ['jobId','cardId','project','agent','role','objective','status','startedAt','updatedAt','completedAt','artifactRefs','handoffRefs','evidenceRefs','blockers','nextStep','correlationId','source','lastSeen','progress','currentStep','owner','lastEvent','verification'] as const

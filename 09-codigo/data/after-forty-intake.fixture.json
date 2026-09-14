@@ -1,0 +1,515 @@
+{
+  "version": 2,
+  "projects": [
+    {
+      "id": "after-forty",
+      "name": "After Forty",
+      "status": "active",
+      "owner": "Sergio Castro",
+      "description": "FBR News publisher pilot: 12 English articles for US/global readers aged 40+."
+    },
+    {
+      "id": "project-flux",
+      "name": "FBR Agency Flux",
+      "status": "active",
+      "owner": "Sergio",
+      "description": "Governança transversal dos projetos e Gates locais."
+    }
+  ],
+  "cards": [
+    {
+      "id": "AF-001",
+      "title": "Iniciar E2E After Forty — intake e plano operacional",
+      "project": "After Forty",
+      "status": "ready",
+      "assignee": "Kora",
+      "priority": "high",
+      "detail": "Estado inicial local após reset; nenhuma execução externa.",
+      "acceptanceCriteria": [
+        "Projeto e escopo confirmados",
+        "Jobs planned/ready e não executados",
+        "Handoffs mínimos received",
+        "Job Théo preparado sem migration remota",
+        "Blockers estruturados com evidência"
+      ],
+      "updatedAt": "2026-09-14T12:00:00-03:00"
+    }
+  ],
+  "approvals": [
+    {
+      "id": "approval-af-intake-local",
+      "cardId": "AF-001",
+      "title": "Registrar preparação local do intake After Forty",
+      "requestedBy": "Íris/Kora",
+      "impact": "Somente persistência local; sem efeito externo.",
+      "scope": "AF-001 · fixture local",
+      "rollback": "Restaurar fixture anterior e registrar readback.",
+      "status": "pending"
+    }
+  ],
+  "events": [
+    {
+      "id": "event-af-intake-created",
+      "time": "2026-09-14T12:00:00-03:00",
+      "actor": "Íris/Kora",
+      "action": "registrou intake e plano operacional inicial (LOCAL; sem efeito externo)",
+      "cardId": "AF-001"
+    }
+  ],
+  "artifacts": [],
+  "handoffs": [
+    {
+      "id": "handoff-af-intake-iris-kora",
+      "cardId": "AF-001",
+      "project": "After Forty",
+      "from": "Íris",
+      "to": "Kora",
+      "summary": "Registrar intake, card AF-001, dependências, owners, Gates e jobs iniciais.",
+      "done": "Pacote local criado; nenhum job executado.",
+      "decisions": [
+        "FATO: After Forty, FBR News, domínio afterforty.fbr.news, inglês, EUA/global, público 40+.",
+        "DECISÃO: sem migration, provisionamento, deploy, DNS, publicação ou gasto nesta etapa."
+      ],
+      "risks": "Integração externa não faz parte deste escopo local.",
+      "nextStep": "Manter AF-001 em ready e despachar jobs somente dentro de Gate.",
+      "acceptanceCriteria": "Card, jobs, blockers e Gates persistidos localmente; sem efeitos externos.",
+      "evidenceRef": "08-historico/afterforty/e2e-intake-operacional.md",
+      "createdAt": "2026-09-14T12:00:00-03:00",
+      "status": "received",
+      "sourceType": "local",
+      "historical": false,
+      "activeBlocker": false
+    },
+    {
+      "id": "handoff-af-intake-kora-theo",
+      "cardId": "AF-001",
+      "project": "After Forty",
+      "from": "Kora",
+      "to": "Théo",
+      "summary": "Preparar especificação do próximo job de provisionamento do banco, sem migration ou mutação remota.",
+      "done": "Contrato do job preparado no fixture; provisionamento não executado.",
+      "decisions": [
+        "FATO: banco remoto foi resetado e está vazio conforme contexto recebido.",
+        "GATE: migration/provisionamento exige autorização aplicável."
+      ],
+      "risks": "Endpoint autenticado/readback externo não confirmado neste escopo local.",
+      "nextStep": "Revisar entradas e validar contrato no runtime seguro; aguardar Gate técnico.",
+      "acceptanceCriteria": "Entradas, saída esperada, pré-checks, rollback, owner e proibição remota registrados.",
+      "evidenceRef": "08-historico/afterforty/e2e-intake-operacional.md",
+      "createdAt": "2026-09-14T12:00:00-03:00",
+      "status": "received",
+      "sourceType": "local",
+      "historical": false,
+      "activeBlocker": true,
+      "blockers": [
+        {
+          "id": "blocker-theo-remote-contract",
+          "cause": "Endpoint autenticado/readback externo não está confirmado no escopo local para provisionamento.",
+          "status": "open",
+          "owner": "Théo",
+          "nextAction": "Validar endpoint oficial e credencial no runtime seguro, sem registrar secrets.",
+          "resolutionPlan": "Após Gate técnico, executar health/readback e apresentar plano idempotente; até lá não mutar.",
+          "resolutionEvidence": "03-arquitetura/runtime-control-tower.md; 09-codigo/README.md",
+          "resolution": "declared",
+          "verification": "verified"
+        }
+      ]
+    }
+  ],
+  "blockers": [
+    {
+      "id": "blocker-afterforty-product-scope",
+      "cardId": "AF-001",
+      "cause": "Produto-pauta específico não foi fornecido; só há categorias e tema Protein / Creatine for 40+.",
+      "status": "open",
+      "owner": "Gestor Editorial",
+      "nextAction": "Receber opções rastreáveis e registrar decisão por pauta.",
+      "resolutionPlan": "Manter pendente; não inventar SKU, preço, claim ou link.",
+      "resolutionEvidence": "01-conceitual/briefing-after-forty.md; 08-historico/afterforty/iris-intake-handoff.md",
+      "resolution": "declared",
+      "verification": "verified"
+    },
+    {
+      "id": "blocker-afterforty-remote-provisioning",
+      "cardId": "AF-001",
+      "cause": "Provisionamento remoto depende de endpoint autenticado e escopo técnico autorizado; não há readback externo neste escopo local.",
+      "status": "open",
+      "owner": "Théo",
+      "nextAction": "Validar contrato/endpoint no runtime seguro e preparar proposta sem mutação.",
+      "resolutionPlan": "Após Gate técnico, validar e ler de volta o alvo; até lá manter sem execução.",
+      "resolutionEvidence": "03-arquitetura/runtime-control-tower.md; 09-codigo/README.md",
+      "resolution": "declared",
+      "verification": "verified"
+    },
+    {
+      "id": "blocker-afterforty-sergio-gate",
+      "cardId": "AF-001",
+      "cause": "Migration, provisionamento, deploy, DNS, publicação e gasto exigem Gate explícito e datado; nenhum foi fornecido nesta preparação.",
+      "status": "open",
+      "owner": "Sergio",
+      "nextAction": "Emitir Gate com alvo, escopo, versão e ambiente específicos.",
+      "resolutionPlan": "Registrar decisão e executar/verificar separadamente; manter bloqueado até então.",
+      "resolutionEvidence": "03-arquitetura/criterio-e2e-operacional.md; 02-prd/PRD-Agency-Flux-operacional.md",
+      "resolution": "declared",
+      "verification": "verified"
+    }
+  ],
+  "jobs": [
+    {
+      "jobId": "job-af-001-kora-intake",
+      "cardId": "AF-001",
+      "project": "After Forty",
+      "agent": "Kora",
+      "role": "Kora",
+      "objective": "Registrar Kanban e dependências do AF-001",
+      "status": "ready",
+      "updatedAt": "2026-09-14T12:00:00-03:00",
+      "artifactRefs": [
+        "08-historico/afterforty/e2e-intake-operacional.md"
+      ],
+      "handoffRefs": [
+        "handoff-af-intake-iris-kora"
+      ],
+      "evidenceRefs": [
+        "Estado inicial planejado; nenhuma execução realizada."
+      ],
+      "blockers": [],
+      "nextStep": "Aguardar/seguir Gates e dependências; produzir artefato e evidência local.",
+      "correlationId": "job-af-001-kora-intake",
+      "source": "local/intake-fixture",
+      "sourceType": "local",
+      "historical": false,
+      "activeBlocker": false,
+      "lastSeen": "2026-09-14T12:00:00-03:00",
+      "progress": 0,
+      "currentStep": "planned/ready; não iniciado",
+      "owner": "Kora",
+      "lastEvent": "dispatched",
+      "verification": "not_verified"
+    },
+    {
+      "jobId": "job-af-001-bia-context-research",
+      "cardId": "AF-001",
+      "project": "After Forty",
+      "agent": "Bia",
+      "role": "Bia",
+      "objective": "Pesquisar contexto e mercado das três categorias separando fatos, hipóteses, fontes, datas e lacunas",
+      "status": "ready",
+      "updatedAt": "2026-09-14T12:00:00-03:00",
+      "artifactRefs": [
+        "08-historico/afterforty/e2e-intake-operacional.md"
+      ],
+      "handoffRefs": [
+        "handoff-af-intake-iris-kora"
+      ],
+      "evidenceRefs": [
+        "Estado inicial planejado; nenhuma execução realizada."
+      ],
+      "blockers": [],
+      "nextStep": "Aguardar/seguir Gates e dependências; produzir artefato e evidência local.",
+      "correlationId": "job-af-001-bia-context-research",
+      "source": "local/intake-fixture",
+      "sourceType": "local",
+      "historical": false,
+      "activeBlocker": false,
+      "lastSeen": "2026-09-14T12:00:00-03:00",
+      "progress": 0,
+      "currentStep": "planned/ready; não iniciado",
+      "owner": "Bia",
+      "lastEvent": "dispatched",
+      "verification": "not_verified"
+    },
+    {
+      "jobId": "job-af-001-rick-affiliate-options",
+      "cardId": "AF-001",
+      "project": "After Forty",
+      "agent": "Rick / Amazon Research",
+      "role": "Rick / Amazon Research",
+      "objective": "Preparar opções rastreáveis de afiliados sem escolher produto-pauta, comprar ou publicar",
+      "status": "ready",
+      "updatedAt": "2026-09-14T12:00:00-03:00",
+      "artifactRefs": [
+        "08-historico/afterforty/e2e-intake-operacional.md"
+      ],
+      "handoffRefs": [
+        "handoff-af-intake-iris-kora"
+      ],
+      "evidenceRefs": [
+        "Estado inicial planejado; nenhuma execução realizada."
+      ],
+      "blockers": [],
+      "nextStep": "Aguardar/seguir Gates e dependências; produzir artefato e evidência local.",
+      "correlationId": "job-af-001-rick-affiliate-options",
+      "source": "local/intake-fixture",
+      "sourceType": "local",
+      "historical": false,
+      "activeBlocker": false,
+      "lastSeen": "2026-09-14T12:00:00-03:00",
+      "progress": 0,
+      "currentStep": "planned/ready; não iniciado",
+      "owner": "Rick / Amazon Research",
+      "lastEvent": "dispatched",
+      "verification": "not_verified"
+    },
+    {
+      "jobId": "job-af-001-theo-provision-plan",
+      "cardId": "AF-001",
+      "project": "After Forty",
+      "agent": "Théo",
+      "role": "Théo",
+      "objective": "Preparar plano de provisionamento do banco After Forty sem executar migration ou provisionamento remoto",
+      "status": "ready",
+      "updatedAt": "2026-09-14T12:00:00-03:00",
+      "artifactRefs": [
+        "08-historico/afterforty/e2e-intake-operacional.md"
+      ],
+      "handoffRefs": [
+        "handoff-af-intake-iris-kora",
+        "handoff-af-intake-kora-theo"
+      ],
+      "evidenceRefs": [
+        "Estado inicial planejado; nenhuma execução realizada."
+      ],
+      "blockers": [
+        "blocker-afterforty-remote-provisioning",
+        "blocker-afterforty-sergio-gate"
+      ],
+      "nextStep": "Aguardar/seguir Gates e dependências; produzir artefato e evidência local.",
+      "correlationId": "job-af-001-theo-provision-plan",
+      "source": "local/intake-fixture",
+      "sourceType": "local",
+      "historical": false,
+      "activeBlocker": false,
+      "lastSeen": "2026-09-14T12:00:00-03:00",
+      "progress": 0,
+      "currentStep": "planned/ready; não iniciado",
+      "owner": "Théo",
+      "lastEvent": "dispatched",
+      "verification": "not_verified"
+    }
+  ],
+  "agentRuns": [
+    {
+      "jobId": "job-af-001-kora-intake",
+      "cardId": "AF-001",
+      "project": "After Forty",
+      "agent": "Kora",
+      "role": "Kora",
+      "objective": "Registrar Kanban e dependências do AF-001",
+      "status": "ready",
+      "updatedAt": "2026-09-14T12:00:00-03:00",
+      "artifactRefs": [
+        "08-historico/afterforty/e2e-intake-operacional.md"
+      ],
+      "handoffRefs": [
+        "handoff-af-intake-iris-kora"
+      ],
+      "evidenceRefs": [
+        "Estado inicial planejado; nenhuma execução realizada."
+      ],
+      "blockers": [],
+      "nextStep": "Aguardar/seguir Gates e dependências; produzir artefato e evidência local.",
+      "correlationId": "job-af-001-kora-intake",
+      "source": "local/intake-fixture",
+      "sourceType": "local",
+      "historical": false,
+      "activeBlocker": false,
+      "lastSeen": "2026-09-14T12:00:00-03:00",
+      "progress": 0,
+      "currentStep": "planned/ready; não iniciado",
+      "owner": "Kora",
+      "lastEvent": "dispatched",
+      "verification": "not_verified"
+    },
+    {
+      "jobId": "job-af-001-bia-context-research",
+      "cardId": "AF-001",
+      "project": "After Forty",
+      "agent": "Bia",
+      "role": "Bia",
+      "objective": "Pesquisar contexto e mercado das três categorias separando fatos, hipóteses, fontes, datas e lacunas",
+      "status": "ready",
+      "updatedAt": "2026-09-14T12:00:00-03:00",
+      "artifactRefs": [
+        "08-historico/afterforty/e2e-intake-operacional.md"
+      ],
+      "handoffRefs": [
+        "handoff-af-intake-iris-kora"
+      ],
+      "evidenceRefs": [
+        "Estado inicial planejado; nenhuma execução realizada."
+      ],
+      "blockers": [],
+      "nextStep": "Aguardar/seguir Gates e dependências; produzir artefato e evidência local.",
+      "correlationId": "job-af-001-bia-context-research",
+      "source": "local/intake-fixture",
+      "sourceType": "local",
+      "historical": false,
+      "activeBlocker": false,
+      "lastSeen": "2026-09-14T12:00:00-03:00",
+      "progress": 0,
+      "currentStep": "planned/ready; não iniciado",
+      "owner": "Bia",
+      "lastEvent": "dispatched",
+      "verification": "not_verified"
+    },
+    {
+      "jobId": "job-af-001-rick-affiliate-options",
+      "cardId": "AF-001",
+      "project": "After Forty",
+      "agent": "Rick / Amazon Research",
+      "role": "Rick / Amazon Research",
+      "objective": "Preparar opções rastreáveis de afiliados sem escolher produto-pauta, comprar ou publicar",
+      "status": "ready",
+      "updatedAt": "2026-09-14T12:00:00-03:00",
+      "artifactRefs": [
+        "08-historico/afterforty/e2e-intake-operacional.md"
+      ],
+      "handoffRefs": [
+        "handoff-af-intake-iris-kora"
+      ],
+      "evidenceRefs": [
+        "Estado inicial planejado; nenhuma execução realizada."
+      ],
+      "blockers": [],
+      "nextStep": "Aguardar/seguir Gates e dependências; produzir artefato e evidência local.",
+      "correlationId": "job-af-001-rick-affiliate-options",
+      "source": "local/intake-fixture",
+      "sourceType": "local",
+      "historical": false,
+      "activeBlocker": false,
+      "lastSeen": "2026-09-14T12:00:00-03:00",
+      "progress": 0,
+      "currentStep": "planned/ready; não iniciado",
+      "owner": "Rick / Amazon Research",
+      "lastEvent": "dispatched",
+      "verification": "not_verified"
+    },
+    {
+      "jobId": "job-af-001-theo-provision-plan",
+      "cardId": "AF-001",
+      "project": "After Forty",
+      "agent": "Théo",
+      "role": "Théo",
+      "objective": "Preparar plano de provisionamento do banco After Forty sem executar migration ou provisionamento remoto",
+      "status": "ready",
+      "updatedAt": "2026-09-14T12:00:00-03:00",
+      "artifactRefs": [
+        "08-historico/afterforty/e2e-intake-operacional.md"
+      ],
+      "handoffRefs": [
+        "handoff-af-intake-iris-kora",
+        "handoff-af-intake-kora-theo"
+      ],
+      "evidenceRefs": [
+        "Estado inicial planejado; nenhuma execução realizada."
+      ],
+      "blockers": [
+        "blocker-afterforty-remote-provisioning",
+        "blocker-afterforty-sergio-gate"
+      ],
+      "nextStep": "Aguardar/seguir Gates e dependências; produzir artefato e evidência local.",
+      "correlationId": "job-af-001-theo-provision-plan",
+      "source": "local/intake-fixture",
+      "sourceType": "local",
+      "historical": false,
+      "activeBlocker": false,
+      "lastSeen": "2026-09-14T12:00:00-03:00",
+      "progress": 0,
+      "currentStep": "planned/ready; não iniciado",
+      "owner": "Théo",
+      "lastEvent": "dispatched",
+      "verification": "not_verified"
+    }
+  ],
+  "gates": [
+    {
+      "id": "FLUX-GATE-01",
+      "cardId": "FLUX-001",
+      "project": "FBR Agency Flux",
+      "title": "Concepção e escopo",
+      "requiredDecision": "Confirmar intake e escopo",
+      "status": "pending",
+      "impact": "Preparação local; nenhum efeito externo.",
+      "cost": "Nenhum custo nesta etapa.",
+      "scope": "Projeto, público, domínio, categorias, entregáveis e owners",
+      "reversibility": "Reversível antes de mutação externa.",
+      "rollback": "Manter estado local e registrar retorno ao owner.",
+      "evidence": [
+        "08-historico/afterforty/e2e-intake-operacional.md"
+      ],
+      "owner": "Íris",
+      "requestedAt": "2026-09-14T12:00:00-03:00",
+      "externalActionAuthorized": false,
+      "blockers": [
+        "Campos do intake completos."
+      ]
+    },
+    {
+      "id": "FLUX-GATE-02",
+      "cardId": "FLUX-001",
+      "project": "FBR Agency Flux",
+      "title": "Jobs e Handoffs",
+      "requiredDecision": "Confirmar jobs paralelos e Handoffs",
+      "status": "pending",
+      "impact": "Preparação local; nenhum efeito externo.",
+      "cost": "Nenhum custo nesta etapa.",
+      "scope": "AF-001, jobs, dependências e Handoffs",
+      "reversibility": "Reversível antes de mutação externa.",
+      "rollback": "Manter estado local e registrar retorno ao owner.",
+      "evidence": [
+        "08-historico/afterforty/e2e-intake-operacional.md"
+      ],
+      "owner": "Kora",
+      "requestedAt": "2026-09-14T12:00:00-03:00",
+      "externalActionAuthorized": false,
+      "blockers": [
+        "Jobs sem evidência não podem ser concluídos."
+      ]
+    },
+    {
+      "id": "FLUX-GATE-03",
+      "cardId": "FLUX-001",
+      "project": "FBR Agency Flux",
+      "title": "Técnico",
+      "requiredDecision": "Autorizar proposta de provisionamento",
+      "status": "pending",
+      "impact": "Preparação local; nenhum efeito externo.",
+      "cost": "Nenhum custo nesta etapa.",
+      "scope": "Plano Théo, endpoint, schema e rollback",
+      "reversibility": "Reversível antes de mutação externa.",
+      "rollback": "Manter estado local e registrar retorno ao owner.",
+      "evidence": [
+        "08-historico/afterforty/e2e-intake-operacional.md"
+      ],
+      "owner": "Théo",
+      "requestedAt": "2026-09-14T12:00:00-03:00",
+      "externalActionAuthorized": false,
+      "blockers": [
+        "Migration/provisionamento bloqueado sem Gate."
+      ]
+    },
+    {
+      "id": "FLUX-GATE-04",
+      "cardId": "FLUX-001",
+      "project": "FBR Agency Flux",
+      "title": "Execução externa e readback",
+      "requiredDecision": "Autorizar ação externa específica",
+      "status": "pending",
+      "impact": "Preparação local; nenhum efeito externo.",
+      "cost": "Nenhum custo nesta etapa.",
+      "scope": "Alvo, ambiente, versão, ação e readback",
+      "reversibility": "Reversível antes de mutação externa.",
+      "rollback": "Manter estado local e registrar retorno ao owner.",
+      "evidence": [
+        "08-historico/afterforty/e2e-intake-operacional.md"
+      ],
+      "owner": "Sergio",
+      "requestedAt": "2026-09-14T12:00:00-03:00",
+      "externalActionAuthorized": false,
+      "blockers": [
+        "Deploy, DNS, publicação, gasto e mutação não autorizados."
+      ]
+    }
+  ]
+}
