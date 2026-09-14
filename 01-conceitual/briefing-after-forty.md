@@ -99,7 +99,7 @@ Briefing Sergio
 → Sergio aprova Gates de publicação/gasto
 → Théo ou owner autorizado executa
 → Kora registra readback
-→ monitoramento contínuo
+→ triage on intake/handoff/event; heartbeat ou cron é necessário para checagem contínua real. Todo agente declara gaps, solução, colaboração, decisão necessária, evidência e próximo check; fora do decisionScope escala explicitamente a Sergio.
 ```
 
 ## Item definido — Home Fitness

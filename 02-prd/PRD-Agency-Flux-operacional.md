@@ -15,6 +15,14 @@ O piloto After Forty foi reiniciado localmente após o reset do estado `fbr-agen
 
 O escopo confirmado é publisher FBR News, responsável Sergio Castro, inglês, EUA/global, domínio `afterforty.fbr.news`, público 40+, categorias Skin & Beauty, Recovery & Wellness e Home Fitness, e 12 artigos iniciais. O produto-pauta específico permanece ausente e não deve ser inventado. Bia e Rick/Amazon Research são paralelizáveis após o registro Kora; Théo está com o próximo job pronto para preparar a proposta técnica, condicionado aos Gates e sem mutação remota.
 
+## Coordenação operacional da Íris e fronteiras de decisão
+
+`src/lib/iris-orchestrator.ts` implementa triagem determinística em `triage on intake`, `triage on handoff` e `triage on event`, com validação de card/plano/owner/aceite, matriz rastreável (produto-pauta → Gestor Editorial com Rick / Amazon Research; provisionamento → Théo; Gate → Sergio), instrução operacional, correlationId, idempotência e readback. `POST /api/flux/iris/triage` é autenticado, suporta dry-run e não executa efeitos externos. Blockers permanecem `open` até evidência persistida.
+
+A inteligência é contrato de todos os agentes: cada recebimento declara `decisionScope`, `gapAssessment`, `proposedResolution`, `collaborationRequest`, `sergioQuestion`, `decisionNeeded`, evidência e `nextCheck`. Assuntos cobertos pelo plano são resolvidos pela Íris; dependências especializadas geram colaboração; somente `outside_plan` (nova decisão, conflito, mudança de escopo/prioridade ou risco humano) escala Sergio com alternativas e recomendação, em `awaiting_sergio_decision`. Não existe monitoramento contínuo sem worker/heartbeat/cron.
+
+A regra operacional é no-idle/no-silent-wait: trabalho não concluído deve estar em execução, preparado, em track paralelo, encaminhado/consultado ou aguardando dependência/decisão externa explícita com owner, pergunta, próximo check e atividade paralela. A Íris constrói grafo `dependsOn/blocks/canStart`, inicia todos os `canStart=true`, registra `parallelGroup/track` e reavalia após Handoff/evento. Pesquisa e provisionamento After Forty são tracks paralelos; conteúdo comercial só depende do entregável produto-pauta.
+
 ## Semântica operacional de Jobs
 
 A página `/jobs` deve distinguir explicitamente intenção de execução observada. Jobs `planned`/`ready` da origem `local/intake-fixture`, sem `startedAt` e sem evento/heartbeat real, são **Planejado**: não contam como Realtime nem Stale. Registros `historical` ou derivados de `filesystem` são **Histórico** e nunca são stale. **Realtime** exige origem live/dispatcher, job iniciado e evento real de dispatcher ou `lastSeen` posterior a `startedAt`. **Stale** só pode ser contado para Realtime iniciado cujo heartbeat exceda o threshold de 30 segundos. Contadores, filtros, cards e detalhes devem usar a mesma classificação; o fixture After Forty deve resultar em `planned=4`, `realtime=0`, `stale=0`.

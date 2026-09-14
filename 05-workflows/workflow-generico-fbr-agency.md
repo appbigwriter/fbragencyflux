@@ -38,6 +38,10 @@ Sergio envia briefing
 | Gabe | artefatos de todos | Kora e Sergio | audita SEO, segurança, qualidade, evidências e critérios de aceite |
 | Gestor Editorial | briefing, handoffs e calendário | Caio, Rick, Gabe e Kora | pauta, redige, seleciona anúncios, gerencia comentários e envia drafts |
 
+## Contrato compartilhado de inteligência e autoridade
+
+Todo agente, ao receber um job, lê plano/card/Handoff e declara: `decisionScope`, `gapAssessment`, `proposedResolution`, `collaborationRequest`, `sergioQuestion` quando aplicável, `decisionNeeded`, evidência e `nextCheck`. Se puder resolver dentro do próprio escopo, executa e prova; se depender de especialista, cria collaboration Handoff/job com objetivo, entregável e aceite; se envolver escopo, prioridade, produto-pauta sem critério, gasto, risco, infraestrutura, produção, publicação, alteração irreversível ou conflito, escala a Sergio com problema, contexto, impacto, alternativas, recomendação, pergunta objetiva e decisão requerida, status `awaiting_sergio_decision`. Nunca inventa resposta, aprovação ou evidência e nunca aguarda silenciosamente. A Íris coordena as rotas, mas não substitui o sinal proativo do agente.
+
 ## Regras de interação
 
 1. A comunicação operacional ocorre por card e handoff, não por instrução perdida em chat
@@ -52,6 +56,8 @@ Sergio envia briefing
 10. O Gestor Editorial trabalha dentro do nicho e das regras do briefing, sem ampliar escopo sozinho
 11. Todo agente devolve o card ao responsável anterior quando faltar entrada, acesso ou critério
 12. Nenhum agent recebe secrets além do mínimo necessário ao seu runtime
+13. Nenhum job fica em espera silenciosa: registrar lastActivity/nextCheck, abrir contorno ou colaboração; tracks sem dependência devem iniciar em paralelo
+14. A Íris reavalia `dependsOn`, `blocks` e `canStart` após cada Handoff/evento; Kora registra heartbeat e alerta idle
 
 ## Gates
 

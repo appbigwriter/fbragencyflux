@@ -4,6 +4,7 @@ import path from 'node:path'
 import { createHash } from 'node:crypto'
 import { configuredRepository } from './persistence'
 import { isJobStale } from './jobs'
+import { triageHandoff, buildDependencyGraph, type IrisTriageInput } from './iris-orchestrator'
 
 export type ProjectStatus = 'active' | 'blocked' | 'planned'
 export type CardStatus = 'planned' | 'ready' | 'in_progress' | 'review' | 'blocked' | 'awaiting_owner' | 'awaiting_approval' | 'approved' | 'executing' | 'verifying' | 'completed' | 'failed'
@@ -30,7 +31,7 @@ export type Handoff = { id: string; cardId: string; project: string; from: strin
 export type Artifact = { id: string; cardId: string; name: string; kind: string; status: string; path: string; sourcePath: string; size: number }
 export type JobStatus = 'planned' | 'ready' | 'in_progress' | 'review' | 'blocked' | 'awaiting_owner' | 'completed' | 'failed' | 'not_verified'
 export type AgentRunEvent = 'dispatched' | 'accepted' | 'started' | 'progress' | 'waiting_input' | 'blocked' | 'artifact_created' | 'handoff_sent' | 'review' | 'completed' | 'failed' | 'cancelled'
-export type AgentRun = { jobId: string; cardId: string; project: string; agent: string; role: string; objective: string; status: JobStatus; startedAt?: string; updatedAt: string; completedAt?: string; artifactRefs: string[]; handoffRefs: string[]; evidenceRefs: string[]; blockers: string[]; nextStep: string; correlationId: string; source: string; sourceType?: 'local' | 'filesystem' | 'live'; historical?: boolean; activeBlocker?: boolean; lastSeen?: string; progress?: number; currentStep?: string; owner?: string; lastEvent?: AgentRunEvent; verification?: 'verified' | 'not_verified' }
+export type AgentRun = { jobId: string; cardId: string; project: string; agent: string; role: string; objective: string; status: JobStatus; startedAt?: string; updatedAt: string; completedAt?: string; artifactRefs: string[]; handoffRefs: string[]; evidenceRefs: string[]; blockers: string[]; nextStep: string; correlationId: string; source: string; sourceType?: 'local' | 'filesystem' | 'live'; historical?: boolean; activeBlocker?: boolean; lastSeen?: string; progress?: number; currentStep?: string; owner?: string; lastEvent?: AgentRunEvent; verification?: 'verified' | 'not_verified'; dependsOn?: string[]; blocks?: string[]; canStart?: boolean; parallelGroup?: string; track?: string; dependencyReason?: string }
 export type Job = AgentRun
 export type FluxState = { version: number; projects: Project[]; cards: Card[]; approvals: Approval[]; gates: Gate[]; events: Event[]; handoffs: Handoff[]; artifacts: Artifact[]; blockers?: BlockerInput[]; jobs?: Job[]; agentRuns?: AgentRun[] }
 export type DashboardSnapshot = Omit<FluxState, 'approvals' | 'events' | 'blockers'> & { approvals: { pending: number; items: Approval[] }; recentEvents: Event[]; activeCards: number; blockers: Blocker[]; risks: Risk[]; pendingGates: number; pendingCards: number; blockerCount: number; projectCards: Record<string, Card[]> }
@@ -165,6 +166,7 @@ async function load(file?: string, importHistory = process.env.FLUX_IMPORT_HISTO
   return state
 }
 async function save(state: FluxState, file?: string): Promise<void> { await configuredRepository(file).save(state) }
+export async function saveState(state: FluxState, file?: string): Promise<void> { await save(state, file) }
 export async function getState(file?: string) { return load(file) }
 export async function importHistory(file?: string): Promise<FluxState> {
   const state = await load(file, false)
@@ -173,7 +175,7 @@ export async function importHistory(file?: string): Promise<FluxState> {
   await save(state, file)
   return state
 }
-export async function getJobs(file?: string, filters: { agent?: string; status?: string; card?: string } = {}) { const jobs = (await load(file)).jobs || []; return jobs.filter((job) => (!filters.agent || job.agent === filters.agent) && (!filters.status || job.status === filters.status) && (!filters.card || job.cardId === filters.card)).map((job) => ({ ...job, stale: isJobStale(job) })) }
+export async function getJobs(file?: string, filters: { agent?: string; status?: string; card?: string } = {}) { const state = await load(file); const graph = new Map(buildDependencyGraph(state).map((item) => [item.jobId, item])); const jobs = (state.jobs || []).map((job) => ({ ...job, ...graph.get(job.jobId) })); return jobs.filter((job) => (!filters.agent || job.agent === filters.agent) && (!filters.status || job.status === filters.status) && (!filters.card || job.cardId === filters.card)).map((job) => ({ ...job, stale: isJobStale(job) })) }
 export async function getJob(id: string, file?: string) { const job = (await load(file)).jobs?.find((item) => item.jobId === id); if (!job) throw new FluxError('JOB_NOT_FOUND', `Job ${id} not found`, 404); return job }
 const runFields = ['jobId','cardId','project','agent','role','objective','status','startedAt','updatedAt','completedAt','artifactRefs','handoffRefs','evidenceRefs','blockers','nextStep','correlationId','source','lastSeen','progress','currentStep','owner','lastEvent','verification'] as const
 export async function upsertJob(input: Partial<AgentRun>, actor: LocalActor, file?: string) { validateLocal(actor); if (!input.jobId || !input.cardId || !input.agent || !input.objective) throw new FluxError('INVALID_JOB', 'jobId, cardId, agent and objective are required'); const state = await load(file); const now = new Date().toISOString(); const current = (state.jobs || []).find((item) => item.jobId === input.jobId); const job: AgentRun = { ...(current || { role: '', project: '', artifactRefs: [], handoffRefs: [], evidenceRefs: [], blockers: [], nextStep: '', correlationId: `local-${Date.now()}`, source: 'local/dispatcher adapter', sourceType: 'local', historical: false, activeBlocker: false, updatedAt: now }), ...input, updatedAt: now, lastSeen: input.lastSeen || now, sourceType: input.sourceType || current?.sourceType || 'local', historical: input.historical ?? current?.historical ?? false, activeBlocker: input.activeBlocker ?? current?.activeBlocker ?? input.status === 'blocked', verification: input.verification || current?.verification || 'not_verified' } as AgentRun; if (job.status === 'completed' && !job.evidenceRefs.length && !job.artifactRefs.length) job.status = 'not_verified'; state.jobs = current ? state.jobs!.map((item) => item.jobId === job.jobId ? job : item) : [...(state.jobs || []), job]; state.agentRuns = state.jobs; await save(state, file); return job }
@@ -182,6 +184,7 @@ export async function updateJobEvent(id: string, event: AgentRunEvent, patch: Pa
 export async function getGates(file?: string): Promise<Gate[]> { return (await load(file)).gates.filter((gate) => gate.project === 'FBR Agency Flux') }
 export async function getSnapshot(file?: string): Promise<DashboardSnapshot> {
   const state = await load(file)
+  const graph = new Map(buildDependencyGraph(state).map((item) => [item.jobId, item])); state.jobs = (state.jobs || []).map((job) => ({ ...job, ...graph.get(job.jobId) })); state.agentRuns = state.jobs
   const projectCards = Object.fromEntries(state.projects.map((project) => [project.name, state.cards.filter((card) => card.project === project.name)]))
   const handoffs = state.handoffs.map((handoff) => ({ ...handoff, activeBlocker: (handoff.blockers || []).some((item) => normalizeBlocker(item, handoff.id).status === 'open') }))
   const blockers = [...(state.blockers || []), ...handoffs.flatMap((handoff) => (handoff.blockers || []).map((blocker) => ({ ...blocker, sourceId: handoff.id, cardId: blocker.cardId || handoff.cardId })))]
@@ -270,6 +273,8 @@ export async function forwardBlocker(blockerId: string, input: ForwardBlockerInp
   if (!cardId) throw new FluxError('CARD_REQUIRED', 'cardId is required for blocker forwarding')
   const card = state.cards.find((item) => item.id === cardId)
   if (!card) throw new FluxError('CARD_NOT_FOUND', `Card ${cardId} not found`, 404)
+  const triage = triageHandoff({ snapshot: state, handoff: { cardId, project: card.project, from: actor.actor, to: resolutionAction.to, owner: resolutionAction.to, summary: resolutionAction.objective, done: resolutionAction.deliverable, risks: blocker.cause, nextStep: resolutionAction.nextStep, acceptanceCriteria: resolutionAction.acceptanceCriteria, evidenceRef: resolutionAction.evidenceRequired, blockers: [blocker] }, blocker, plan: resolutionAction.objective, correlationId: input.correlationId, trigger: 'handoff' })
+  if (triage.decision === 'needs_revision') throw new FluxError('INVALID_FORWARDING_INSTRUCTION', triage.reason, 422)
   const job = input.jobId ? state.jobs?.find((item) => item.jobId === input.jobId) : state.jobs?.find((item) => item.cardId === cardId && item.blockers.includes(blocker.cause))
   if (input.jobId && !job) throw new FluxError('JOB_NOT_FOUND', `Job ${input.jobId} not found`, 404)
   const forwardingKey = `${blockerId}|${cardId}|${resolutionAction.to}|${resolutionAction.objective}|${resolutionAction.deliverable}`.trim().toLowerCase()
@@ -287,6 +292,30 @@ export async function forwardBlocker(blockerId: string, input: ForwardBlockerInp
   const event: Event = { id: `event-forward-${input.correlationId}`, time: now, actor: actor.actor, action: 'forwarded blocker', cardId, jobId: activeJob?.jobId, handoffId: handoff.id, blockerId, from: resolutionAction.from, to: resolutionAction.to, correlationId: input.correlationId, fromStatus, toStatus: 'awaiting_owner', reason: resolutionAction.nextStep, solution, resolutionAction }
   state.handoffs.push(handoff); state.events.push(event); await save(state, file)
   return { event, handoff, idempotent: false }
+}
+
+export type IrisPersistInput = Omit<IrisTriageInput, 'snapshot' | 'blocker' | 'handoff'> & { blockerId?: string; handoff: NonNullable<IrisTriageInput['handoff']> }
+export async function runIrisTriage(input: IrisPersistInput, actor: LocalActor, file?: string) {
+  validateLocal(actor)
+  if (!input.correlationId?.trim()) throw new FluxError('CORRELATION_REQUIRED', 'correlationId is required')
+  const state = await load(file)
+  const candidates = [...(state.blockers || []), ...state.handoffs.flatMap((item) => item.blockers || [])]
+  const raw = input.blockerId ? candidates.find((item) => item.id === input.blockerId) : undefined
+  if (input.blockerId && !raw) throw new FluxError('BLOCKER_NOT_FOUND', `Blocker ${input.blockerId} not found`, 404)
+  const result = triageHandoff({ ...input, snapshot: state, blocker: raw ? normalizeBlocker(raw) : undefined })
+  const prior = state.events.find((event) => event.action === 'iris triage' && event.correlationId === input.correlationId)
+  if (prior) return { ...result, event: prior, idempotent: true, readback: { ...result.readback, persisted: true } }
+  if (input.dryRun || result.decision === 'needs_revision') return { ...result, idempotent: false }
+  const card = state.cards.find((item) => item.id === input.handoff.cardId)
+  if (!card || !result.owner || !result.instruction) throw new FluxError('INVALID_HANDOFF', 'Triagem só persiste Handoff completo', 422)
+  const now = new Date().toISOString(); const jobId = `job-iris-${createHash('sha256').update(input.correlationId).digest('hex').slice(0, 16)}`
+  const action: ResolutionAction = { from: 'Íris', to: result.owner, objective: result.instruction.objective, deliverable: result.instruction.deliverable, acceptanceCriteria: result.instruction.acceptanceCriteria, evidenceRequired: result.instruction.evidence, nextStep: result.instruction.nextStep }
+  const handoff: Handoff = { id: `handoff-iris-${input.correlationId}`, cardId: card.id, project: card.project, from: 'Íris', to: result.owner, summary: result.instruction.objective, done: 'Triagem registrada; execução não realizada', risks: raw?.cause || 'Nenhum blocker declarado', nextStep: result.instruction.nextStep, acceptanceCriteria: result.instruction.acceptanceCriteria, evidenceRef: result.instruction.evidence, createdAt: now, status: result.decision === 'ready' ? 'received' : result.decision === 'awaiting_owner' ? 'awaiting_owner' : 'blocked', correlationId: input.correlationId, blockerId: raw?.id, jobId, sourceType: 'local', source: 'iris-orchestrator', resolutionAction: action, activeBlocker: raw?.status === 'open' }
+  const job: Job = { jobId, cardId: card.id, project: card.project, agent: result.owner, role: result.owner, objective: result.instruction.objective, status: result.decision === 'ready' ? 'ready' : result.decision === 'awaiting_owner' ? 'awaiting_owner' : 'blocked', updatedAt: now, artifactRefs: [], handoffRefs: [handoff.id], evidenceRefs: result.evidence, blockers: result.blockers, nextStep: result.instruction.nextStep, correlationId: input.correlationId, source: 'local/iris-orchestrator', sourceType: 'local', historical: false, activeBlocker: raw?.status === 'open', owner: result.owner, verification: 'not_verified', lastEvent: 'handoff_sent' }
+  const event: Event = { id: `event-iris-${input.correlationId}`, time: now, actor: actor.actor, action: 'iris triage', cardId: card.id, jobId, handoffId: handoff.id, correlationId: input.correlationId, from: 'Íris', to: result.owner, owner: result.owner, nextAction: result.instruction.nextStep, reason: result.reason, solution: { cause: result.reason, owner: result.owner, nextAction: result.instruction.nextStep, resolutionPlan: result.instruction.objective, resolutionEvidence: result.instruction.evidence }, resolutionAction: action }
+  state.handoffs.push(handoff); state.jobs = [...(state.jobs || []), job]; state.agentRuns = state.jobs; state.events.push(event); await save(state, file)
+  const requiredActions: import('./iris-orchestrator').RequiredAction[] = [{ what: result.instruction.nextStep, why: result.reason, who: result.owner, from: 'Íris', to: result.owner, objective: result.instruction.objective, deliverable: result.instruction.deliverable, acceptanceCriteria: result.instruction.acceptanceCriteria, dueCheck: result.instruction.nextStep, fallback: 'Escalar a Sergio se o plano não cobrir a decisão.', status: result.decision === 'ready' ? 'ready' : 'hold' }]
+  return { ...result, requiredActions, handoff, job, event, idempotent: false, readback: { blockerStatus: raw?.status, persisted: true } }
 }
 
 export async function resolveBlocker(blockerId: string, input: { cardId?: string; evidenceRef: string; artifactId?: string; correlationId: string }, actor: LocalActor, file?: string) {

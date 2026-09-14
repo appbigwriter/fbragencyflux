@@ -1,0 +1,63 @@
+import type { Blocker, Card, Event, FluxState, Handoff, Job } from './flux-repository'
+
+export type IrisDecision = 'ready' | 'awaiting_owner' | 'blocked' | 'awaiting_approval' | 'needs_revision'
+export type TriageTrigger = 'intake' | 'handoff' | 'event'
+export type IrisInstruction = { objective: string; scope: string; deliverable: string; acceptanceCriteria: string; evidence: string; limits: string; nextStep: string; gate: string }
+export type IrisTriageInput = { snapshot: FluxState; handoff?: Partial<Handoff> & { plan?: string; owner?: string }; blocker?: Blocker; plan?: string; trigger?: TriageTrigger; correlationId: string; dryRun?: boolean }
+export type RequiredAction = { what: string; why: string; who: string; from: string; to: string; objective: string; deliverable: string; acceptanceCriteria: string; dueCheck: string; fallback: string; status: 'ready' | 'hold' | 'completed' }
+export type IrisTriageResult = { decision: IrisDecision; correlationId: string; trigger: TriageTrigger; owner?: string; dependencies: string[]; blockers: string[]; reason: string; evidence: string[]; planningBasis: string[]; ownerReason: string; instruction?: IrisInstruction; requiredActions?: RequiredAction[]; handoff?: Handoff; job?: Job; event?: Event; readback: { blockerStatus?: string; persisted: boolean } }
+
+const roleMatrix = [
+  { owner: 'Gestor Editorial', keys: ['produto-pauta', 'produto pauta', 'pauta', 'editorial'], basis: 'Matriz After Forty: produto-pauta → Gestor Editorial', deps: ['Rick / Amazon Research'] },
+  { owner: 'Théo', keys: ['provisionamento', 'migration', 'banco', 'infraestrutura', 'endpoint'], basis: 'Matriz FBR: provisionamento/infraestrutura → Théo', deps: [] },
+  { owner: 'Sergio', keys: ['gate', 'aprovação', 'aprovacao', 'publicação', 'publicacao', 'deploy', 'dns', 'gasto'], basis: 'Matriz FBR: Gate e ação de risco → Sergio', deps: [] },
+  { owner: 'Kora', keys: ['kanban', 'card', 'intake', 'estado'], basis: 'Matriz FBR: Kanban/estado → Kora', deps: [] },
+] as const
+const textOf = (input: IrisTriageInput) => [input.handoff?.summary, input.handoff?.nextStep, input.blocker?.cause, input.plan, input.handoff?.plan, input.handoff?.owner, input.handoff?.to].filter(Boolean).join(' ').toLowerCase()
+const nonempty = (value: unknown): value is string => typeof value === 'string' && value.trim().length > 0
+
+export function triageHandoff(input: IrisTriageInput): IrisTriageResult {
+  const h = input.handoff || {}; const cardId = h.cardId; const card = cardId ? input.snapshot.cards.find((c) => c.id === cardId) : undefined
+  const plan = input.plan || h.plan || (card?.detail && card.detail !== 'Estado inicial local após reset; nenhuma execução externa.' ? card.detail : '')
+  const acceptance = h.acceptanceCriteria
+  const missing = [!nonempty(cardId) && 'cardId', !card && 'card existente', !nonempty(plan) && 'plano', !nonempty(h.owner || h.to) && 'owner', !nonempty(acceptance) && 'critério de aceite'].filter(Boolean) as string[]
+  const text = textOf(input)
+  const matched = roleMatrix.find((row) => row.keys.some((key) => text.includes(key)))
+  const owner = matched?.owner || (h.owner || h.to)
+  const planningBasis = matched ? [matched.basis] : []
+  const dependencies = [...new Set([...(matched?.deps || []), ...(input.blocker?.resolutionAction?.to && input.blocker.resolutionAction.to !== owner ? [input.blocker.resolutionAction.to] : [])])]
+  const blockerIds = (input.handoff?.blockers || []).filter((b) => b.status === 'open').map((b) => b.id)
+  if (input.blocker?.status === 'open' && !blockerIds.includes(input.blocker.id)) blockerIds.push(input.blocker.id)
+  if (missing.length) return { decision: 'needs_revision', correlationId: input.correlationId, trigger: input.trigger || 'handoff', dependencies, blockers: blockerIds, reason: `Handoff incompleto: ${missing.join(', ')}`, evidence: [], planningBasis, ownerReason: matched ? matched.basis : 'Nenhum owner foi inferido; matriz sem correspondência.', readback: { blockerStatus: input.blocker?.status, persisted: false } }
+  if (!matched && !nonempty(h.owner || h.to)) return { decision: 'awaiting_owner', correlationId: input.correlationId, trigger: input.trigger || 'handoff', dependencies, blockers: blockerIds, reason: 'Plano não contém correspondência na matriz e owner não foi declarado.', evidence: [], planningBasis, ownerReason: 'Owner ausente na matriz e no Handoff.', readback: { blockerStatus: input.blocker?.status, persisted: false } }
+  const instruction: IrisInstruction = { objective: input.blocker?.resolutionAction?.objective || h.summary!, scope: `Card ${cardId} · ${card!.project}`, deliverable: input.blocker?.resolutionAction?.deliverable || h.done!, acceptanceCriteria: acceptance!, evidence: input.blocker?.resolutionAction?.evidenceRequired || h.evidenceRef!, limits: 'Sem efeitos externos; não publicar, gastar, provisionar ou marcar blocker resolved.', nextStep: input.blocker?.resolutionAction?.nextStep || h.nextStep!, gate: matched?.owner === 'Sergio' || /gate|aprova/i.test(text) ? 'Gate explícito de Sergio antes de ação de risco.' : 'Sem Gate de execução externa; registrar evidência local.' }
+  const decision: IrisDecision = input.blocker?.status === 'open' || blockerIds.length ? (matched?.owner === 'Sergio' ? 'awaiting_approval' : 'blocked') : owner === h.to ? 'ready' : 'awaiting_owner'
+  const evidence = [h.evidenceRef, input.blocker?.resolutionEvidence].filter(nonempty)
+  return { decision, correlationId: input.correlationId, trigger: input.trigger || 'handoff', owner, dependencies, blockers: blockerIds, reason: decision === 'blocked' ? 'Dependência/blocker aberto impede avanço.' : `Owner selecionado pela matriz: ${owner}.`, evidence, planningBasis, ownerReason: matched?.basis || 'Owner declarado no Handoff; nenhuma inferência adicional.', instruction, readback: { blockerStatus: input.blocker?.status, persisted: false } }
+}
+
+export function triageOnIntake(input: IrisTriageInput) { return triageHandoff({ ...input, trigger: 'intake' }) }
+export function triageOnHandoff(input: IrisTriageInput) { return triageHandoff({ ...input, trigger: 'handoff' }) }
+export function buildDependencyGraph(snapshot: FluxState) {
+  const jobs = snapshot.jobs || []; const product = jobs.find((job) => /Rick|Amazon Research|produto.?pauta|pauta/i.test(`${job.agent} ${job.objective}`))
+  return jobs.map((job) => {
+    const commercial = /conteúdo comercial|conteudo comercial|affiliate|afiliad|publica/i.test(job.objective)
+    const dependsOn = commercial && product && product.jobId !== job.jobId ? [product.jobId] : []
+    const blockers = jobs.filter((candidate) => candidate.jobId !== job.jobId && candidate.dependsOn?.includes(job.jobId)).map((candidate) => candidate.jobId)
+    const canStart = dependsOn.every((id) => jobs.find((candidate) => candidate.jobId === id)?.status === 'completed')
+    const independent = dependsOn.length === 0
+    return { jobId: job.jobId, dependsOn, blocks: blockers, canStart, independent, parallelGroup: independent ? `parallel-${job.cardId}` : undefined, track: /Théo|infra|provision|banco/i.test(`${job.agent} ${job.objective}`) ? 'technical-foundation' : /Rick|Amazon|Bia|pesquis/i.test(`${job.agent} ${job.objective}`) ? 'research' : 'content', dependencyReason: independent ? 'Nenhuma entrada necessária de outro job; track pode iniciar em paralelo.' : 'Conteúdo comercial depende do entregável produto-pauta.' }
+  })
+}
+export function triageOnEvent(input: IrisTriageInput) { return triageHandoff({ ...input, trigger: 'event' }) }
+
+export type DecisionBoundary = 'covered_by_plan' | 'specialist_needed' | 'outside_plan'
+export type AgentDecisionAssessment = { agent: string; decisionScope: string[]; classification: DecisionBoundary; status: 'ready' | 'collaboration_required' | 'awaiting_sergio_decision'; gapAssessment: string; proposedResolution: string; planBasis?: string; collaborationRequest?: { to: string; objective: string; deliverable: string; acceptanceCriteria: string }; sergioQuestion?: { problem: string; context: string; impact: string; alternatives: string[]; recommendation: string; question: string; decisionRequired: string }; evidence: string[]; nextCheck: string }
+const decisionScopes: Record<string, string[]> = { 'Kora': ['Kanban', 'card', 'estado', 'dependências'], 'Théo': ['código', 'arquitetura', 'infraestrutura em plano', 'integração'], 'Gabe': ['QA', 'evidência', 'qualidade', 'conformidade'], 'Rick / Amazon Research': ['pesquisa Amazon', 'fontes', 'opções'], 'Gestor Editorial': ['pauta editorial', 'draft', 'calendário'], 'Sergio': ['escopo', 'prioridade', 'gate', 'gasto', 'produção', 'publicação', 'irreversível'] }
+export function assessAgentDecision(agent: string, input: { gap: string; context: string; proposedResolution: string; evidence?: string[]; nextCheck: string; requires?: DecisionBoundary | 'internal' | 'specialist' | 'sergio'; specialist?: string; planBasis?: string }): AgentDecisionAssessment {
+  const scope = decisionScopes[agent] || []
+  const classification: DecisionBoundary = input.requires === 'internal' ? 'covered_by_plan' : input.requires === 'specialist' ? 'specialist_needed' : input.requires === 'sergio' ? 'outside_plan' : input.requires || (input.planBasis ? 'covered_by_plan' : /produto-pauta|provisionamento|gate|pauta|Amazon Research/i.test(`${input.gap} ${input.context}`) ? (input.specialist ? 'specialist_needed' : 'covered_by_plan') : 'outside_plan')
+  if (classification === 'outside_plan') return { agent, decisionScope: scope, classification, status: 'awaiting_sergio_decision', gapAssessment: input.gap, proposedResolution: input.proposedResolution, sergioQuestion: { problem: input.gap, context: input.context, impact: 'Avanço depende de decisão humana explícita.', alternatives: ['prosseguir com escopo atual', 'revisar escopo antes de avançar'], recommendation: input.proposedResolution, question: 'Sergio, qual alternativa deve ser autorizada?', decisionRequired: 'Decisão explícita registrada no Gate/evento.' }, evidence: input.evidence || [], nextCheck: input.nextCheck }
+  if (classification === 'specialist_needed') return { agent, decisionScope: scope, classification, status: 'collaboration_required', gapAssessment: input.gap, proposedResolution: input.proposedResolution, collaborationRequest: { to: input.specialist || 'especialista declarado no plano', objective: input.proposedResolution, deliverable: 'Resultado verificável e rastreável', acceptanceCriteria: 'Entregável atende ao card e anexa evidência.' }, evidence: input.evidence || [], nextCheck: input.nextCheck }
+  return { agent, decisionScope: scope, classification, status: 'ready', gapAssessment: input.gap, proposedResolution: input.proposedResolution, planBasis: input.planBasis || 'Regra já estabelecida no plano/card/Handoff.', evidence: input.evidence || [], nextCheck: input.nextCheck }
+}

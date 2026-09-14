@@ -18,6 +18,10 @@ Executar em `F:/Projetos/_FBR/FBR Agency Flux/09-codigo`.
 | A12 | POST Handoff sem `nextStep` | 400 `INVALID_HANDOFF`; tamanho de JSON não aumenta |
 | A13 | POST Handoff completo | 201; GET handoffs/readback após reload |
 | A14 | abrir `/`, filtrar `AF-001`, clicar card, executar ação, recarregar | confirmação visual e estado persistido |
+| A15 | POST `/api/flux/iris/triage` sem sessão | 401 |
+| A16 | triage com correlationId repetido | mesmo evento/handoff, sem duplicação; blocker segue open |
+| A17 | triage on intake/handoff/event | rotinas explícitas; sem alegar worker contínuo |
+| A18 | cada blocker After Forty | passagem executável com owner, objetivo, entregável, aceite, evidência e próximo check |
 
 ## Inventário separado
 
