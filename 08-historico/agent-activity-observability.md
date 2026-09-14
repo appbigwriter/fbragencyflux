@@ -9,6 +9,9 @@ O dashboard local agora persiste `jobs` e `agentRuns` no mesmo readback JSON do 
 
 O sincronizador extrai de/para, card, objetivo, entregável, status, blockers e critérios. A chave determinística evita duplicação no readback.
 
+## Blockers, riscos e causa raiz
+A causa raiz da apresentação ambígua era o uso de `h.risks` e de listas históricas de pendências com o rótulo `Blocker`, sem status, owner ou contrato de resolução. A regra agora é: risco não é blocker ativo; somente um blocker explicitamente declarado com `status: open` entra na contagem ativa. Um blocker `open` exige `owner`, `nextAction` e `resolutionPlan`; `resolutionEvidence` registra a evidência esperada. Registros antigos sem estado explícito são normalizados como `status: legacy`, `verification: unverified` e `resolution: not_declared`, nunca como `open`. Handoffs existentes não recebem solução inventada.
+
 ## Tempo real e limitações
 A API aceita atualização local autorizada para eventos `dispatched`, `accepted`, `started`, `progress`, `waiting_input`, `blocked`, `artifact_created`, `handoff_sent`, `review`, `completed`, `failed` e `cancelled`, incluindo heartbeat por `lastSeen`, progresso e correlação. A interface faz polling curto de 5 segundos e exibe última atualização/stale data disponível.
 

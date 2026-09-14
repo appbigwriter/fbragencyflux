@@ -16,15 +16,35 @@ export type Project = { id: string; name: string; status: ProjectStatus; owner: 
 export type Card = { id: string; title: string; project: string; status: CardStatus; assignee: string; priority: 'high' | 'normal'; detail: string; acceptanceCriteria: string[]; updatedAt: string }
 export type Approval = { id: string; cardId: string; title: string; requestedBy: string; impact: string; scope: string; rollback: string; status: ApprovalStatus; decidedAt?: string; decidedBy?: string }
 export type Event = { id: string; time: string; actor: string; action: string; cardId?: string; correlationId?: string; fromStatus?: string; toStatus?: string; reason?: string }
-export type Handoff = { id: string; cardId: string; project: string; from: string; to: string; summary: string; done: string; risks: string; nextStep: string; acceptanceCriteria: string; evidenceRef: string; createdAt: string }
+export type BlockerStatus = 'open' | 'resolved' | 'legacy'
+export type BlockerResolution = 'declared' | 'not_declared' | 'legacy'
+export type Blocker = { id: string; sourceId?: string; cardId?: string; cause: string; status: BlockerStatus; owner: string; nextAction: string; resolutionPlan: string; resolutionEvidence: string; resolution: BlockerResolution; verification: 'verified' | 'unverified' }
+export type BlockerInput = Partial<Blocker> & { id: string; cause: string }
+export type Risk = { sourceId: string; cause: string }
+export type Handoff = { id: string; cardId: string; project: string; from: string; to: string; summary: string; done: string; risks: string; nextStep: string; acceptanceCriteria: string; evidenceRef: string; createdAt: string; blockers?: BlockerInput[] }
 export type Artifact = { id: string; cardId: string; name: string; kind: string; status: string; path: string; sourcePath: string; size: number }
 export type JobStatus = 'planned' | 'in_progress' | 'review' | 'blocked' | 'completed' | 'failed' | 'not_verified'
 export type AgentRunEvent = 'dispatched' | 'accepted' | 'started' | 'progress' | 'waiting_input' | 'blocked' | 'artifact_created' | 'handoff_sent' | 'review' | 'completed' | 'failed' | 'cancelled'
 export type AgentRun = { jobId: string; cardId: string; project: string; agent: string; role: string; objective: string; status: JobStatus; startedAt?: string; updatedAt: string; completedAt?: string; artifactRefs: string[]; handoffRefs: string[]; evidenceRefs: string[]; blockers: string[]; nextStep: string; correlationId: string; source: string; lastSeen?: string; progress?: number; currentStep?: string; owner?: string; lastEvent?: AgentRunEvent; verification?: 'verified' | 'not_verified' }
 export type Job = AgentRun
-export type FluxState = { version: number; projects: Project[]; cards: Card[]; approvals: Approval[]; gates: Gate[]; events: Event[]; handoffs: Handoff[]; artifacts: Artifact[]; jobs?: Job[]; agentRuns?: AgentRun[] }
-export type DashboardSnapshot = Omit<FluxState, 'approvals' | 'events'> & { approvals: { pending: number; items: Approval[] }; recentEvents: Event[]; activeCards: number; blockers: Card[]; pendingGates: number; pendingCards: number; blockerCount: number; projectCards: Record<string, Card[]> }
+export type FluxState = { version: number; projects: Project[]; cards: Card[]; approvals: Approval[]; gates: Gate[]; events: Event[]; handoffs: Handoff[]; artifacts: Artifact[]; blockers?: BlockerInput[]; jobs?: Job[]; agentRuns?: AgentRun[] }
+export type DashboardSnapshot = Omit<FluxState, 'approvals' | 'events' | 'blockers'> & { approvals: { pending: number; items: Approval[] }; recentEvents: Event[]; activeCards: number; blockers: Blocker[]; risks: Risk[]; pendingGates: number; pendingCards: number; blockerCount: number; projectCards: Record<string, Card[]> }
 export type LocalActor = { actor: string; scope: 'local' }
+
+export function validateBlocker(input: BlockerInput): void {
+  if (input.status === 'open') {
+    const missing = (['owner', 'nextAction', 'resolutionPlan'] as const).filter((key) => !input[key]?.trim())
+    if (missing.length) throw new FluxError('INVALID_BLOCKER', `Open blocker requires ${missing.join(', ')}`)
+  }
+}
+
+export function normalizeBlocker(input: BlockerInput, sourceId?: string): Blocker {
+  const explicitStatus = input.status === 'open' || input.status === 'resolved' || input.status === 'legacy'
+  const status: BlockerStatus = explicitStatus ? input.status! : 'legacy'
+  if (status === 'open') validateBlocker(input)
+  const plan = input.resolutionPlan?.trim() || ''
+  return { id: input.id, sourceId: input.sourceId || sourceId, cardId: input.cardId, cause: input.cause, status, owner: input.owner?.trim() || '', nextAction: input.nextAction?.trim() || '', resolutionPlan: plan, resolutionEvidence: input.resolutionEvidence?.trim() || '', resolution: input.resolution || (plan ? 'declared' : status === 'legacy' ? 'not_declared' : 'not_declared'), verification: input.verification || (status === 'legacy' ? 'unverified' : 'verified') }
+}
 
 export class FluxError extends Error { constructor(public code: string, message: string, public status = 400) { super(message) } }
 const transitions: Record<CardStatus, CardStatus[]> = { planned: ['ready'], ready: ['in_progress'], in_progress: ['review', 'blocked'], review: ['awaiting_approval', 'in_progress', 'blocked'], blocked: ['ready', 'in_progress'], awaiting_approval: ['approved', 'blocked'], approved: ['executing'], executing: ['verifying', 'failed'], verifying: ['completed', 'failed'], completed: [], failed: ['in_progress'] }
@@ -91,7 +111,14 @@ export async function upsertJob(input: Partial<AgentRun>, actor: LocalActor, fil
 export async function updateJobEvent(id: string, event: AgentRunEvent, patch: Partial<AgentRun>, actor: LocalActor, file?: string) { const current = await getJob(id, file); const statusMap: Partial<Record<AgentRunEvent, JobStatus>> = { started: 'in_progress', progress: 'in_progress', waiting_input: 'blocked', blocked: 'blocked', review: 'review', completed: 'completed', failed: 'failed', cancelled: 'failed' }; return upsertJob({ ...current, ...patch, lastEvent: event, status: patch.status || statusMap[event] || current.status, completedAt: event === 'completed' ? new Date().toISOString() : patch.completedAt }, actor, file) }
 
 export async function getGates(file?: string): Promise<Gate[]> { return (await load(file)).gates.filter((gate) => gate.project === 'FBR Agency Flux') }
-export async function getSnapshot(file?: string): Promise<DashboardSnapshot> { const state = await load(file); const projectCards = Object.fromEntries(state.projects.map((project) => [project.name, state.cards.filter((card) => card.project === project.name)])); const blockers = state.cards.filter((c) => c.status === 'blocked'); return { ...state, approvals: { pending: state.approvals.filter((i) => i.status === 'pending').length, items: state.approvals }, recentEvents: state.events.slice(-50).reverse(), activeCards: state.cards.filter((c) => !['blocked', 'completed', 'failed'].includes(c.status)).length, blockers, pendingGates: state.gates.filter((gate) => gate.status === 'pending').length, pendingCards: state.cards.filter((card) => !['completed', 'failed'].includes(card.status)).length, blockerCount: blockers.length, projectCards } };
+export async function getSnapshot(file?: string): Promise<DashboardSnapshot> {
+  const state = await load(file)
+  const projectCards = Object.fromEntries(state.projects.map((project) => [project.name, state.cards.filter((card) => card.project === project.name)]))
+  const blockers = [...(state.blockers || []), ...state.handoffs.flatMap((handoff) => (handoff.blockers || []).map((blocker) => ({ ...blocker, sourceId: handoff.id, cardId: blocker.cardId || handoff.cardId })))]
+    .map((blocker) => normalizeBlocker(blocker, blocker.sourceId))
+  const risks = state.handoffs.filter((handoff) => handoff.risks?.trim()).map((handoff) => ({ sourceId: handoff.id, cause: handoff.risks }))
+  return { ...state, blockers, risks, approvals: { pending: state.approvals.filter((i) => i.status === 'pending').length, items: state.approvals }, recentEvents: state.events.slice(-50).reverse(), activeCards: state.cards.filter((c) => !['blocked', 'completed', 'failed'].includes(c.status)).length, pendingGates: state.gates.filter((gate) => gate.status === 'pending').length, pendingCards: state.cards.filter((card) => !['completed', 'failed'].includes(card.status)).length, blockerCount: blockers.filter((blocker) => blocker.status === 'open').length, projectCards }
+}
 export function validNextStatuses(status: CardStatus) { return transitions[status] }
 export async function transitionCard(cardId: string, status: CardStatus, actor: LocalActor, file?: string, reason = 'operational transition') {
   validateLocal(actor); if (!status || !Object.hasOwn(transitions, status)) throw new FluxError('INVALID_ACTION', 'Unknown card status')
