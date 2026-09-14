@@ -16,7 +16,7 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Next.js telemetry is disabled
+# Runtime-only configuration: never pass credentials as Docker build args or bake them into the image
 ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN npm run build

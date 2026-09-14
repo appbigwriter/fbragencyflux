@@ -20,7 +20,7 @@ function cookieValue(request: Request) { return request.headers.get('cookie')?.s
 export function cookieHeader(id: string, scope: 'local' | 'published') { return `${SESSION_COOKIE}=${id}; Path=/; HttpOnly; SameSite=Strict; Max-Age=${SESSION_TTL_MS / 1000}${scope === 'published' ? '; Secure' : ''}` }
 export function clearCookie() { return `${SESSION_COOKIE}=; Path=/; HttpOnly; SameSite=Strict; Max-Age=0` }
 export function authenticate(actor: string, secret: string): { sessionId: string; actor: SessionActor } {
-  const local = process.env.NODE_ENV !== 'production'
+  const local = process.env.FLUX_LOCAL_MODE === '1' || process.env.NODE_ENV !== 'production'
   const scope = local ? 'local' : 'published'
   if (local) {
     if (!process.env.FLUX_LOCAL_LOGIN_ACTOR || actor !== process.env.FLUX_LOCAL_LOGIN_ACTOR) throw new FluxError('INVALID_CREDENTIALS', 'Invalid local-only credentials', 401)
@@ -39,5 +39,5 @@ export function getSession(request: Request): SessionActor {
 }
 export function requireRole(request: Request, role: Role) { const session = getSession(request); if (!session.roles.includes(role)) throw new FluxError('FORBIDDEN', `Role ${role} required`, 403); return session }
 export function logout(request: Request) { const id = cookieValue(request); if (id) sessions.delete(id) }
-export function isLocalAuthEnabled() { return process.env.NODE_ENV !== 'production' && Boolean(process.env.FLUX_LOCAL_LOGIN_ACTOR && process.env.FLUX_LOCAL_LOGIN_SECRET) }
+export function isLocalAuthEnabled() { return (process.env.FLUX_LOCAL_MODE === '1' || process.env.NODE_ENV !== 'production') && Boolean(process.env.FLUX_LOCAL_LOGIN_ACTOR && process.env.FLUX_LOCAL_LOGIN_SECRET) }
 export const authCookieName = SESSION_COOKIE

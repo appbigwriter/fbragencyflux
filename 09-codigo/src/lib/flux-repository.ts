@@ -1,6 +1,7 @@
-import { mkdir, readFile, rename, stat } from 'node:fs/promises'
+import { readFile, stat } from 'node:fs/promises'
 import { readdir } from 'node:fs/promises'
 import path from 'node:path'
+import { configuredRepository } from './persistence'
 
 export type ProjectStatus = 'active' | 'blocked' | 'planned'
 export type CardStatus = 'planned' | 'ready' | 'in_progress' | 'review' | 'blocked' | 'awaiting_approval' | 'approved' | 'executing' | 'verifying' | 'completed' | 'failed'
@@ -78,31 +79,22 @@ async function syncArtifacts(state: FluxState): Promise<FluxState> {
   return state
 }
 async function load(file?: string): Promise<FluxState> {
-  const target = dataFilePath(file)
-  let state: FluxState
-  try { state = JSON.parse(await readFile(target, 'utf8')) as FluxState } catch (error) {
-    if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error
+  const repository = configuredRepository(file)
+  let state = await repository.load()
+  if (!state) {
+    if (!file && (process.env.FLUX_PERSISTENCE || process.env.NODE_ENV === 'production') === 'supabase') throw new FluxError('STATE_NOT_FOUND', 'External Flux state is not initialized; apply the local migration and seed state before starting', 503)
     const seedPath = path.join(process.cwd(), 'data', 'flux-state.json')
-    if (target === dataFilePath() || target === seedPath) throw new FluxError('STATE_NOT_FOUND', `Flux state not found at ${target}`, 500)
     state = JSON.parse(await readFile(seedPath, 'utf8')) as FluxState
   }
-  state.projects = state.projects || []
-  state.cards = state.cards || []
-  state.artifacts = state.artifacts || []
-  state.handoffs = state.handoffs || []
-  state.events = state.events || []
-  state.approvals = state.approvals || []
-  state = await syncArtifacts(state)
-  await syncAgentRuns(state)
-  state.artifacts = state.artifacts || []
-  state.handoffs = state.handoffs || []
-  state.events = state.events || []
-  state.approvals = state.approvals || []
-  if (!state.gates) { state.gates = seededGates.map((gate) => ({ ...gate, evidence: [...gate.evidence], blockers: [...gate.blockers] })); await save(state, target) }
-  if (state.artifacts.length || state.jobs) await save(state, target)
+  state.projects = state.projects || []; state.cards = state.cards || []; state.artifacts = state.artifacts || []
+  state.handoffs = state.handoffs || []; state.events = state.events || []; state.approvals = state.approvals || []
+  state = await syncArtifacts(state); await syncAgentRuns(state)
+  state.artifacts = state.artifacts || []; state.handoffs = state.handoffs || []; state.events = state.events || []; state.approvals = state.approvals || []
+  if (!state.gates) { state.gates = seededGates.map((gate) => ({ ...gate, evidence: [...gate.evidence], blockers: [...gate.blockers] })); await save(state, file) }
+  if (state.artifacts.length || state.jobs) await save(state, file)
   return state
 }
-async function save(state: FluxState, file?: string): Promise<void> { const target = dataFilePath(file); await mkdir(path.dirname(target), { recursive: true }); const temporary = `${target}.${process.pid}.tmp`; await (await import('node:fs/promises')).writeFile(temporary, `${JSON.stringify(state, null, 2)}\n`, 'utf8'); await rename(temporary, target) }
+async function save(state: FluxState, file?: string): Promise<void> { await configuredRepository(file).save(state) }
 export async function getState(file?: string) { return load(file) }
 export async function getJobs(file?: string, filters: { agent?: string; status?: string; card?: string } = {}) { const jobs = (await load(file)).jobs || []; return jobs.filter((job) => (!filters.agent || job.agent === filters.agent) && (!filters.status || job.status === filters.status) && (!filters.card || job.cardId === filters.card)).map((job) => ({ ...job, stale: Boolean(job.lastSeen && Date.now() - Date.parse(job.lastSeen) > 30000) })) }
 export async function getJob(id: string, file?: string) { const job = (await load(file)).jobs?.find((item) => item.jobId === id); if (!job) throw new FluxError('JOB_NOT_FOUND', `Job ${id} not found`, 404); return job }
