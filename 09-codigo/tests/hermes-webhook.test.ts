@@ -23,7 +23,7 @@ describe('Hermes outbound webhook bridge', () => {
   it('accepts a signed webhook end-to-end and persists the Flux job readback', async () => {
     const temp = await mkdtemp(path.join(os.tmpdir(), 'flux-hermes-e2e-'))
     const dataFile = path.join(temp, 'flux-state.json')
-    await copyFile(path.join(process.cwd(), 'data', 'flux-state.json'), dataFile)
+    await copyFile(path.join(process.cwd(), 'data', 'empty-state.fixture.json'), dataFile)
     process.env.FLUX_DATA_FILE = dataFile
     process.env.HERMES_FLUX_WEBHOOK_SECRET = secret
     const body = JSON.stringify({ hook_event_name: 'kanban_task_claimed', profile: 'worker', delivery_id: `e2e-${Date.now()}`, timestamp: '2026-09-14T12:00:00.000Z', extra: { task_id: 't_e2e', board: 'default', assignee: 'worker' } })

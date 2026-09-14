@@ -6,7 +6,7 @@ import { getDashboardSnapshot } from '../src/lib/dashboard'
 
 const tempDirs: string[] = []
 afterEach(async () => { await Promise.all(tempDirs.splice(0).map((dir) => rm(dir, { recursive: true, force: true }))) })
-async function testFile() { const dir = await mkdtemp(join(tmpdir(), 'flux-dashboard-test-')); tempDirs.push(dir); const file = join(dir, 'flux-state.json'); await writeFile(file, await readFile(join(process.cwd(), 'data', 'flux-state.json')), 'utf8'); return file }
+async function testFile() { const dir = await mkdtemp(join(tmpdir(), 'flux-dashboard-test-')); tempDirs.push(dir); const file = join(dir, 'flux-state.json'); await writeFile(file, await readFile(join(process.cwd(), 'data', 'after-forty-intake.fixture.json')), 'utf8'); return file }
 
 describe('getDashboardSnapshot', () => {
   it('returns operational counts from persisted state', async () => {
@@ -32,7 +32,7 @@ describe('getDashboardSnapshot', () => {
     const snapshot = await getDashboardSnapshot(await testFile())
     expect(snapshot.cards.find((item) => item.id === 'AF-001')?.project).toBe('After Forty')
     expect(snapshot.approvals.items[0].cardId).toBe('AF-001')
-    expect(snapshot.artifacts.every((item) => item.cardId === 'AF-001')).toBe(true)
+    expect(snapshot.artifacts).toHaveLength(0)
   })
 
   it('reads the separated scopes back after reload without closing project cards', async () => {

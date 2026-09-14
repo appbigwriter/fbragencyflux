@@ -54,7 +54,7 @@ describe('real Flux authentication', () => {
   it('authorizes an authenticated owner for a card transition without trusting actor body', async () => {
     Object.assign(process.env, { NODE_ENV: 'development' })
     const dir = await mkdtemp(join(tmpdir(), 'flux-auth-test-')); tempDirs.push(dir); process.env.FLUX_DATA_FILE = join(dir, 'flux-state.json')
-    await writeFile(process.env.FLUX_DATA_FILE, await readFile(join(process.cwd(), 'data', 'flux-state.json')))
+    await writeFile(process.env.FLUX_DATA_FILE, await readFile(join(process.cwd(), 'data', 'after-forty-intake.fixture.json')))
     const current = (await getSnapshot(process.env.FLUX_DATA_FILE)).cards.find((card) => card.id === 'AF-001')!
     const next = validNextStatuses(current.status)[0]
     process.env.FLUX_LOCAL_LOGIN_ACTOR = 'Íris'

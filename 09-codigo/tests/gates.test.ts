@@ -7,8 +7,9 @@ import { GET } from '../src/app/api/flux/gates/route'
 import { POST } from '../src/app/api/flux/gates/[id]/decision/route'
 
 const tempDirs: string[] = []
-afterEach(async () => { await Promise.all(tempDirs.splice(0).map((dir) => rm(dir, { recursive: true, force: true }))) })
-async function testFile() { const dir = await mkdtemp(join(tmpdir(), 'flux-gates-test-')); tempDirs.push(dir); const file = join(dir, 'flux-state.json'); const seed = JSON.parse(await readFile(join(process.cwd(), 'data', 'flux-state.json'), 'utf8')); seed.gates = (seed.gates || []).map((gate: { status: string; decidedAt?: string; decidedBy?: string }) => ({ ...gate, status: 'pending', decidedAt: undefined, decidedBy: undefined })); await writeFile(file, JSON.stringify(seed), 'utf8'); return file }
+const originalEnv = { ...process.env }
+afterEach(async () => { process.env = { ...originalEnv }; await Promise.all(tempDirs.splice(0).map((dir) => rm(dir, { recursive: true, force: true }))) })
+async function testFile() { const dir = await mkdtemp(join(tmpdir(), 'flux-gates-test-')); tempDirs.push(dir); const file = join(dir, 'flux-state.json'); const seed = JSON.parse(await readFile(join(process.cwd(), 'data', 'after-forty-intake.fixture.json'), 'utf8')); seed.gates = (seed.gates || []).map((gate: { status: string; decidedAt?: string; decidedBy?: string }) => ({ ...gate, status: 'pending', decidedAt: undefined, decidedBy: undefined })); await writeFile(file, JSON.stringify(seed), 'utf8'); return file }
 
 describe('FBR Agency Flux gates', () => {
   it('seeds exactly four pending gates with the complete local decision model', async () => {
@@ -33,6 +34,7 @@ describe('FBR Agency Flux gates', () => {
     expect((await getSnapshot(file)).gates.find((gate) => gate.id === 'FLUX-GATE-03')?.status).toBe('changes_requested')
   })
   it('exposes the HTTP contract and rejects an invalid actor', async () => {
+    process.env.FLUX_DATA_FILE = await testFile()
     const response = await GET(); const body = await response.json() as { gates: unknown[] }
     expect(response.status).toBe(200); expect(body.gates).toHaveLength(4)
     const denied = await POST(new Request('http://localhost/api/flux/gates/FLUX-GATE-01/decision', { method: 'POST', body: JSON.stringify({ decision: 'approved', actor: 'Íris', scope: 'local' }) }), { params: Promise.resolve({ id: 'FLUX-GATE-01' }) })

@@ -1,6 +1,6 @@
 # FBR Agency Flux executor — estado atual
 
-Este código é o executor local verificável do Flux, não a entrega remota completa. Ele lê o estado persistido fora de `src`, importa os drafts reais de `08-historico/afterforty/drafts`, mostra Gates, artefatos, Handoffs e eventos. Mutations usam sessão server-side: decisões exigem papel `gatekeeper`, transições `operator`, Handoffs `coordinator`; o actor nunca é aceito do body. O login local é explicitamente local-only e exige `FLUX_LOCAL_LOGIN_ACTOR` + `FLUX_LOCAL_LOGIN_SECRET` via ambiente
+O código é o executor local verificável do Flux, não a entrega remota completa. Ele lê o estado persistido fora de `src`, mostra Gates, artefatos, Handoffs e eventos. O histórico de `08-historico/afterforty` é arquivo e não é importado por `load`; ingestão exige `npm run ingest:flux-history` ou `FLUX_IMPORT_HISTORY=1`. Mutations usam sessão server-side: decisões exigem papel `gatekeeper`, transições `operator`, Handoffs `coordinator`; o actor nunca é aceito do body. O login local é explicitamente local-only e exige `FLUX_LOCAL_LOGIN_ACTOR` + `FLUX_LOCAL_LOGIN_SECRET` via ambiente
 
 ## Escopo local
 
@@ -43,7 +43,7 @@ curl -s -X POST http://localhost:3000/api/flux/gates/AF-GATE-01/decision -H 'con
 curl -s http://localhost:3000/api/flux/gates
 ```
 
-`FLUX_DATA_FILE` permite apontar um arquivo JSON de teste. Gravações usam arquivo temporário + rename. Os drafts reais são sincronizados do filesystem e exibidos com caminho e tamanho.
+`FLUX_DATA_FILE` permite apontar um arquivo JSON de teste; os testes copiam `data/after-forty-intake.fixture.json` para um caminho temporário. Gravações usam arquivo temporário + rename. O fixture inicial é somente leitura por convenção: não o use como destino de ingestão.
 
 ## Produto-alvo e limite
 
@@ -59,7 +59,7 @@ O dashboard mantém quatro escopos separados:
 
 - **Gates do FBR Flux**: exatamente `FLUX-GATE-01` a `FLUX-GATE-04`, com status, decisão, blockers e evidências registradas
 - **Projetos acompanhados**: catálogo dos projetos persistidos, sem transformar um projeto em estado geral do Flux
-- **Pendências por projeto**: cards agrupados pelo projeto de origem; `AF-001` permanece `awaiting_approval` e `AF-002` permanece `review`
+- **Pendências por projeto**: cards agrupados pelo projeto de origem; o novo E2E começa somente com `AF-001` em `ready`
 - **Indicadores independentes**: Gates pendentes, cards pendentes, blockers e projetos acompanhados são contados separadamente
 
 Aprovar um Gate do FBR Flux não altera automaticamente cards de projetos. A atividade rotineira de agents e Handoffs é somente observacional/operacional e não cria approvals artificiais. Jobs derivados do filesystem aparecem como `filesystem/Handoff readback`; esse readback é histórico, não tempo real. Registros históricos sem blocker estruturado `status: open` ficam em `review` ou `completed` conforme evidência; menções a pending, review ou Gate não são blockers. `blocked` significa exclusivamente blocker operacional ativo. Um blocker real só pode ser desbloqueado quando houver `owner`, `nextAction`, `resolutionPlan` e `resolutionEvidence`; registros antigos são exibidos como `legacy`/`not_declared` com sua causa, sem solução inventada. A interface mostra no máximo 6 Handoffs em mini cards, mantendo os demais em lista clicável e separando históricos de blockers ativos. A interface atualiza por polling de 5 segundos. O runtime Hermes/dispatcher ainda não fornece stream de eventos ao dashboard, portanto tempo real completo permanece um blocker técnico; o adapter local aceita heartbeats e eventos via `PATCH /api/flux/jobs/:id`.

@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from 'vitest'
-import { mkdtemp, readFile, rm } from 'node:fs/promises'
+import { copyFile, mkdtemp, readFile, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { approveApproval, classifyFilesystemRun, getSnapshot, transitionCard, validNextStatuses } from '../src/lib/flux-repository'
@@ -13,7 +13,9 @@ afterEach(async () => {
 async function testFile() {
   const dir = await mkdtemp(join(tmpdir(), 'flux-test-'))
   tempDirs.push(dir)
-  return join(dir, 'flux-state.json')
+  const file = join(dir, 'flux-state.json')
+  await copyFile(join(process.cwd(), 'data', 'after-forty-intake.fixture.json'), file)
+  return file
 }
 
 describe('Flux persisted repository', () => {
@@ -39,7 +41,7 @@ describe('Flux persisted repository', () => {
     expect(snapshot.cards.some((card) => card.id === 'AF-001')).toBe(true)
     expect(snapshot.projects.some((project) => project.name === 'After Forty')).toBe(true)
     expect(snapshot.handoffs.length).toBeGreaterThan(0)
-    expect(snapshot.artifacts.length).toBeGreaterThan(0)
+    expect(snapshot.artifacts).toHaveLength(0)
     expect(JSON.parse(await readFile(file, 'utf8')).cards).toHaveLength(snapshot.cards.length)
   })
 
