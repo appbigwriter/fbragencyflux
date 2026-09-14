@@ -20,6 +20,10 @@ describe('visible authentication control contract', () => {
     expect(source).toContain('name="credential"')
     expect(source).toContain('Entrar')
     expect(source).toContain('/api/auth/login')
+    expect(source).toContain('AUTH_REQUEST_EVENT')
+    expect(source).toContain('requestAuth')
+    expect(source).toContain('Entre para passar este problema')
+    expect(source).toContain('focus()')
     expect(source).not.toMatch(/(default|test-only-secret|FLUX_LOCAL_LOGIN_SECRET).*(secret|credential)/i)
   })
 
@@ -36,11 +40,24 @@ describe('visible authentication control contract', () => {
     expect(afterLogout.status).toBe(401)
   })
 
+  it('renders login errors without rendering a credential or secret', async () => {
+    const source = await readFile('src/app/auth-control.tsx', 'utf8')
+    expect(source).toContain("setMessage(body.message || 'Não foi possível entrar.')")
+    expect(source).toContain("setCredential('')")
+    expect(source).not.toContain('test-only-secret')
+  })
+
   it('renders a clear read-only warning and gates management actions on session', async () => {
-    const [handoffs, jobs] = await Promise.all([
+    const [handoffs, jobs, blockers] = await Promise.all([
       readFile('src/app/handoffs/handoffs-client.tsx', 'utf8'),
       readFile('src/app/jobs/jobs-client.tsx', 'utf8'),
+      readFile('src/app/blocker-attention.tsx', 'utf8'),
     ])
+    expect(blockers).toContain('Passar problema')
+    expect(blockers).toContain('Consultar Sergio')
+    expect(blockers).toContain('requestAuth')
+    expect(blockers).toContain('Entre para passar este problema')
+    expect(blockers).toContain('disabled={Boolean(session) && !actionable}')
     expect(handoffs).toContain('Leitura permitida; gestão bloqueada sem sessão')
     expect(jobs).toContain('Leitura permitida; gestão bloqueada sem sessão')
     expect(handoffs).toContain('disabled={!session ||')

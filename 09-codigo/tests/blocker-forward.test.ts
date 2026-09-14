@@ -29,7 +29,7 @@ describe('blocker forward/unblock', () => {
     const response = await forward(req({ cardId: 'C-1', correlationId: 'corr-1', actor: 'Sergio' }, cookie), { params: Promise.resolve({ id: 'b-1' }) })
     expect(response.status).toBe(200)
     const body = await response.json(); expect(body.event).toMatchObject({ actor: 'Íris', correlationId: 'corr-1', cardId: 'C-1' }); expect(body.handoff).toMatchObject({ from: 'Íris', to: 'Gabe', blockerId: 'b-1' })
-    const snapshot = await getSnapshot(file); expect(snapshot.cards.find((c) => c.id === 'C-1')?.status).toBe('awaiting_owner'); expect(snapshot.blockers[0].status).toBe('open'); expect(snapshot.recentEvents.filter((e) => e.correlationId === 'corr-1')).toHaveLength(1)
+    const snapshot = await getSnapshot(file); expect(snapshot.cards.find((c) => c.id === 'C-1')?.status).toBe('awaiting_owner'); expect(snapshot.blockers[0].status).toBe('open'); expect(snapshot.requiredActions?.find((a) => a.correlationId === 'corr-1')).toMatchObject({ status: 'hold', reasonCode: 'BLOCKER_OPEN' }); expect(snapshot.recentEvents.filter((e) => e.correlationId === 'corr-1')).toHaveLength(1)
     const again = await forward(req({ cardId: 'C-1', correlationId: 'corr-1' }, cookie), { params: Promise.resolve({ id: 'b-1' }) }); expect(again.status).toBe(200); expect((await getSnapshot(file)).recentEvents.filter((e) => e.correlationId === 'corr-1')).toHaveLength(1)
   })
   it('rejects missing solution, legacy and resolved blockers', async () => {
