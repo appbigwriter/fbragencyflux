@@ -26,11 +26,11 @@ export async function dispatchIncoming(event: FluxDispatchEvent, actor: LocalAct
   if (seen.has(event.eventId)) return { duplicate: true }
   seen.add(event.eventId)
   if (event.type === 'heartbeat') {
-    const job = await updateJobEvent(event.jobId, 'progress', { ...event.payload, lastSeen: event.sentAt }, actor)
+    const job = await updateJobEvent(event.jobId, 'progress', { ...event.payload, sourceType: 'live', historical: false, lastSeen: event.sentAt }, actor)
     return { duplicate: false, job }
   }
   if (!event.event) throw new FluxError('EVENT_REQUIRED', 'job and agent_run events require event', 400)
-  const job = await updateJobEvent(event.jobId, event.event, event.payload, actor)
+  const job = await updateJobEvent(event.jobId, event.event, { ...event.payload, sourceType: 'live', historical: false }, actor)
   return { duplicate: false, job }
 }
 export function verifyDispatcherToken(request: Request) {

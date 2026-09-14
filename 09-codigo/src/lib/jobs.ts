@@ -8,7 +8,7 @@ export type JobSummary = { total: number; byStatus: Record<string, number>; byOr
 const REAL_EVENTS = new Set(['accepted', 'started', 'progress', 'waiting_input', 'blocked', 'artifact_created', 'handoff_sent', 'review', 'completed', 'failed', 'cancelled'])
 const liveSource = (job: AgentRun) => job.sourceType === 'live' || /(?:^|[/:\s])(?:live|dispatcher)(?:$|[/:\s])/i.test(job.source) || /hermes outbound webhook/i.test(job.source)
 const historicalSource = (job: AgentRun) => Boolean(job.historical || job.sourceType === 'filesystem' || job.source.toLowerCase().includes('filesystem'))
-const startedLive = (job: AgentRun) => liveSource(job) && Boolean(job.startedAt) && (Boolean(job.lastEvent && REAL_EVENTS.has(job.lastEvent)) || Boolean(job.lastSeen && Date.parse(job.lastSeen) > Date.parse(job.startedAt!)))
+const startedLive = (job: AgentRun) => !historicalSource(job) && liveSource(job) && Boolean(job.startedAt) && (Boolean(job.lastEvent && REAL_EVENTS.has(job.lastEvent)) || Boolean(job.lastSeen && Date.parse(job.lastSeen) > Date.parse(job.startedAt!)))
 
 export function classifyJob(job: AgentRun): JobClassification {
   if (historicalSource(job)) return 'historical'
