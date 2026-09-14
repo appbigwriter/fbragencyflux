@@ -80,4 +80,12 @@ Production must not fall back to JSON to hide a Supabase authentication failure.
 2. **Durable dedupe:** cause: Flux `seen` is process-local; solution: persist an inbox/unique `eventId` before applying events in the approved persistence backend, owner: Flux persistence owner, evidence expected: same signed delivery replayed after restart is acknowledged without a second state mutation
 3. **Remote enablement:** cause: no remote URL, secret, Gate or readback authorization was provided; solution: Sergio Gate authorizes endpoint/scope and operator runs a remote readback, owner: Sergio/operator, evidence expected: `hermes hooks list`, HTTP receipt, Flux job readback and no secret in logs
 
+## Handoffs operacionais
+
+`/handoffs` é a página dedicada para o detalhe operacional. O dashboard principal permanece deliberadamente compacto: métricas essenciais, projetos/cards resumidos, Gates e atividade recente; Jobs e Handoffs não são duplicados em listas extensas na home.
+
+Handoffs persistidos recebem status explícito (`received`, `in_progress`, `blocked`, `released`, `completed`, `legacy`) e `lastUpdate`, `lastBlocker` e `lastRelease`. Registros derivados de arquivos têm ID determinístico por caminho, bloco e conteúdo, origem explícita e status `legacy`; eles são evidência histórica, não histórico completo. Um snapshot agregado não equivale ao histórico completo de Handoffs.
+
+A ação autenticada `POST /api/flux/handoffs/:id/resume` exige sessão `coordinator`, `correlationId`, causa, solução, owner e próximo passo. Apenas Handoffs não-legacy podem mudar; a operação registra evento com actor da sessão, destinatário, causa, solução, timestamp e correlationId. `release` marca `released`; `resume` marca `in_progress`; nenhuma das duas finge conclusão. Repetições do mesmo correlationId são idempotentes.
+
 No remote database, migration, service, deploy, publication, commit or push was performed
