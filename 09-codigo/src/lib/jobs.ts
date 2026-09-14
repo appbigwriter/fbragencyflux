@@ -1,7 +1,7 @@
 import type { AgentRun } from './flux-repository'
 
 export type JobWithStale = AgentRun & { stale: boolean }
-export type JobFilter = { project?: string; card?: string; agent?: string; status?: string; owner?: string; origin?: 'filesystem' | 'local'; lifecycle?: 'historical' | 'live'; stale?: boolean; blocker?: boolean }
+export type JobFilter = { project?: string; card?: string; agent?: string; status?: string; owner?: string; origin?: 'filesystem' | 'local'; lifecycle?: 'historical' | 'live' | 'planned'; stale?: boolean; blocker?: boolean }
 export type JobClassification = 'planned' | 'historical' | 'realtime'
 export type JobSummary = { total: number; byStatus: Record<string, number>; byOrigin: { filesystem: number; local: number }; planned: number; realtime: number; live: number; historical: number; stale: number; activeBlocker: number }
 
@@ -43,7 +43,7 @@ export function getJobSummary(jobs: AgentRun[], now = new Date()): JobSummary {
 export function filterJobs(jobs: AgentRun[], filter: JobFilter, now = new Date()): JobWithStale[] {
   return withStale(jobs, now).filter((job) => {
     const origin = job.sourceType === 'filesystem' || job.source.toLowerCase().includes('filesystem') ? 'filesystem' : 'local'
-    return (!filter.project || job.project === filter.project) && (!filter.card || job.cardId === filter.card) && (!filter.agent || job.agent === filter.agent) && (!filter.status || job.status === filter.status) && (!filter.owner || job.owner === filter.owner) && (!filter.origin || origin === filter.origin) && (!filter.lifecycle || (filter.lifecycle === 'historical' ? classifyJob(job) === 'historical' : classifyJob(job) === 'realtime')) && (filter.stale === undefined || job.stale === filter.stale) && (filter.blocker === undefined || job.activeBlocker === filter.blocker)
+    return (!filter.project || job.project === filter.project) && (!filter.card || job.cardId === filter.card) && (!filter.agent || job.agent === filter.agent) && (!filter.status || job.status === filter.status) && (!filter.owner || job.owner === filter.owner) && (!filter.origin || origin === filter.origin) && (!filter.lifecycle || classifyJob(job) === (filter.lifecycle === 'historical' ? 'historical' : filter.lifecycle === 'live' ? 'realtime' : 'planned')) && (filter.stale === undefined || job.stale === filter.stale) && (filter.blocker === undefined || job.activeBlocker === filter.blocker)
   })
 }
 

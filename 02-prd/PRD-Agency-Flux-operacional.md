@@ -15,6 +15,10 @@ O piloto After Forty foi reiniciado localmente após o reset do estado `fbr-agen
 
 O escopo confirmado é publisher FBR News, responsável Sergio Castro, inglês, EUA/global, domínio `afterforty.fbr.news`, público 40+, categorias Skin & Beauty, Recovery & Wellness e Home Fitness, e 12 artigos iniciais. O produto-pauta específico permanece ausente e não deve ser inventado. Bia e Rick/Amazon Research são paralelizáveis após o registro Kora; Théo está com o próximo job pronto para preparar a proposta técnica, condicionado aos Gates e sem mutação remota.
 
+## Semântica operacional de Jobs
+
+A página `/jobs` deve distinguir explicitamente intenção de execução observada. Jobs `planned`/`ready` da origem `local/intake-fixture`, sem `startedAt` e sem evento/heartbeat real, são **Planejado**: não contam como Realtime nem Stale. Registros `historical` ou derivados de `filesystem` são **Histórico** e nunca são stale. **Realtime** exige origem live/dispatcher, job iniciado e evento real de dispatcher ou `lastSeen` posterior a `startedAt`. **Stale** só pode ser contado para Realtime iniciado cujo heartbeat exceda o threshold de 30 segundos. Contadores, filtros, cards e detalhes devem usar a mesma classificação; o fixture After Forty deve resultar em `planned=4`, `realtime=0`, `stale=0`.
+
 ## 1. Resumo executivo
 
 O FBR Agency Flux é a camada transversal que recebe a concepção de um projeto, organiza escopo, agentes, skills, workflows, dependências, Handoffs, evidências e Gates e mantém Sergio informado sobre o estado real da execução
