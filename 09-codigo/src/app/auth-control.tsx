@@ -1,0 +1,74 @@
+'use client'
+
+import { createContext, FormEvent, ReactNode, useContext, useEffect, useState } from 'react'
+import styles from './page.module.css'
+
+export type AuthSession = { actor: string; scope: 'local' | 'published'; roles: string[] }
+type AuthContextValue = { session: AuthSession | null; loading: boolean; refresh: () => Promise<void> }
+const AuthContext = createContext<AuthContextValue | null>(null)
+
+async function readSession(): Promise<AuthSession | null> {
+  const response = await fetch('/api/auth/session', { cache: 'no-store' })
+  if (!response.ok) return null
+  return response.json() as Promise<AuthSession>
+}
+
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const [session, setSession] = useState<AuthSession | null>(null)
+  const [loading, setLoading] = useState(true)
+  const refresh = async () => {
+    setLoading(true)
+    try { setSession(await readSession()) } catch { setSession(null) } finally { setLoading(false) }
+  }
+  useEffect(() => {
+    let active = true
+    readSession().then((next) => { if (active) setSession(next) }).catch(() => { if (active) setSession(null) }).finally(() => { if (active) setLoading(false) })
+    return () => { active = false }
+  }, [])
+  return <AuthContext.Provider value={{ session, loading, refresh }}>{children}</AuthContext.Provider>
+}
+
+export function useAuthSession() {
+  const value = useContext(AuthContext)
+  if (!value) throw new Error('useAuthSession must be used inside AuthProvider')
+  return value
+}
+
+export default function AuthControl() {
+  const { session, loading, refresh } = useAuthSession()
+  const [actor, setActor] = useState('')
+  const [credential, setCredential] = useState('')
+  const [message, setMessage] = useState('')
+  const [busy, setBusy] = useState(false)
+
+  async function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    if (!actor.trim() || !credential) { setMessage('Informe actor e credencial para entrar.'); return }
+    setBusy(true); setMessage('')
+    try {
+      const response = await fetch('/api/auth/login', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ actor: actor.trim(), secret: credential }) })
+      const body = await response.json()
+      if (!response.ok) { setMessage(body.message || 'Não foi possível entrar.'); return }
+      setCredential('')
+      await refresh()
+    } catch { setMessage('Não foi possível conectar ao serviço de autenticação.') } finally { setBusy(false) }
+  }
+
+  async function signOut() {
+    setBusy(true); setMessage('')
+    try { await fetch('/api/auth/session', { method: 'DELETE' }); await refresh() }
+    catch { setMessage('Não foi possível encerrar a sessão.') } finally { setBusy(false) }
+  }
+
+  return <section className={styles.authControl} aria-label="Autenticação">
+    {loading ? <span className={styles.authStatus}>Verificando sessão…</span> : session ? <div className={styles.authLoggedIn}><span className={styles.authStatus}><strong>{session.actor}</strong> · {session.roles.join(', ')}</span><button type="button" onClick={signOut} disabled={busy}>Sair</button></div> : <>
+      <span className={styles.authStatus}><strong>Não autenticado</strong></span>
+      <form className={styles.authForm} onSubmit={submit}>
+        <input name="actor" aria-label="actor" value={actor} onChange={(event) => setActor(event.target.value)} placeholder="actor" autoComplete="username" />
+        <input name="credential" aria-label="credential" type="password" value={credential} onChange={(event) => setCredential(event.target.value)} placeholder="credencial" autoComplete="current-password" />
+        <button type="submit" disabled={busy}>Entrar</button>
+      </form>
+    </>}
+    {message && <small role="alert" className={styles.authMessage}>{message}</small>}
+  </section>
+}
