@@ -30,7 +30,20 @@ describe('blocker modeling', () => {
     expect(normalizeBlocker({ id: 'b1', cause: 'Old pending item' })).toMatchObject({ status: 'legacy', verification: 'unverified', resolution: 'not_declared' })
   })
 
-  it('exposes the declared solution on the blocker mini card model', () => {
-    expect(normalizeBlocker({ id: 'b1', cause: 'Missing evidence', status: 'open', owner: 'Gabe', nextAction: 'Attach report', resolutionPlan: 'Report is attached and read back', resolutionEvidence: 'report.md' })).toMatchObject({ resolutionPlan: 'Report is attached and read back', resolutionEvidence: 'report.md' })
+  it('exposes the declared executable action on the blocker model', () => {
+    expect(normalizeBlocker({ id: 'b1', cause: 'Missing evidence', status: 'open', owner: 'Gabe', nextAction: 'Attach report', resolutionPlan: 'Report is attached and read back', resolutionEvidence: 'report.md' })).toMatchObject({ resolutionPlan: 'Report is attached and read back', resolutionEvidence: 'report.md', resolutionAction: { to: 'Gabe', nextStep: 'Attach report' } })
+  })
+
+  it('rejects passive retention as an open blocker resolution plan', () => {
+    expect(() => validateBlocker({ id: 'b2', cause: 'Missing product', status: 'open', owner: 'Gestor Editorial', nextAction: 'wait', resolutionPlan: 'Manter pendente; não executar' })).toThrow(/executável|executable/i)
+  })
+
+  it('requires all After Forty blockers to expose executable forwarding actions', async () => {
+    const fixture = await import('../data/after-forty-intake.fixture.json')
+    const blockers = [...(fixture.default.blockers || []), ...fixture.default.handoffs.flatMap((handoff) => handoff.blockers || [])]
+    expect(blockers).toHaveLength(4)
+    for (const blocker of blockers) expect(blocker.resolutionAction).toMatchObject({ from: expect.any(String), to: expect.any(String), objective: expect.any(String), deliverable: expect.any(String), acceptanceCriteria: expect.any(String), evidenceRequired: expect.any(String), nextStep: expect.any(String) })
+    expect(blockers.find((blocker) => blocker.id === 'blocker-afterforty-product-scope')?.resolutionAction?.to).toBe('Gestor Editorial')
+    expect(blockers.find((blocker) => blocker.id === 'blocker-afterforty-product-scope')?.resolutionAction?.objective).toContain('Rick/Amazon Research')
   })
 })

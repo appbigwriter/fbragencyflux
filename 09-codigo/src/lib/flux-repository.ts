@@ -18,14 +18,15 @@ export type Gate = {
 export type Project = { id: string; name: string; status: ProjectStatus; owner: string; description: string }
 export type Card = { id: string; title: string; project: string; status: CardStatus; assignee: string; priority: 'high' | 'normal'; detail: string; acceptanceCriteria: string[]; updatedAt: string }
 export type Approval = { id: string; cardId: string; title: string; requestedBy: string; impact: string; scope: string; rollback: string; status: ApprovalStatus; decidedAt?: string; decidedBy?: string }
-export type Event = { id: string; time: string; actor: string; action: string; cardId?: string; correlationId?: string; fromStatus?: string; toStatus?: string; reason?: string; blockerId?: string; jobId?: string; handoffId?: string; from?: string; to?: string; owner?: string; nextAction?: string; solution?: { cause: string; owner: string; nextAction: string; resolutionPlan: string; resolutionEvidence: string } }
+export type Event = { id: string; time: string; actor: string; action: string; cardId?: string; correlationId?: string; fromStatus?: string; toStatus?: string; reason?: string; blockerId?: string; jobId?: string; handoffId?: string; from?: string; to?: string; owner?: string; nextAction?: string; solution?: { cause: string; owner: string; nextAction: string; resolutionPlan: string; resolutionEvidence: string }; resolutionAction?: ResolutionAction }
+export type ResolutionAction = { from: string; to: string; objective: string; deliverable: string; acceptanceCriteria: string; evidenceRequired: string; nextStep: string }
 export type BlockerStatus = 'open' | 'resolved' | 'legacy'
 export type BlockerResolution = 'declared' | 'not_declared' | 'legacy'
-export type Blocker = { id: string; sourceId?: string; cardId?: string; cause: string; status: BlockerStatus; owner: string; nextAction: string; resolutionPlan: string; resolutionEvidence: string; resolution: BlockerResolution; verification: 'verified' | 'unverified' }
+export type Blocker = { id: string; sourceId?: string; cardId?: string; cause: string; status: BlockerStatus; owner: string; nextAction: string; resolutionPlan: string; resolutionEvidence: string; resolution: BlockerResolution; verification: 'verified' | 'unverified'; resolutionAction: ResolutionAction }
 export type BlockerInput = Partial<Blocker> & { id: string; cause: string }
 export type Risk = { sourceId: string; cause: string }
 export type HandoffStatus = 'received' | 'in_progress' | 'awaiting_owner' | 'blocked' | 'released' | 'completed' | 'legacy'
-export type Handoff = { id: string; cardId: string; project: string; from: string; to: string; summary: string; done: string; decisions?: string[]; risks: string; nextStep: string; acceptanceCriteria: string; evidenceRef: string; createdAt: string; status?: HandoffStatus; lastUpdate?: string; lastBlocker?: string; lastRelease?: string; blockers?: BlockerInput[]; blockerId?: string; jobId?: string; correlationId?: string; solution?: Pick<Blocker, 'cause' | 'owner' | 'nextAction' | 'resolutionPlan' | 'resolutionEvidence'>; sourceType?: 'local' | 'filesystem'; historical?: boolean; legacy?: boolean; source?: string; activeBlocker?: boolean }
+export type Handoff = { id: string; cardId: string; project: string; from: string; to: string; summary: string; done: string; decisions?: string[]; risks: string; nextStep: string; acceptanceCriteria: string; evidenceRef: string; createdAt: string; status?: HandoffStatus; lastUpdate?: string; lastBlocker?: string; lastRelease?: string; blockers?: BlockerInput[]; blockerId?: string; jobId?: string; correlationId?: string; forwardingKey?: string; resolutionAction?: ResolutionAction; solution?: Pick<Blocker, 'cause' | 'owner' | 'nextAction' | 'resolutionPlan' | 'resolutionEvidence'>; sourceType?: 'local' | 'filesystem'; historical?: boolean; legacy?: boolean; source?: string; activeBlocker?: boolean }
 export type Artifact = { id: string; cardId: string; name: string; kind: string; status: string; path: string; sourcePath: string; size: number }
 export type JobStatus = 'planned' | 'ready' | 'in_progress' | 'review' | 'blocked' | 'awaiting_owner' | 'completed' | 'failed' | 'not_verified'
 export type AgentRunEvent = 'dispatched' | 'accepted' | 'started' | 'progress' | 'waiting_input' | 'blocked' | 'artifact_created' | 'handoff_sent' | 'review' | 'completed' | 'failed' | 'cancelled'
@@ -39,7 +40,19 @@ export function validateBlocker(input: BlockerInput): void {
   if (input.status === 'open') {
     const missing = (['owner', 'nextAction', 'resolutionPlan'] as const).filter((key) => !input[key]?.trim())
     if (missing.length) throw new FluxError('INVALID_BLOCKER', `Open blocker requires ${missing.join(', ')}`)
+    if (isPassiveResolutionPlan(input.resolutionPlan || '')) throw new FluxError('INVALID_BLOCKER', 'Open blocker resolutionPlan must contain an executable action, not retention-only language')
   }
+}
+
+const passiveResolution = /^(?:manter|continuar|aguardar|esperar|não executar|nao executar|sem executar|não agir|nao agir|retener|retido|pendente)(?:\s|;|,|\.|$)/i
+export function isPassiveResolutionPlan(plan: string) {
+  const text = plan.trim()
+  if (!passiveResolution.test(text)) return false
+  if (/(?:manter pendente|aguardar|esperar|não executar|nao executar|sem executar|não agir|nao agir)/i.test(text)) return true
+  return !/\b(?:executar|validar|registrar|entregar|anexar|fornecer|emitir|ler de volta|readback|produzir|pesquisar|comparar)\b/i.test(text)
+}
+function actionFromLegacy(input: BlockerInput): ResolutionAction {
+  return input.resolutionAction || { from: 'Flux', to: input.owner || '', objective: input.cause, deliverable: input.nextAction || '', acceptanceCriteria: input.resolutionPlan || '', evidenceRequired: input.resolutionEvidence || '', nextStep: input.nextAction || '' }
 }
 
 export function normalizeBlocker(input: BlockerInput, sourceId?: string): Blocker {
@@ -48,7 +61,8 @@ export function normalizeBlocker(input: BlockerInput, sourceId?: string): Blocke
 
   const plan = input.resolutionPlan?.trim() || ''
   const owner = input.owner?.trim() || ''; const nextAction = input.nextAction?.trim() || ''
-  return { id: input.id, sourceId: input.sourceId || sourceId, cardId: input.cardId, cause: input.cause, status, owner, nextAction, resolutionPlan: plan, resolutionEvidence: input.resolutionEvidence?.trim() || '', resolution: input.resolution || (owner && nextAction && plan ? 'declared' : 'not_declared'), verification: input.verification || (status === 'legacy' ? 'unverified' : 'verified') }
+  const resolutionAction = actionFromLegacy({ ...input, owner, nextAction, resolutionPlan: plan })
+  return { id: input.id, sourceId: input.sourceId || sourceId, cardId: input.cardId, cause: input.cause, status, owner, nextAction, resolutionPlan: plan, resolutionEvidence: input.resolutionEvidence?.trim() || '', resolution: input.resolution || (owner && nextAction && plan && !isPassiveResolutionPlan(plan) ? 'declared' : 'not_declared'), verification: input.verification || (status === 'legacy' ? 'unverified' : 'verified'), resolutionAction }
 }
 
 export class FluxError extends Error { constructor(public code: string, message: string, public status = 400) { super(message) } }
@@ -230,7 +244,7 @@ export async function resumeHandoff(id: string, input: HandoffActionInput, actor
   const event: Event = { id: `event-release-${input.correlationId}`, time: now, actor: actor.actor, action: 'released handoff', cardId: handoff.cardId, handoffId: handoff.id, jobId: handoff.jobId, from: actor.actor, to: input.owner, owner: input.owner, nextAction: input.nextAction, correlationId: input.correlationId, reason: input.cause, solution }
   state.events.push(event); await save(state, file); return { handoff, event, idempotent: false }
 }
-export type ForwardBlockerInput = { cardId?: string; jobId?: string; correlationId: string }
+export type ForwardBlockerInput = { cardId?: string; jobId?: string; correlationId: string; resolutionAction?: Partial<ResolutionAction> }
 export async function forwardBlocker(blockerId: string, input: ForwardBlockerInput, actor: LocalActor, file?: string) {
   validateLocal(actor)
   if (!input.correlationId?.trim()) throw new FluxError('CORRELATION_REQUIRED', 'correlationId is required')
@@ -247,18 +261,47 @@ export async function forwardBlocker(blockerId: string, input: ForwardBlockerInp
   if (!candidate) throw new FluxError('BLOCKER_NOT_FOUND', `Blocker ${blockerId} not found`, 404)
   const blocker = normalizeBlocker(candidate.raw, candidate.source?.id)
   if (blocker.status !== 'open') throw new FluxError('BLOCKER_NOT_OPEN', 'Only open blockers can be forwarded', 409)
-  if (!blocker.owner || !blocker.nextAction || !blocker.resolutionPlan) throw new FluxError('SOLUTION_NOT_DECLARED', 'solução não declarada', 422)
+  if (!blocker.owner || !blocker.nextAction || !blocker.resolutionPlan || isPassiveResolutionPlan(blocker.resolutionPlan)) throw new FluxError('SOLUTION_NOT_DECLARED', 'solução executável não declarada', 422)
+  const resolutionAction: ResolutionAction = { ...blocker.resolutionAction, ...input.resolutionAction, from: actor.actor } as ResolutionAction
+  const missingAction = (Object.keys(resolutionAction) as Array<keyof ResolutionAction>).filter((key) => !resolutionAction[key]?.trim())
+  if (missingAction.length) throw new FluxError('INVALID_FORWARDING_INSTRUCTION', `Encaminhamento requer ${missingAction.join(', ')}`, 422)
+  if (isPassiveResolutionPlan(resolutionAction.acceptanceCriteria)) throw new FluxError('INVALID_FORWARDING_INSTRUCTION', 'Critério de aceite não pode ser retenção passiva', 422)
   const cardId = input.cardId || blocker.cardId || candidate.source?.cardId
   if (!cardId) throw new FluxError('CARD_REQUIRED', 'cardId is required for blocker forwarding')
   const card = state.cards.find((item) => item.id === cardId)
   if (!card) throw new FluxError('CARD_NOT_FOUND', `Card ${cardId} not found`, 404)
   const job = input.jobId ? state.jobs?.find((item) => item.jobId === input.jobId) : state.jobs?.find((item) => item.cardId === cardId && item.blockers.includes(blocker.cause))
   if (input.jobId && !job) throw new FluxError('JOB_NOT_FOUND', `Job ${input.jobId} not found`, 404)
-  const now = new Date().toISOString(); const solution = { cause: blocker.cause, owner: blocker.owner, nextAction: blocker.nextAction, resolutionPlan: blocker.resolutionPlan, resolutionEvidence: blocker.resolutionEvidence }
+  const forwardingKey = `${blockerId}|${cardId}|${resolutionAction.to}|${resolutionAction.objective}|${resolutionAction.deliverable}`.trim().toLowerCase()
+  const repeated = state.handoffs.find((item) => item.forwardingKey === forwardingKey)
+  if (repeated) {
+    const event = state.events.find((item) => item.handoffId === repeated.id && item.action === 'forwarded blocker')
+    return { event: event || null, handoff: repeated, idempotent: true }
+  }
+  const now = new Date().toISOString(); const solution = { cause: blocker.cause, owner: resolutionAction.to, nextAction: resolutionAction.nextStep, resolutionPlan: resolutionAction.objective, resolutionEvidence: resolutionAction.evidenceRequired }
   const fromStatus = card.status; card.status = 'awaiting_owner'; card.updatedAt = now
-  if (job) { job.status = 'awaiting_owner'; job.nextStep = blocker.nextAction; job.owner = blocker.owner; job.updatedAt = now; job.lastSeen = now }
-  const handoff: Handoff = { id: `handoff-forward-${input.correlationId}`, cardId, jobId: job?.jobId || input.jobId, blockerId, correlationId: input.correlationId, project: card.project, from: actor.actor, to: blocker.owner, summary: `Encaminhamento do blocker ${blockerId}`, done: 'Solução declarada e encaminhada', risks: blocker.cause, nextStep: blocker.nextAction, acceptanceCriteria: blocker.resolutionPlan, evidenceRef: blocker.resolutionEvidence || 'não declarada', createdAt: now, solution }
-  const event: Event = { id: `event-forward-${input.correlationId}`, time: now, actor: actor.actor, action: 'forwarded blocker', cardId, jobId: job?.jobId, blockerId, from: actor.actor, to: blocker.owner, correlationId: input.correlationId, fromStatus, toStatus: 'awaiting_owner', reason: blocker.nextAction, solution }
+  let activeJob = job
+  if (!activeJob) { activeJob = { jobId: `job-forward-${createHash('sha256').update(forwardingKey).digest('hex').slice(0, 16)}`, cardId, project: card.project, agent: resolutionAction.to, role: resolutionAction.to, objective: resolutionAction.objective, status: 'awaiting_owner', updatedAt: now, artifactRefs: [], handoffRefs: [], evidenceRefs: [], blockers: [blocker.cause], nextStep: resolutionAction.nextStep, correlationId: input.correlationId, source: 'local/blocker-forward', sourceType: 'local', historical: false, activeBlocker: true, owner: resolutionAction.to, verification: 'not_verified', lastEvent: 'handoff_sent' }; state.jobs = [...(state.jobs || []), activeJob]; state.agentRuns = state.jobs }
+  if (activeJob) { activeJob.status = 'awaiting_owner'; activeJob.nextStep = resolutionAction.nextStep; activeJob.owner = resolutionAction.to; activeJob.objective = resolutionAction.objective; activeJob.updatedAt = now; activeJob.lastSeen = now; activeJob.correlationId = input.correlationId }
+  const handoff: Handoff = { id: `handoff-forward-${input.correlationId}`, cardId, jobId: activeJob?.jobId, blockerId, correlationId: input.correlationId, forwardingKey, resolutionAction, project: card.project, from: resolutionAction.from, to: resolutionAction.to, summary: `Encaminhamento do blocker ${blockerId}`, done: 'Encaminhamento criado; blocker permanece open', risks: blocker.cause, nextStep: resolutionAction.nextStep, acceptanceCriteria: resolutionAction.acceptanceCriteria, evidenceRef: resolutionAction.evidenceRequired, createdAt: now, status: 'awaiting_owner', solution }
+  const event: Event = { id: `event-forward-${input.correlationId}`, time: now, actor: actor.actor, action: 'forwarded blocker', cardId, jobId: activeJob?.jobId, handoffId: handoff.id, blockerId, from: resolutionAction.from, to: resolutionAction.to, correlationId: input.correlationId, fromStatus, toStatus: 'awaiting_owner', reason: resolutionAction.nextStep, solution, resolutionAction }
   state.handoffs.push(handoff); state.events.push(event); await save(state, file)
   return { event, handoff, idempotent: false }
+}
+
+export async function resolveBlocker(blockerId: string, input: { cardId?: string; evidenceRef: string; artifactId?: string; correlationId: string }, actor: LocalActor, file?: string) {
+  validateLocal(actor)
+  if (!input.correlationId?.trim() || !input.evidenceRef?.trim()) throw new FluxError('EVIDENCE_REQUIRED', 'correlationId and evidenceRef are required', 422)
+  const state = await load(file)
+  const candidates: Array<{ raw: BlockerInput; source?: Handoff }> = [...(state.blockers || []).map((raw) => ({ raw })), ...state.handoffs.flatMap((source) => (source.blockers || []).map((raw) => ({ raw, source })))]
+  const candidate = candidates.find(({ raw, source }) => raw.id === blockerId && (!input.cardId || (raw.cardId || source?.cardId) === input.cardId))
+  if (!candidate) throw new FluxError('BLOCKER_NOT_FOUND', `Blocker ${blockerId} not found`, 404)
+  const blocker = normalizeBlocker(candidate.raw, candidate.source?.id); const cardId = input.cardId || blocker.cardId || candidate.source?.cardId
+  const evidence = state.artifacts.find((item) => item.status === 'available' && (!cardId || item.cardId === cardId) && (input.artifactId ? item.id === input.artifactId : item.path === input.evidenceRef || item.sourcePath === input.evidenceRef || item.name === input.evidenceRef))
+  if (!evidence) throw new FluxError('MISSING_EVIDENCE', 'Resolution requires a persisted available artifact/readback', 422)
+  if (blocker.status !== 'open') throw new FluxError('BLOCKER_NOT_OPEN', 'Only open blockers can be resolved', 409)
+  if (candidate.source) { candidate.raw.status = 'resolved'; candidate.raw.resolution = 'declared'; candidate.raw.resolutionEvidence = input.evidenceRef }
+  else { const original = state.blockers!.find((item) => item.id === blockerId)!; original.status = 'resolved'; original.resolution = 'declared'; original.resolutionEvidence = input.evidenceRef }
+  const event: Event = { id: `event-resolve-${input.correlationId}`, time: new Date().toISOString(), actor: actor.actor, action: 'resolved blocker with evidence', cardId, blockerId, correlationId: input.correlationId, reason: input.evidenceRef }
+  state.events.push(event); await save(state, file); return { blocker: normalizeBlocker(candidate.raw, candidate.source?.id), event }
 }

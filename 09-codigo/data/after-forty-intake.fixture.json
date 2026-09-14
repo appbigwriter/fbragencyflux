@@ -108,10 +108,19 @@
           "status": "open",
           "owner": "Théo",
           "nextAction": "Validar endpoint oficial e credencial no runtime seguro, sem registrar secrets.",
-          "resolutionPlan": "Após Gate técnico, executar health/readback e apresentar plano idempotente; até lá não mutar.",
+          "resolutionPlan": "Validar contrato, executar health/readback autorizado e registrar resultado idempotente.",
           "resolutionEvidence": "03-arquitetura/runtime-control-tower.md; 09-codigo/README.md",
           "resolution": "declared",
-          "verification": "verified"
+          "verification": "verified",
+          "resolutionAction": {
+            "from": "Flux",
+            "to": "Théo",
+            "objective": "Confirmar o contrato e a capacidade de readback sem executar mutação externa.",
+            "deliverable": "Relatório de contrato, health check e readback com endpoint sanitizado.",
+            "acceptanceCriteria": "Endpoint e escopo confirmados; health/readback reproduzível; nenhuma mutação externa realizada.",
+            "evidenceRequired": "Log sanitizado, resposta de health/readback e referência do contrato; sem secrets.",
+            "nextStep": "Validar o endpoint oficial no runtime seguro e anexar o readback."
+          }
         }
       ]
     }
@@ -123,11 +132,20 @@
       "cause": "Produto-pauta específico não foi fornecido; só há categorias e tema Protein / Creatine for 40+.",
       "status": "open",
       "owner": "Gestor Editorial",
-      "nextAction": "Receber opções rastreáveis e registrar decisão por pauta.",
-      "resolutionPlan": "Manter pendente; não inventar SKU, preço, claim ou link.",
-      "resolutionEvidence": "01-conceitual/briefing-after-forty.md; 08-historico/afterforty/iris-intake-handoff.md",
+      "nextAction": "Encaminhar a pauta a Rick/Amazon Research e anexar a matriz rastreável ao AF-001.",
+      "resolutionPlan": "Fornecer 2-3 opções rastreáveis por pauta, com dependência explícita de Rick/Amazon Research, sem escolher nem inventar.",
+      "resolutionEvidence": "Matriz versionada, URLs consultadas, datas de consulta e registro do retorno de Rick/Amazon Research.",
       "resolution": "declared",
-      "verification": "verified"
+      "verification": "verified",
+      "resolutionAction": {
+        "from": "Flux",
+        "to": "Gestor Editorial",
+        "objective": "Fornecer 2-3 opções rastreáveis por pauta, com dependência explícita de Rick/Amazon Research, sem escolher nem inventar.",
+        "deliverable": "Matriz por pauta com 2-3 opções, fonte, URL, data de consulta e limitações.",
+        "acceptanceCriteria": "Cada pauta tem 2-3 opções verificáveis; matriz contém fonte/URL/data/limitações; decisões e ausência de dados estão separadas.",
+        "evidenceRequired": "Matriz versionada, URLs consultadas, datas de consulta e registro do retorno de Rick/Amazon Research.",
+        "nextStep": "Encaminhar a pauta a Rick/Amazon Research e anexar a matriz rastreável ao AF-001."
+      }
     },
     {
       "id": "blocker-afterforty-remote-provisioning",
@@ -135,11 +153,20 @@
       "cause": "Provisionamento remoto depende de endpoint autenticado e escopo técnico autorizado; não há readback externo neste escopo local.",
       "status": "open",
       "owner": "Théo",
-      "nextAction": "Validar contrato/endpoint no runtime seguro e preparar proposta sem mutação.",
-      "resolutionPlan": "Após Gate técnico, validar e ler de volta o alvo; até lá manter sem execução.",
-      "resolutionEvidence": "03-arquitetura/runtime-control-tower.md; 09-codigo/README.md",
+      "nextAction": "Validar endpoint no runtime seguro, executar health/readback e registrar o resultado.",
+      "resolutionPlan": "Confirmar endpoint, autenticação e escopo de provisionamento antes de qualquer mutação.",
+      "resolutionEvidence": "Checklist, resposta de readback, correlationId e referência segura da configuração.",
       "resolution": "declared",
-      "verification": "verified"
+      "verification": "verified",
+      "resolutionAction": {
+        "from": "Flux",
+        "to": "Théo",
+        "objective": "Confirmar endpoint, autenticação e escopo de provisionamento antes de qualquer mutação.",
+        "deliverable": "Checklist técnico com contrato, health/readback e plano de execução idempotente.",
+        "acceptanceCriteria": "Contrato e credencial referenciada no runtime; readback real anexado; mutação não executada sem Gate.",
+        "evidenceRequired": "Checklist, resposta de readback, correlationId e referência segura da configuração.",
+        "nextStep": "Validar endpoint no runtime seguro, executar health/readback e registrar o resultado."
+      }
     },
     {
       "id": "blocker-afterforty-sergio-gate",
@@ -147,11 +174,20 @@
       "cause": "Migration, provisionamento, deploy, DNS, publicação e gasto exigem Gate explícito e datado; nenhum foi fornecido nesta preparação.",
       "status": "open",
       "owner": "Sergio",
-      "nextAction": "Emitir Gate com alvo, escopo, versão e ambiente específicos.",
-      "resolutionPlan": "Registrar decisão e executar/verificar separadamente; manter bloqueado até então.",
-      "resolutionEvidence": "03-arquitetura/criterio-e2e-operacional.md; 02-prd/PRD-Agency-Flux-operacional.md",
+      "nextAction": "Emitir o Gate específico no registro local e encaminhar a execução somente após aprovação.",
+      "resolutionPlan": "Obter decisão formal sobre alvo, escopo, versão e ambiente das ações de risco.",
+      "resolutionEvidence": "Registro persistido do Gate, decisão de Sergio e event correlationId.",
       "resolution": "declared",
-      "verification": "verified"
+      "verification": "verified",
+      "resolutionAction": {
+        "from": "Flux",
+        "to": "Sergio",
+        "objective": "Obter decisão formal sobre alvo, escopo, versão e ambiente das ações de risco.",
+        "deliverable": "Registro de Gate datado com decisão, escopo autorizado, rollback e evidência requerida.",
+        "acceptanceCriteria": "Gate identifica alvo/escopo/versão/ambiente; decisão é explícita; execução permanece separada da aprovação.",
+        "evidenceRequired": "Registro persistido do Gate, decisão de Sergio e event correlationId.",
+        "nextStep": "Emitir o Gate específico no registro local e encaminhar a execução somente após aprovação."
+      }
     }
   ],
   "jobs": [

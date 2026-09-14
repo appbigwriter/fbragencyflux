@@ -1,22 +1,18 @@
-# Flux — desbloqueio por encaminhamento
+# Flux — contrato operacional de resolução e encaminhamento
 
-## Fluxo operacional
+Todo blocker aberto possui `resolutionAction` executável: `from`, `to`, `objective`, `deliverable`, `acceptanceCriteria`, `evidenceRequired` e `nextStep`. `resolutionPlan` iniciado por retenção (`manter pendente`, `aguardar`, `não executar` etc.) é inválido quando não contém uma ação executável.
 
-1. Um Handoff, job ou card pode declarar um blocker `status: open` com `cause`, `owner`, `nextAction`, `resolutionPlan` e, quando disponível, `resolutionEvidence`
-2. O dashboard exibe os cinco campos sem completar lacunas. Sem `owner`, `nextAction` ou `resolutionPlan`, a ação permanece desabilitada e mostra `solução não declarada`
-3. Um operador autenticado chama `POST /api/flux/blockers/:id/forward` com `cardId` ou `jobId` e `correlationId`. O actor é sempre derivado da sessão server-side; `actor` enviado pelo browser não é aceito
-4. O servidor valida que o blocker existe, é `open` e tem solução declarada. Blockers `legacy` ou `resolved` são rejeitados
-5. A operação grava um Handoff de encaminhamento e um evento com `from`, `to`, `blockerId`, card/job, solução, timestamp e `correlationId`. A mesma correlação retorna o registro existente sem duplicar evento ou Handoff
-6. O card/job passa a `awaiting_owner`; o blocker permanece `open` até resolução posterior baseada em evidência
-7. A UI confirma destinatário e próximo passo após o readback da API
+## Fluxo
 
-## Critérios de aceite
+1. A página exibe causa, owner, como resolver, objetivo, entregável, critérios e evidência necessária.
+2. Usuário autenticado abre o formulário, revisa/edita os campos e envia `POST /api/flux/blockers/:id/forward` com `resolutionAction`, `cardId`, `jobId` opcional e `correlationId`. O actor vem da sessão server-side.
+3. O servidor valida blocker `open`, todos os campos da instrução e rejeita planos passivos. Blockers `legacy`/`resolved` não são encaminháveis.
+4. A operação persiste novo Handoff, job e evento com correlationId. A chave `blockerId|cardId|to|objective|deliverable` e a correlação tornam repetições idempotentes.
+5. Card/job aguarda o owner; o blocker continua `open`. Encaminhar nunca resolve blocker.
+6. Resolução exige endpoint separado e evidência real persistida; não há botão de encaminhamento que altere `status` do blocker.
 
-- Dado blocker aberto completo, botão habilitado como `Prosseguir / liberar para <owner>` e encaminhamento persistido
-- Dado solução ausente, botão disabled com motivo literal `solução não declarada`; nenhuma identidade ou solução é inventada
-- Dado blocker legacy ou resolved, API responde conflito e não altera estado
-- Dado correlação repetida, existe exatamente um evento e um Handoff de encaminhamento
-- Dado request sem sessão, API responde `401`; actor no body nunca substitui a sessão
-- Dado encaminhamento aceito, readback confirma `from` autenticado, `to` owner, solução, correlação e estado `awaiting_owner`, mantendo blocker `open`
+### Produto-pauta After Forty
 
-A operação é local e não executa deploy, publicação, gasto, migration ou integração externa
+Destino: Gestor Editorial, com dependência de Rick/Amazon Research. Objetivo: fornecer 2–3 opções rastreáveis por pauta, sem escolher nem inventar produto, ASIN, preço, claim ou link. Entregável: matriz por pauta com fonte, URL, data de consulta e limitações. Aceite: todas as pautas têm 2–3 opções verificáveis e a matriz separa fatos, ausência de dados e decisão. Evidência: matriz versionada, URLs/datas e retorno registrado de Rick/Amazon Research.
+
+A operação é local e não executa deploy, publicação, gasto, migration ou integração externa.
