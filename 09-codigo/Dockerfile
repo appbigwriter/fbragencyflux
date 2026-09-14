@@ -42,6 +42,8 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 # If you have a public folder, uncomment the line below
 # COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 
+COPY --from=builder --chown=nextjs:nodejs /app/scripts ./scripts
+
 USER nextjs
 
 EXPOSE 3000
