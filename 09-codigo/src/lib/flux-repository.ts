@@ -3,6 +3,7 @@ import { readdir } from 'node:fs/promises'
 import path from 'node:path'
 import { createHash } from 'node:crypto'
 import { configuredRepository } from './persistence'
+import { isJobStale } from './jobs'
 
 export type ProjectStatus = 'active' | 'blocked' | 'planned'
 export type CardStatus = 'planned' | 'ready' | 'in_progress' | 'review' | 'blocked' | 'awaiting_owner' | 'awaiting_approval' | 'approved' | 'executing' | 'verifying' | 'completed' | 'failed'
@@ -158,7 +159,7 @@ export async function importHistory(file?: string): Promise<FluxState> {
   await save(state, file)
   return state
 }
-export async function getJobs(file?: string, filters: { agent?: string; status?: string; card?: string } = {}) { const jobs = (await load(file)).jobs || []; return jobs.filter((job) => (!filters.agent || job.agent === filters.agent) && (!filters.status || job.status === filters.status) && (!filters.card || job.cardId === filters.card)).map((job) => ({ ...job, stale: Boolean(job.lastSeen && Date.now() - Date.parse(job.lastSeen) > 30000) })) }
+export async function getJobs(file?: string, filters: { agent?: string; status?: string; card?: string } = {}) { const jobs = (await load(file)).jobs || []; return jobs.filter((job) => (!filters.agent || job.agent === filters.agent) && (!filters.status || job.status === filters.status) && (!filters.card || job.cardId === filters.card)).map((job) => ({ ...job, stale: isJobStale(job) })) }
 export async function getJob(id: string, file?: string) { const job = (await load(file)).jobs?.find((item) => item.jobId === id); if (!job) throw new FluxError('JOB_NOT_FOUND', `Job ${id} not found`, 404); return job }
 const runFields = ['jobId','cardId','project','agent','role','objective','status','startedAt','updatedAt','completedAt','artifactRefs','handoffRefs','evidenceRefs','blockers','nextStep','correlationId','source','lastSeen','progress','currentStep','owner','lastEvent','verification'] as const
 export async function upsertJob(input: Partial<AgentRun>, actor: LocalActor, file?: string) { validateLocal(actor); if (!input.jobId || !input.cardId || !input.agent || !input.objective) throw new FluxError('INVALID_JOB', 'jobId, cardId, agent and objective are required'); const state = await load(file); const now = new Date().toISOString(); const current = (state.jobs || []).find((item) => item.jobId === input.jobId); const job: AgentRun = { ...(current || { role: '', project: '', artifactRefs: [], handoffRefs: [], evidenceRefs: [], blockers: [], nextStep: '', correlationId: `local-${Date.now()}`, source: 'local/dispatcher adapter', sourceType: 'local', historical: false, activeBlocker: false, updatedAt: now }), ...input, updatedAt: now, lastSeen: input.lastSeen || now, sourceType: input.sourceType || current?.sourceType || 'local', historical: input.historical ?? current?.historical ?? false, activeBlocker: input.activeBlocker ?? current?.activeBlocker ?? input.status === 'blocked', verification: input.verification || current?.verification || 'not_verified' } as AgentRun; if (job.status === 'completed' && !job.evidenceRefs.length && !job.artifactRefs.length) job.status = 'not_verified'; state.jobs = current ? state.jobs!.map((item) => item.jobId === job.jobId ? job : item) : [...(state.jobs || []), job]; state.agentRuns = state.jobs; await save(state, file); return job }
