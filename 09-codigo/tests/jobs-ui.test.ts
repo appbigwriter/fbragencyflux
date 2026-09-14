@@ -1,11 +1,14 @@
+import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { filterJobs, getJobSummary, getPriorityJobs, isJobStale, type JobFilter } from '../src/lib/jobs'
+import { classifyJob, filterJobs, getJobSummary, getPriorityJobs, isJobStale, type JobFilter } from '../src/lib/jobs'
 import type { AgentRun } from '../src/lib/flux-repository'
 
 const job = (patch: Partial<AgentRun> = {}): AgentRun => ({
   jobId: 'job-1', cardId: 'AF-001', project: 'After Forty', agent: 'Íris', role: 'researcher', objective: 'Validar o fluxo', status: 'review', updatedAt: '2026-09-14T10:00:00Z',
   artifactRefs: [], handoffRefs: [], evidenceRefs: [], blockers: [], nextStep: 'Revisar evidência', correlationId: 'corr-1', source: 'local/dispatcher', sourceType: 'local', historical: false, activeBlocker: false, lastSeen: '2026-09-14T10:00:00Z', progress: 40, currentStep: 'Leitura', owner: 'Gabe', ...patch,
-})
+ })
+
+ const fixture = JSON.parse(readFileSync(new URL('../data/after-forty-intake.fixture.json', import.meta.url), 'utf8')) as { jobs: AgentRun[] }
 
 describe('jobs operational view', () => {
   it('counts status, origin, live/historical, stale and blockers from real jobs', () => {
@@ -24,8 +27,16 @@ describe('jobs operational view', () => {
     expect(getPriorityJobs(items, new Date('2026-09-14T10:00:01Z'))).toHaveLength(6)
     expect(items[0].objective).toBe('Validar o fluxo'); expect(items[0].correlationId).toBe('corr-1')
   })
-  it('distinguishes stale historical readback from realtime jobs', () => {
-    expect(isJobStale(job({ historical: true, sourceType: 'filesystem' }), new Date('2026-09-14T10:00:01Z'))).toBe(true)
-    expect(isJobStale(job({ historical: false, sourceType: 'local', lastSeen: '2026-09-14T10:00:00Z' }), new Date('2026-09-14T10:00:01Z'))).toBe(false)
+  it('classifies the public intake fixture as planned, never realtime or stale', () => {
+    const summary = getJobSummary(fixture.jobs, new Date('2026-09-14T12:00:31-03:00'))
+    expect(summary.planned).toBe(4); expect(summary.live).toBe(0); expect(summary.realtime).toBe(0); expect(summary.stale).toBe(0)
+    expect(fixture.jobs.every((item) => classifyJob(item) === 'planned')).toBe(true)
+    expect(fixture.jobs.every((item) => isJobStale(item, new Date('2026-09-14T12:00:31-03:00')) === false)).toBe(true)
+  })
+  it('marks only an initiated live job with an old heartbeat as stale', () => {
+    const live = job({ source: 'live/dispatcher', sourceType: 'live', status: 'in_progress', startedAt: '2026-09-14T09:00:00Z', lastSeen: '2026-09-14T09:00:00Z', lastEvent: 'started' })
+    const summary = getJobSummary([live], new Date('2026-09-14T10:00:01Z'))
+    expect(classifyJob(live)).toBe('realtime'); expect(isJobStale(live, new Date('2026-09-14T10:00:01Z'))).toBe(true)
+    expect(summary.realtime).toBe(1); expect(summary.stale).toBe(1); expect(summary.planned).toBe(0)
   })
 })
