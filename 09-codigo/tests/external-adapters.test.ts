@@ -32,6 +32,11 @@ describe('Supabase persistence diagnostics', () => {
     })
   }
 
+  it('maps 5xx responses to an unavailable upstream diagnostic', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(new Response('', { status: 503 })))
+    await expect(new SupabaseFluxRepository('https://project.supabase.co', 'secret').load()).rejects.toMatchObject({ code: 'PERSISTENCE_UPSTREAM_UNAVAILABLE', status: 503 })
+  })
+
   it('loads state successfully and does not expose request credentials', async () => {
     const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify([{ state }]), { status: 200, headers: { 'content-type': 'application/json' } }))
     vi.stubGlobal('fetch', fetchMock)
