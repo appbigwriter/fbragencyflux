@@ -14,3 +14,20 @@
 .authControl { display:flex; align-items:center; justify-content:flex-end; gap:8px; flex-wrap:wrap; font-size:11px; }.authStatus { white-space:nowrap; }.authForm, .authLoggedIn { display:flex; align-items:center; gap:5px; }.authForm input { width:105px; border:1px solid var(--line); border-radius:5px; padding:6px 7px; background:white; font:11px 'DM Mono',monospace; }.authControl button { border:1px solid var(--line); border-radius:5px; padding:6px 9px; background:var(--mint); color:var(--green); cursor:pointer; font:11px 'DM Mono',monospace; }.authControl button:disabled { opacity:.5; cursor:not-allowed; }.authMessage { flex-basis:100%; text-align:right; color:var(--red)!important; }
 @media (max-width:800px) { .jobRow { grid-template-columns:1fr auto; }.detailGrid { grid-template-columns:1fr 1fr; } }
 @media (max-width:480px) { .detailGrid { grid-template-columns:1fr; } }
+
+/* Accessible operational forms and executive readback */
+.forwardForm { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin-top:16px; max-height:min(66vh,760px); overflow-y:auto; padding:2px 6px 12px 0; }
+.forwardField { display:flex; flex-direction:column; gap:6px; color:var(--ink); font-size:12px; font-weight:600; min-width:0; }
+.forwardField:nth-last-child(-n+3) { grid-column:1 / -1; }
+.forwardField textarea { width:100%; min-height:72px; resize:vertical; box-sizing:border-box; border:1px solid var(--line); border-radius:7px; padding:10px; background:#fff; color:var(--ink); font:13px/1.45 inherit; }
+.forwardField textarea:focus, .toolbar input:focus, .toolbar select:focus { outline:3px solid #b9d8c4; outline-offset:1px; border-color:var(--green); }
+.errorNotice { padding:10px 14px; border:1px solid #efc9c0; background:#fff3ef; color:var(--red); border-radius:8px; margin-bottom:14px; }
+.problemSummary { border-left:4px solid var(--red); background:#fff8f5; padding:10px 14px; margin:12px 0; color:var(--ink); }
+.problemSummary p { margin:5px 0 0; font-size:12px; color:var(--muted); }
+.handoffRow { display:grid; grid-template-columns:minmax(0,1.6fr) minmax(110px,.8fr) auto minmax(100px,.7fr); align-items:center; gap:12px; border:1px solid var(--line); border-radius:7px; padding:12px; background:white; color:inherit; text-align:left; cursor:pointer; font-size:11px; }
+.handoffRow:hover, .jobRow:hover, .card:hover { border-color:var(--green); box-shadow:0 2px 8px #173b2412; }
+.handoffRow strong, .handoffRow small { display:block; overflow-wrap:anywhere; }.handoffRow small { color:var(--muted); margin-top:4px; }.openHint { color:var(--green); font-weight:600; }
+.executiveDetails { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; margin:14px 0; }.executiveDetails p { border:1px solid var(--line); border-radius:7px; padding:10px; margin:0; font-size:12px; overflow-wrap:anywhere; }
+.progressBar { display:block; height:7px; width:100%; min-width:70px; background:#e7ebe6; border-radius:10px; overflow:hidden; margin-top:8px; }.progressBar span { display:block; height:100%; background:var(--green); border-radius:10px; transition:width .2s ease; }
+.technicalDetails { margin-top:14px; border-top:1px solid var(--line); padding-top:10px; }.technicalDetails summary { cursor:pointer; color:var(--green); font-size:12px; font-weight:600; }.technicalDetails pre { max-height:300px; overflow:auto; white-space:pre-wrap; background:#f5f4ef; padding:12px; font-size:10px; }
+@media (max-width:800px) { .forwardForm, .executiveDetails { grid-template-columns:1fr; }.forwardField:nth-last-child(-n+3) { grid-column:auto; }.handoffRow { grid-template-columns:1fr auto; }.handoffRow .openHint { grid-column:2; grid-row:1; }.handoffRow .status { justify-self:start; } }
