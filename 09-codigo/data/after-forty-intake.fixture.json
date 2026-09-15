@@ -547,5 +547,7 @@
         "Deploy, DNS, publicação, gasto e mutação não autorizados."
       ]
     }
-  ]
+  ],
+  "requiredActions": [],
+  "coordinator": {}
 }
