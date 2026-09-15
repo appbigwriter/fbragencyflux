@@ -2,9 +2,10 @@ import { readFile, stat } from 'node:fs/promises'
 import { readdir } from 'node:fs/promises'
 import path from 'node:path'
 import { createHash } from 'node:crypto'
-import { configuredRepository } from './persistence'
+import { configuredRepository, type StateMutation } from './persistence'
 import { isJobStale } from './jobs'
 import { triageHandoff, buildDependencyGraph, type IrisTriageInput } from './iris-orchestrator'
+import { createReceipt, type Receipt } from './observability'
 
 export type ProjectStatus = 'active' | 'blocked' | 'planned'
 export type CardStatus = 'planned' | 'ready' | 'in_progress' | 'review' | 'blocked' | 'awaiting_owner' | 'awaiting_approval' | 'approved' | 'executing' | 'verifying' | 'completed' | 'failed'
@@ -16,10 +17,10 @@ export type Gate = {
   impact: string; cost: string; scope: string; reversibility: string; rollback: string; evidence: string[]
   owner: string; requestedAt: string; decidedAt?: string; decidedBy?: string; externalActionAuthorized: false; blockers: string[]
 }
-export type Project = { id: string; name: string; status: ProjectStatus; owner: string; description: string }
-export type Card = { id: string; title: string; project: string; status: CardStatus; assignee: string; priority: 'high' | 'normal'; detail: string; acceptanceCriteria: string[]; updatedAt: string }
-export type Approval = { id: string; cardId: string; title: string; requestedBy: string; impact: string; scope: string; rollback: string; status: ApprovalStatus; decidedAt?: string; decidedBy?: string }
-export type Event = { id: string; time: string; actor: string; action: string; cardId?: string; correlationId?: string; fromStatus?: string; toStatus?: string; reason?: string; blockerId?: string; jobId?: string; handoffId?: string; from?: string; to?: string; owner?: string; nextAction?: string; solution?: { cause: string; owner: string; nextAction: string; resolutionPlan: string; resolutionEvidence: string }; resolutionAction?: ResolutionAction }
+export type Project = { id: string; name: string; tenantId?: string; status: ProjectStatus; owner: string; description: string }
+export type Card = { id: string; project: string; tenantId?: string; title: string; status: CardStatus; assignee: string; priority: 'high' | 'normal'; detail: string; acceptanceCriteria: string[]; updatedAt: string }
+export type Approval = { id: string; cardId: string; tenantId?: string; title: string; requestedBy: string; impact: string; scope: string; rollback: string; status: ApprovalStatus; decidedAt?: string; decidedBy?: string }
+export type Event = { id: string; time: string; actor: string; action: string; cardId?: string; correlationId?: string; fromStatus?: string; toStatus?: string; reason?: string; blockerId?: string; jobId?: string; handoffId?: string; from?: string; to?: string; owner?: string; nextAction?: string; solution?: { cause: string; owner: string; nextAction: string; resolutionPlan: string; resolutionEvidence: string }; resolutionAction?: ResolutionAction; receipt?: import('./observability').Receipt }
 export type ResolutionAction = { from: string; to: string; objective: string; deliverable: string; acceptanceCriteria: string; evidenceRequired: string; nextStep: string; fallback?: string }
 export type BlockerStatus = 'open' | 'resolved' | 'legacy'
 export type BlockerResolution = 'declared' | 'forwarded' | 'not_declared' | 'legacy'
@@ -31,13 +32,14 @@ export type Handoff = { id: string; cardId: string; project: string; from: strin
 export type Artifact = { id: string; cardId: string; name: string; kind: string; status: string; path: string; sourcePath: string; size: number }
 export type JobStatus = 'planned' | 'ready' | 'in_progress' | 'review' | 'blocked' | 'awaiting_owner' | 'completed' | 'failed' | 'not_verified'
 export type AgentRunEvent = 'dispatched' | 'accepted' | 'started' | 'progress' | 'waiting_input' | 'blocked' | 'artifact_created' | 'handoff_sent' | 'review' | 'completed' | 'failed' | 'cancelled'
-export type AgentRun = { jobId: string; cardId: string; project: string; agent: string; role: string; objective: string; status: JobStatus; startedAt?: string; updatedAt: string; completedAt?: string; artifactRefs: string[]; handoffRefs: string[]; evidenceRefs: string[]; blockers: string[]; nextStep: string; correlationId: string; source: string; sourceType?: 'local' | 'filesystem' | 'live'; historical?: boolean; activeBlocker?: boolean; lastSeen?: string; lastActivity?: string; nextCheck?: string; progress?: number; currentStep?: string; owner?: string; lastEvent?: AgentRunEvent; verification?: 'verified' | 'not_verified'; dependsOn?: string[]; blocks?: string[]; canStart?: boolean; parallelGroup?: string; track?: string; dependencyReason?: string }
+export type AgentRun = { jobId: string; cardId: string; project: string; tenantId?: string; agent: string; role: string; objective: string; status: JobStatus; startedAt?: string; updatedAt: string; completedAt?: string; artifactRefs: string[]; handoffRefs: string[]; evidenceRefs: string[]; blockers: string[]; nextStep: string; correlationId: string; source: string; sourceType?: 'local' | 'filesystem' | 'live'; historical?: boolean; activeBlocker?: boolean; lastSeen?: string; lastActivity?: string; nextCheck?: string; progress?: number; currentStep?: string; owner?: string; lastEvent?: AgentRunEvent; verification?: 'verified' | 'not_verified'; dependsOn?: string[]; blocks?: string[]; canStart?: boolean; parallelGroup?: string; track?: string; dependencyReason?: string }
 export type RequiredActionRecord = { id: string; dedupeKey: string; what: string; why: string; who: string; from: string; to: string; objective: string; deliverable: string; acceptanceCriteria: string; dueCheck: string; fallback: string; status: 'ready' | 'hold' | 'completed'; reasonCode?: string; correlationId: string; createdAt: string; updatedAt: string }
 export type CoordinatorRun = { correlationId: string; startedAt: string; completedAt: string; heartbeat: string; lastActivity: string; idleDetected: number; dispatched: number; holds: number; requiredActions: number; waitingReasons: string[]; result: 'completed' | 'dry_run' | 'failed'; lastCheck?: string; nextFollowUp?: string; unanswered?: number; backlogActionable?: number }
 export type Job = AgentRun
 export type FluxState = { version: number; projects: Project[]; cards: Card[]; approvals: Approval[]; gates: Gate[]; events: Event[]; handoffs: Handoff[]; artifacts: Artifact[]; blockers?: BlockerInput[]; jobs?: Job[]; agentRuns?: AgentRun[]; requiredActions?: RequiredActionRecord[]; coordinator?: { lastCoordinatorRun?: CoordinatorRun; waitingReasons?: string[] } }
 export type DashboardSnapshot = Omit<FluxState, 'approvals' | 'events' | 'blockers'> & { approvals: { pending: number; items: Approval[] }; recentEvents: Event[]; activeCards: number; blockers: Blocker[]; risks: Risk[]; pendingGates: number; pendingCards: number; blockerCount: number; projectCards: Record<string, Card[]> }
-export type LocalActor = { actor: string; scope: 'local' }
+export type LocalActor = { actor: string; scope: 'local'; tenantId?: string }
+export type FluxReadScope = { tenantId: string; projectId: string; visibility: 'private' | 'public' }
 
 export function validateBlocker(input: BlockerInput): void {
   if (input.status === 'open') {
@@ -138,8 +140,10 @@ const seededGates: Gate[] = [
   { id: 'FLUX-GATE-04', cardId: 'FLUX-001', project: 'FBR Agency Flux', title: 'Status em tempo real e decisões de Sergio', requiredDecision: 'Confirmar que status, decisões, eventos e readbacks estão visíveis e separados de execução externa', status: 'pending', impact: 'Governa decisões transversais; aprovação local não é execução', cost: 'Nenhum custo local; gasto/publicação/deploy continuam bloqueados', scope: 'Dashboard · API · repositório local · eventos · readback · decisões de Sergio', reversibility: 'Reversível corrigindo estado local e reabrindo decisão', rollback: 'Preservar histórico, marcar changes_requested e retornar ao owner', evidence: ['README.md', 'tests/gates.test.ts', 'LOCAL DECISION / NO EXTERNAL EFFECT'], owner: 'Sergio', requestedAt: '2026-09-12T10:00:00-03:00', externalActionAuthorized: false, blockers: ['Auth remoto e integrações permanecem fora deste gate local'] }
 ]
 
-export function dataFilePath(file = process.env.FLUX_DATA_FILE): string { return path.resolve(file || path.join(process.cwd(), 'data', 'flux-state.json')) }
+export function dataFilePath(file = process.env.FLUX_DATA_FILE): string { return path.resolve(/* turbopackIgnore: true */ file || path.join(process.cwd(), 'data', 'flux-state.json')) }
 function validateLocal(actor: LocalActor) { if (!actor || actor.scope !== 'local' || !allowedActors.has(actor.actor)) throw new FluxError('UNAUTHORIZED_ACTOR', 'Actor is not authorized for local Flux operations', 403) }
+function validateTenant(actor: LocalActor, tenantId?: string) { if (actor.tenantId && tenantId && actor.tenantId !== tenantId) throw new FluxError('TENANT_MISMATCH', 'Operation crosses tenant boundary', 403) }
+function validateEntityTenants(actor: LocalActor, tenantId: string | undefined, entities: Array<{ tenantId?: string }>) { validateTenant(actor, tenantId); for (const entity of entities) validateTenant(actor, entity.tenantId); if (tenantId && entities.some((entity) => entity.tenantId && entity.tenantId !== tenantId)) throw new FluxError('TENANT_MISMATCH', 'Operation crosses tenant boundary', 403) }
 async function syncArtifacts(state: FluxState): Promise<FluxState> {
   const draftDir = path.join(historyRoot, 'drafts'); let names: string[] = []
   try { names = (await readdir(draftDir)).filter((n) => n.endsWith('.md')).sort() } catch { return state }
@@ -169,6 +173,7 @@ async function load(file?: string, importHistory = process.env.FLUX_IMPORT_HISTO
 }
 async function save(state: FluxState, file?: string): Promise<void> { await configuredRepository(file).save(state) }
 export async function saveState(state: FluxState, file?: string): Promise<void> { await save(state, file) }
+export async function mutateState<T>(mutation: StateMutation<T>, file?: string): Promise<T> { return configuredRepository(file).update(mutation) }
 export async function getState(file?: string) { return load(file) }
 export async function importHistory(file?: string): Promise<FluxState> {
   const state = await load(file, false)
@@ -180,14 +185,42 @@ export async function importHistory(file?: string): Promise<FluxState> {
 export async function getJobs(file?: string, filters: { agent?: string; status?: string; card?: string } = {}) { const state = await load(file); const graph = new Map(buildDependencyGraph(state).map((item) => [item.jobId, item])); const jobs = (state.jobs || []).map((job) => ({ ...job, ...graph.get(job.jobId) })); return jobs.filter((job) => (!filters.agent || job.agent === filters.agent) && (!filters.status || job.status === filters.status) && (!filters.card || job.cardId === filters.card)).map((job) => ({ ...job, stale: isJobStale(job) })) }
 export async function getJob(id: string, file?: string) { const job = (await load(file)).jobs?.find((item) => item.jobId === id); if (!job) throw new FluxError('JOB_NOT_FOUND', `Job ${id} not found`, 404); return job }
 const runFields = ['jobId','cardId','project','agent','role','objective','status','startedAt','updatedAt','completedAt','artifactRefs','handoffRefs','evidenceRefs','blockers','nextStep','correlationId','source','lastSeen','progress','currentStep','owner','lastEvent','verification'] as const
-export async function upsertJob(input: Partial<AgentRun>, actor: LocalActor, file?: string) { validateLocal(actor); if (!input.jobId || !input.cardId || !input.agent || !input.objective) throw new FluxError('INVALID_JOB', 'jobId, cardId, agent and objective are required'); const state = await load(file); const now = new Date().toISOString(); const current = (state.jobs || []).find((item) => item.jobId === input.jobId); const job: AgentRun = { ...(current || { role: '', project: '', artifactRefs: [], handoffRefs: [], evidenceRefs: [], blockers: [], nextStep: '', correlationId: `local-${Date.now()}`, source: 'local/dispatcher adapter', sourceType: 'local', historical: false, activeBlocker: false, updatedAt: now }), ...input, updatedAt: now, lastSeen: input.lastSeen || now, sourceType: input.sourceType || current?.sourceType || 'local', historical: input.historical ?? current?.historical ?? false, activeBlocker: input.activeBlocker ?? current?.activeBlocker ?? input.status === 'blocked', verification: input.verification || current?.verification || 'not_verified' } as AgentRun; if (job.status === 'completed' && !job.evidenceRefs.length && !job.artifactRefs.length) job.status = 'not_verified'; state.jobs = current ? state.jobs!.map((item) => item.jobId === job.jobId ? job : item) : [...(state.jobs || []), job]; state.agentRuns = state.jobs; await save(state, file); return job }
+export async function upsertJob(input: Partial<AgentRun>, actor: LocalActor, file?: string) {
+  validateLocal(actor); if (!input.jobId || !input.cardId || !input.agent || !input.objective) throw new FluxError('INVALID_JOB', 'jobId, cardId, agent and objective are required')
+  return mutateState((state) => { const now = new Date().toISOString(); const current = (state.jobs || []).find((item) => item.jobId === input.jobId); const job: AgentRun = { ...(current || { role: '', project: '', artifactRefs: [], handoffRefs: [], evidenceRefs: [], blockers: [], nextStep: '', correlationId: `local-${Date.now()}`, source: 'local/dispatcher adapter', sourceType: 'local', historical: false, activeBlocker: false, updatedAt: now }), ...input, updatedAt: now, lastSeen: input.lastSeen || now, sourceType: input.sourceType || current?.sourceType || 'local', historical: input.historical ?? current?.historical ?? false, activeBlocker: input.activeBlocker ?? current?.activeBlocker ?? input.status === 'blocked', verification: input.verification || current?.verification || 'not_verified' } as AgentRun; if (job.status === 'completed' && !job.evidenceRefs.length && !job.artifactRefs.length) job.status = 'not_verified'; state.jobs = current ? state.jobs!.map((item) => item.jobId === job.jobId ? job : item) : [...(state.jobs || []), job]; state.agentRuns = state.jobs; const receipt = createReceipt({ correlationId: job.correlationId, operation: 'job.upsert', status: 'completed', actor: actor.actor, jobId: job.jobId }); state.events.push({ id: `event-job-${job.jobId}-${now}`, time: now, actor: actor.actor, action: 'upserted job', jobId: job.jobId, cardId: job.cardId, correlationId: job.correlationId, receipt }); return { job, receipt } }
+  , file)
+}
 export async function updateJobEvent(id: string, event: AgentRunEvent, patch: Partial<AgentRun>, actor: LocalActor, file?: string) { const current = await getJob(id, file); const statusMap: Partial<Record<AgentRunEvent, JobStatus>> = { started: 'in_progress', progress: 'in_progress', waiting_input: 'blocked', blocked: 'blocked', review: 'review', completed: 'completed', failed: 'failed', cancelled: 'failed' }; return upsertJob({ ...current, ...patch, lastEvent: event, status: patch.status || statusMap[event] || current.status, completedAt: event === 'completed' ? new Date().toISOString() : patch.completedAt }, actor, file) }
 
 export async function getGates(file?: string): Promise<Gate[]> { return (await load(file)).gates.filter((gate) => gate.project === 'FBR Agency Flux') }
 export async function getSnapshot(file?: string): Promise<DashboardSnapshot> {
+  return buildSnapshot(await load(file))
+}
+export async function getScopedSnapshot(scope: FluxReadScope, file?: string): Promise<DashboardSnapshot> {
   const state = await load(file)
+  const project = state.projects.find((item) => item.id === scope.projectId)
+  if (!project) throw new FluxError('PROJECT_NOT_FOUND', `Project ${scope.projectId} not found`, 404)
+  if (scope.visibility === 'private' && project.tenantId !== scope.tenantId) throw new FluxError('TENANT_MISMATCH', 'Project does not belong to the requested tenant', 403)
+  const projectNames = new Set([project.id, project.name])
+  const owns = (tenantId?: string) => scope.visibility === 'public' ? (!tenantId || tenantId === scope.tenantId) : tenantId === scope.tenantId
+  const cardIds = new Set(state.cards.filter((card) => projectNames.has(card.project) && owns(card.tenantId)).map((card) => card.id))
+  const filtered: FluxState = {
+    ...state,
+    projects: [project],
+    cards: state.cards.filter((card) => cardIds.has(card.id)),
+    approvals: state.approvals.filter((item) => cardIds.has(item.cardId) && owns(item.tenantId)),
+    gates: state.gates.filter((item) => cardIds.has(item.cardId)),
+    events: state.events.filter((item) => !item.cardId || cardIds.has(item.cardId)),
+    handoffs: state.handoffs.filter((item) => cardIds.has(item.cardId)),
+    artifacts: state.artifacts.filter((item) => cardIds.has(item.cardId)),
+    blockers: (state.blockers || []).filter((item) => !item.cardId || cardIds.has(item.cardId)),
+    jobs: (state.jobs || []).filter((item) => cardIds.has(item.cardId) && owns(item.tenantId)),
+  }
+  return buildSnapshot(filtered)
+}
+async function buildSnapshot(state: FluxState): Promise<DashboardSnapshot> {
   const graph = new Map(buildDependencyGraph(state).map((item) => [item.jobId, item])); state.jobs = (state.jobs || []).map((job) => ({ ...job, ...graph.get(job.jobId) })); state.agentRuns = state.jobs
-  const projectCards = Object.fromEntries(state.projects.map((project) => [project.name, state.cards.filter((card) => card.project === project.name)]))
+  const projectCards = Object.fromEntries(state.projects.map((project) => [project.id, state.cards.filter((card) => (card.project === project.id || card.project === project.name) && (!project.tenantId || !card.tenantId || card.tenantId === project.tenantId))]))
   const handoffs = state.handoffs.map((handoff) => ({ ...handoff, activeBlocker: (handoff.blockers || []).some((item) => normalizeBlocker(item, handoff.id).status === 'open') }))
   const blockers = [...(state.blockers || []), ...handoffs.flatMap((handoff) => (handoff.blockers || []).map((blocker) => ({ ...blocker, author: blocker.author || handoff.from, sourceId: handoff.id, cardId: blocker.cardId || handoff.cardId })))]
     .map((blocker) => normalizeBlocker(blocker, blocker.sourceId)).filter((blocker) => blocker.status === 'open')
@@ -197,38 +230,29 @@ export async function getSnapshot(file?: string): Promise<DashboardSnapshot> {
 export function validNextStatuses(status: CardStatus) { return transitions[status] }
 export async function transitionCard(cardId: string, status: CardStatus, actor: LocalActor, file?: string, reason = 'operational transition') {
   validateLocal(actor); if (!status || !Object.hasOwn(transitions, status)) throw new FluxError('INVALID_ACTION', 'Unknown card status')
-  const state = await load(file); const card = state.cards.find((i) => i.id === cardId); if (!card) throw new FluxError('CARD_NOT_FOUND', `Card ${cardId} not found`, 404)
-  if (!transitions[card.status].includes(status)) throw new FluxError('INVALID_TRANSITION', `${card.status} cannot transition to ${status}`)
-  if (status === 'completed' && !state.artifacts.some((a) => a.cardId === cardId && a.status === 'available')) throw new FluxError('MISSING_EVIDENCE', 'Completion requires an available artifact/evidence')
-  const now = new Date().toISOString(); const correlationId = `local-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`; const fromStatus = card.status; card.status = status; card.updatedAt = now
-  const event: Event = { id: `event-${Date.now()}`, time: now, actor: actor.actor, action: `transicionou ${cardId} para ${status} (LOCAL)`, cardId, correlationId, fromStatus, toStatus: status, reason }; state.events.push(event); await save(state, file); return { card, event }
+  return mutateState((state) => { const card = state.cards.find((i) => i.id === cardId); if (!card) throw new FluxError('CARD_NOT_FOUND', `Card ${cardId} not found`, 404); if (!transitions[card.status].includes(status)) throw new FluxError('INVALID_TRANSITION', `${card.status} cannot transition to ${status}`); if (status === 'completed' && !state.artifacts.some((a) => a.cardId === cardId && a.status === 'available')) throw new FluxError('MISSING_EVIDENCE', 'Completion requires an available artifact/evidence'); const now = new Date().toISOString(); const correlationId = `local-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`; const fromStatus = card.status; card.status = status; card.updatedAt = now; const receipt = createReceipt({ correlationId, operation: 'card.transition', status: 'completed', actor: actor.actor, metadata: { cardId, fromStatus, status } }); const event: Event = { id: `event-${Date.now()}`, time: now, actor: actor.actor, action: `transicionou ${cardId} para ${status} (LOCAL)`, cardId, correlationId, fromStatus, toStatus: status, reason, receipt }; state.events.push(event); return { card, event, receipt } }, file)
 }
 export async function approveApproval(approvalId: string, decision: Exclude<ApprovalStatus, 'pending'>, actor: LocalActor, file?: string) {
   validateLocal(actor); if (actor.actor !== 'Sergio') throw new FluxError('SERGIO_REQUIRED', 'Approval decisions require actor Sergio', 403); if (!['approved', 'rejected'].includes(decision)) throw new FluxError('INVALID_ACTION', 'Decision must be approved or rejected')
-  const state = await load(file); const approval = state.approvals.find((i) => i.id === approvalId); if (!approval) throw new FluxError('APPROVAL_NOT_FOUND', `Approval ${approvalId} not found`, 404); if (approval.status !== 'pending') throw new FluxError('APPROVAL_ALREADY_DECIDED', 'Approval is not pending')
-  const now = new Date().toISOString(); approval.status = decision; approval.decidedAt = now; approval.decidedBy = actor.actor; const event: Event = { id: `event-${Date.now()}`, time: now, actor: actor.actor, action: `registrou decisão ${decision} para ${approvalId} (LOCAL/NO EXTERNAL EFFECT)`, cardId: approval.cardId, correlationId: `local-${Date.now()}` }; state.events.push(event); await save(state, file); return { approval, event }
+  return mutateState((state) => { const approval = state.approvals.find((i) => i.id === approvalId); if (!approval) throw new FluxError('APPROVAL_NOT_FOUND', `Approval ${approvalId} not found`, 404); if (approval.status !== 'pending') throw new FluxError('APPROVAL_ALREADY_DECIDED', 'Approval is not pending'); const now = new Date().toISOString(); approval.status = decision; approval.decidedAt = now; approval.decidedBy = actor.actor; const correlationId = `local-${Date.now()}`; const receipt = createReceipt({ correlationId, operation: 'approval.decide', status: 'completed', actor: actor.actor, metadata: { approvalId, decision } }); const event: Event = { id: `event-${Date.now()}`, time: now, actor: actor.actor, action: `registrou decisão ${decision} para ${approvalId} (LOCAL/NO EXTERNAL EFFECT)`, cardId: approval.cardId, correlationId, receipt }; state.events.push(event); return { approval, event, receipt } }, file)
 }
 export async function decideGate(gateId: string, decision: GateDecision, actor: LocalActor, file?: string) {
-  if (!actor || actor.scope !== 'local') throw new FluxError('LOCAL_SCOPE_REQUIRED', 'Gate decisions require local scope', 400)
-  if (actor.actor !== 'Sergio') throw new FluxError('SERGIO_REQUIRED', 'Gate decisions require actor Sergio', 403)
-  if (!['approved', 'rejected', 'changes_requested'].includes(decision)) throw new FluxError('INVALID_GATE_DECISION', 'Decision must be approved, rejected or changes_requested')
-  const state = await load(file); const gate = state.gates.find((item) => item.id === gateId && item.project === 'FBR Agency Flux')
-  if (!gate) throw new FluxError('GATE_NOT_FOUND', `Gate ${gateId} not found`, 404)
-  if (gate.status !== 'pending') throw new FluxError('GATE_ALREADY_DECIDED', 'Gate is not pending', 409)
-  const now = new Date().toISOString(); gate.status = decision; gate.decidedAt = now; gate.decidedBy = actor.actor; gate.externalActionAuthorized = false
-  const event: Event = { id: `event-${Date.now()}`, time: now, actor: actor.actor, action: `registrou decisão ${decision} para ${gateId} (LOCAL DECISION / NO EXTERNAL EFFECT)`, cardId: gate.cardId, correlationId: `local-${Date.now()}`, reason: 'Decisão conceitual local não autoriza execução externa' }
-  state.events.push(event); await save(state, file); return { gate, event }
+  if (!actor || actor.scope !== 'local') throw new FluxError('LOCAL_SCOPE_REQUIRED', 'Gate decisions require local scope', 400); if (actor.actor !== 'Sergio') throw new FluxError('SERGIO_REQUIRED', 'Gate decisions require actor Sergio', 403); if (!['approved', 'rejected', 'changes_requested'].includes(decision)) throw new FluxError('INVALID_GATE_DECISION', 'Invalid gate decision')
+  return mutateState((state) => { const gate = state.gates.find((item) => item.id === gateId && item.project === 'FBR Agency Flux'); if (!gate) throw new FluxError('GATE_NOT_FOUND', `Gate ${gateId} not found`, 404); if (gate.status !== 'pending') throw new FluxError('GATE_ALREADY_DECIDED', 'Gate is not pending', 409); const now = new Date().toISOString(); gate.status = decision; gate.decidedAt = now; gate.decidedBy = actor.actor; gate.externalActionAuthorized = false; const correlationId = `local-${Date.now()}`; const receipt = createReceipt({ correlationId, operation: 'gate.decide', status: 'completed', actor: actor.actor, metadata: { gateId, decision } }); const event: Event = { id: `event-${Date.now()}`, time: now, actor: actor.actor, action: `registrou decisão ${decision} para ${gateId} (LOCAL DECISION / NO EXTERNAL EFFECT)`, cardId: gate.cardId, correlationId, reason: 'Decisão conceitual local não autoriza execução externa', receipt }; state.events.push(event); return { gate, event, receipt } }, file)
 }
+export async function createApproval(input: Omit<Approval, 'id' | 'status' | 'decidedAt' | 'decidedBy'>, actor: LocalActor, file?: string) { validateLocal(actor); for (const key of ['cardId','title','requestedBy','impact','scope','rollback'] as const) if (!input[key]?.trim()) throw new FluxError('INVALID_APPROVAL', `Approval field ${key} is required`); return mutateState((state) => { if (!state.cards.some((c) => c.id === input.cardId)) throw new FluxError('CARD_NOT_FOUND', `Card ${input.cardId} not found`, 404); const approval = { ...input, id: `approval-${Date.now()}`, status: 'pending' as const }; state.approvals.push(approval); const correlationId = `local-${Date.now()}`; const receipt = createReceipt({ correlationId, operation: 'approval.create', status: 'completed', actor: actor.actor, metadata: { approvalId: approval.id } }); state.events.push({ id: `event-${Date.now()}`, time: new Date().toISOString(), actor: actor.actor, action: `criou Gate ${approval.id} (LOCAL)`, cardId: approval.cardId, correlationId, receipt }); return { approval, receipt } }, file) }
 
-export async function createApproval(input: Omit<Approval, 'id' | 'status' | 'decidedAt' | 'decidedBy'>, actor: LocalActor, file?: string) { validateLocal(actor); for (const key of ['cardId','title','requestedBy','impact','scope','rollback'] as const) if (!input[key]?.trim()) throw new FluxError('INVALID_APPROVAL', `Approval field ${key} is required`); const state = await load(file); if (!state.cards.some((c) => c.id === input.cardId)) throw new FluxError('CARD_NOT_FOUND', `Card ${input.cardId} not found`, 404); const approval = { ...input, id: `approval-${Date.now()}`, status: 'pending' as const }; state.approvals.push(approval); state.events.push({ id: `event-${Date.now()}`, time: new Date().toISOString(), actor: actor.actor, action: `criou Gate ${approval.id} (LOCAL)`, cardId: approval.cardId, correlationId: `local-${Date.now()}` }); await save(state, file); return approval }
-
-export async function createHandoff(input: Omit<Handoff, 'id' | 'createdAt'>, actor: LocalActor, file?: string) { validateLocal(actor); for (const key of ['cardId','project','from','to','summary','done','risks','nextStep','acceptanceCriteria','evidenceRef'] as const) if (!input[key]?.trim()) throw new FluxError('INVALID_HANDOFF', `Handoff field ${key} is required`); const state = await load(file); const now = new Date().toISOString(); const handoff = normalizeHandoff({ ...input, id: `handoff-${createHash('sha256').update(`${input.cardId}:${input.from}:${input.to}:${input.summary}:${now}`).digest('hex').slice(0, 20)}`, createdAt: now, status: input.status || 'received', sourceType: 'local', source: 'local/flux' }, state.events); state.handoffs.push(handoff); state.events.push({ id: `event-${Date.now()}`, time: now, actor: actor.actor, action: `registrou Handoff ${handoff.id} (LOCAL)`, cardId: handoff.cardId, correlationId: `local-${Date.now()}` }); await save(state, file); return handoff }
-export type HandoffActionInput = { action: 'resume' | 'release'; correlationId: string; cause: string; solution: string; nextAction: string; owner: string }
-export async function resumeLegacyHandoff(id: string, input: Pick<HandoffActionInput, 'correlationId'> & Partial<Pick<HandoffActionInput, 'nextAction' | 'owner'>>, actor: LocalActor, file?: string) {
+export async function createHandoff(input: Omit<Handoff, 'id' | 'createdAt'>, actor: LocalActor, file?: string) {
+  validateLocal(actor); for (const key of ['cardId','project','from','to','summary','done','risks','nextStep','acceptanceCriteria','evidenceRef'] as const) if (!input[key]?.trim()) throw new FluxError('INVALID_HANDOFF', `Handoff field ${key} is required`)
+  return mutateState((state) => { const now = new Date().toISOString(); const handoff = normalizeHandoff({ ...input, id: `handoff-${createHash('sha256').update(`${input.cardId}:${input.from}:${input.to}:${input.summary}:${now}`).digest('hex').slice(0, 20)}`, createdAt: now, status: input.status || 'received', sourceType: 'local', source: 'local/flux' }, state.events); state.handoffs.push(handoff); const correlationId = `local-${Date.now()}`; const receipt = createReceipt({ correlationId, operation: 'handoff.create', status: 'completed', actor: actor.actor, metadata: { handoffId: handoff.id } }); state.events.push({ id: `event-${Date.now()}`, time: now, actor: actor.actor, action: `registrou Handoff ${handoff.id} (LOCAL)`, cardId: handoff.cardId, correlationId, receipt }); return { handoff, receipt } }, file)
+}
+export type HandoffActionInput = { action: 'resume' | 'release'; correlationId: string; cause: string; solution: string; nextAction: string; owner: string; tenantId?: string }
+export async function resumeLegacyHandoff(id: string, input: Pick<HandoffActionInput, 'correlationId'> & Partial<Pick<HandoffActionInput, 'nextAction' | 'owner' | 'tenantId'>>, actor: LocalActor, file?: string) {
   validateLocal(actor); if (!input.correlationId?.trim()) throw new FluxError('CORRELATION_REQUIRED', 'correlationId is required')
-  const state = await load(file); const prior = state.events.find((e) => e.action === 'resumed legacy handoff' && e.correlationId === input.correlationId)
-  if (prior?.handoffId) return { handoff: state.handoffs.find((h) => h.id === prior.handoffId) || null, event: prior, idempotent: true }
+  return mutateState((state) => { const prior = state.events.find((e) => e.action === 'resumed legacy handoff' && e.correlationId === input.correlationId)
+  if (prior?.handoffId) return { handoff: state.handoffs.find((h) => h.id === prior.handoffId) || null, event: prior, receipt: prior.receipt, idempotent: true }
   const legacy = state.handoffs.find((h) => h.id === id); if (!legacy) throw new FluxError('HANDOFF_NOT_FOUND', `Handoff ${id} not found`, 404)
+  validateTenant(actor, input.tenantId); validateTenant(actor, state.cards.find((card) => card.id === legacy.cardId)?.tenantId); if (input.tenantId && state.cards.find((card) => card.id === legacy.cardId)?.tenantId && input.tenantId !== state.cards.find((card) => card.id === legacy.cardId)?.tenantId) throw new FluxError('TENANT_MISMATCH', 'Operation crosses tenant boundary', 403)
   if (!legacy.historical && !legacy.legacy && legacy.status !== 'legacy') throw new FluxError('NOT_LEGACY_HANDOFF', 'Only legacy Handoffs can be resumed with this action', 409)
   const nextAction = input.nextAction?.trim() || (legacy.nextStep !== 'not_declared' ? legacy.nextStep.trim() : '')
   const owner = input.owner?.trim() || (legacy.to !== 'not_declared' ? legacy.to.trim() : '')
@@ -236,25 +260,26 @@ export async function resumeLegacyHandoff(id: string, input: Pick<HandoffActionI
   const now = new Date().toISOString(); const resumeId = `handoff-resume-${createHash('sha256').update(`${id}:${input.correlationId}`).digest('hex').slice(0, 20)}`
   const solution = { cause: 'Retomada de Handoff legacy', owner, nextAction, resolutionPlan: nextAction, resolutionEvidence: legacy.evidenceRef }
   const handoff: Handoff = { id: resumeId, cardId: legacy.cardId, project: legacy.project, from: actor.actor, to: owner, summary: `Retomada de ${legacy.id}`, done: 'not_declared', decisions: [], risks: legacy.risks, nextStep: nextAction, acceptanceCriteria: legacy.acceptanceCriteria, evidenceRef: legacy.evidenceRef, createdAt: now, status: 'in_progress', lastUpdate: now, sourceType: 'local', source: `resume:${legacy.id}`, historical: false, legacy: false, correlationId: input.correlationId, solution }
-  const event: Event = { id: `event-resume-${input.correlationId}`, time: now, actor: actor.actor, action: 'resumed legacy handoff', cardId: legacy.cardId, handoffId: resumeId, from: actor.actor, to: owner, owner, nextAction, correlationId: input.correlationId, reason: nextAction, solution }
-  state.handoffs.push(handoff); state.events.push(event); await save(state, file); return { handoff, event, idempotent: false }
+  const receipt = createReceipt({ correlationId: input.correlationId, operation: 'handoff.resume-legacy', status: 'completed', actor: actor.actor, metadata: { handoffId: resumeId } }); const event: Event = { id: `event-resume-${input.correlationId}`, time: now, actor: actor.actor, action: 'resumed legacy handoff', cardId: legacy.cardId, handoffId: resumeId, from: actor.actor, to: owner, owner, nextAction, correlationId: input.correlationId, reason: nextAction, solution, receipt }
+  state.handoffs.push(handoff); state.events.push(event); return { handoff, event, receipt, idempotent: false } }, file)
 }
 export async function resumeHandoff(id: string, input: HandoffActionInput, actor: LocalActor, file?: string) {
   validateLocal(actor); if (!input.correlationId?.trim()) throw new FluxError('CORRELATION_REQUIRED', 'correlationId is required'); if (!input.cause?.trim() || !input.solution?.trim() || !input.nextAction?.trim() || !input.owner?.trim()) throw new FluxError('SOLUTION_REQUIRED', 'cause, solution, nextAction and owner are required', 422)
-  const state = await load(file); const prior = state.events.find((e) => e.action === 'released handoff' && e.correlationId === input.correlationId)
-  if (prior?.handoffId) return { handoff: state.handoffs.find((h) => h.id === prior.handoffId) || null, event: prior, idempotent: true }
+  return mutateState((state) => { const prior = state.events.find((e) => e.action === 'released handoff' && e.correlationId === input.correlationId)
+  if (prior?.handoffId) return { handoff: state.handoffs.find((h) => h.id === prior.handoffId) || null, event: prior, receipt: prior.receipt, idempotent: true }
   const handoff = state.handoffs.find((h) => h.id === id); if (!handoff) throw new FluxError('HANDOFF_NOT_FOUND', `Handoff ${id} not found`, 404); if (handoff.status === 'legacy' || handoff.historical) throw new FluxError('LEGACY_HANDOFF', 'Legacy Handoffs are read-only', 409)
+  validateTenant(actor, input.tenantId); validateTenant(actor, state.cards.find((card) => card.id === handoff.cardId)?.tenantId); if (input.tenantId && state.cards.find((card) => card.id === handoff.cardId)?.tenantId && input.tenantId !== state.cards.find((card) => card.id === handoff.cardId)?.tenantId) throw new FluxError('TENANT_MISMATCH', 'Operation crosses tenant boundary', 403)
   const now = new Date().toISOString(); const solution = { cause: input.cause, owner: input.owner, nextAction: input.nextAction, resolutionPlan: input.solution, resolutionEvidence: handoff.evidenceRef }
   handoff.status = input.action === 'release' ? 'awaiting_owner' : 'in_progress'; handoff.lastUpdate = now; handoff.lastRelease = input.action === 'release' ? now : handoff.lastRelease; handoff.solution = solution; handoff.nextStep = input.nextAction; handoff.correlationId = input.correlationId
-  const event: Event = { id: `event-release-${input.correlationId}`, time: now, actor: actor.actor, action: 'released handoff', cardId: handoff.cardId, handoffId: handoff.id, jobId: handoff.jobId, from: actor.actor, to: input.owner, owner: input.owner, nextAction: input.nextAction, correlationId: input.correlationId, reason: input.cause, solution }
-  state.events.push(event); await save(state, file); return { handoff, event, idempotent: false }
+  const receipt = createReceipt({ correlationId: input.correlationId, operation: 'handoff.resume', status: 'completed', actor: actor.actor, metadata: { handoffId: handoff.id } }); const event: Event = { id: `event-release-${input.correlationId}`, time: now, actor: actor.actor, action: 'released handoff', cardId: handoff.cardId, handoffId: handoff.id, jobId: handoff.jobId, from: actor.actor, to: input.owner, owner: input.owner, nextAction: input.nextAction, correlationId: input.correlationId, reason: input.cause, solution, receipt }
+  state.events.push(event); return { handoff, event, receipt, idempotent: false } }, file)
 }
 export type ForwardInteraction = Partial<ResolutionAction> & { actor?: string; type?: string; status?: string; decision?: string; message?: string }
-export type ForwardBlockerInput = { cardId?: string; jobId?: string; correlationId: string; resolutionAction?: Partial<ResolutionAction>; interaction?: ForwardInteraction }
+export type ForwardBlockerInput = { cardId?: string; jobId?: string; correlationId: string; tenantId?: string; resolutionAction?: Partial<ResolutionAction>; interaction?: ForwardInteraction }
 export async function forwardBlocker(blockerId: string, input: ForwardBlockerInput, actor: LocalActor, file?: string) {
   validateLocal(actor)
   if (!input.correlationId?.trim()) throw new FluxError('CORRELATION_REQUIRED', 'correlationId is required')
-  const state = await load(file)
+  return mutateState((state) => {
   const existing = state.events.find((event) => event.action === 'forwarded blocker' && event.correlationId === input.correlationId)
   if (existing) {
     const handoff = state.handoffs.find((item) => item.correlationId === input.correlationId)
@@ -282,6 +307,7 @@ export async function forwardBlocker(blockerId: string, input: ForwardBlockerInp
   if (!cardId) throw new FluxError('CARD_REQUIRED', 'cardId is required for blocker forwarding')
   const card = state.cards.find((item) => item.id === cardId)
   if (!card) throw new FluxError('CARD_NOT_FOUND', `Card ${cardId} not found`, 404)
+  validateTenant(actor, input.tenantId); validateTenant(actor, card.tenantId); if (input.tenantId && card.tenantId && input.tenantId !== card.tenantId) throw new FluxError('TENANT_MISMATCH', 'Operation crosses tenant boundary', 403)
   const triage = triageHandoff({ snapshot: state, handoff: { cardId, project: card.project, from: actor.actor, to: resolutionAction.to, owner: resolutionAction.to, summary: resolutionAction.objective, done: resolutionAction.deliverable, risks: blocker.cause, nextStep: resolutionAction.nextStep, acceptanceCriteria: resolutionAction.acceptanceCriteria, evidenceRef: resolutionAction.evidenceRequired, blockers: [blocker] }, blocker, plan: resolutionAction.objective, correlationId: input.correlationId, trigger: 'handoff' })
   if (triage.decision === 'needs_revision') throw new FluxError('INVALID_FORWARDING_INSTRUCTION', triage.reason, 422)
   const job = input.jobId ? state.jobs?.find((item) => item.jobId === input.jobId) : state.jobs?.find((item) => item.cardId === cardId && item.blockers.includes(blocker.cause))
@@ -302,18 +328,19 @@ export async function forwardBlocker(blockerId: string, input: ForwardBlockerInp
   if (candidate.raw) { candidate.raw.resolution = 'forwarded'; candidate.raw.resolutionAction = resolutionAction; candidate.raw.resolutionEvidence = resolutionAction.evidenceRequired }
   const handoff: Handoff = { id: `handoff-forward-${input.correlationId}`, cardId, jobId: activeJob?.jobId, blockerId, correlationId: input.correlationId, forwardingKey, resolutionAction, interaction: Object.keys(interaction).length ? interaction : undefined, project: card.project, from: resolutionAction.from, to: resolutionAction.to, summary: `Encaminhamento do blocker ${blockerId}`, done: 'Encaminhamento criado; blocker permanece open', risks: blocker.cause, nextStep: resolutionAction.nextStep, acceptanceCriteria: resolutionAction.acceptanceCriteria, evidenceRef: resolutionAction.evidenceRequired, createdAt: now, status: nextStatus, solution }
   const isDecision = actor.actor === 'Sergio' && (interaction.type === 'decision' || interaction.type === 'gate' || Boolean(interaction.decision))
-  const event: Event = { id: `event-forward-${input.correlationId}`, time: now, actor: actor.actor, action: isDecision ? 'registered Sergio decision and forwarded blocker' : 'forwarded blocker', cardId, jobId: activeJob?.jobId, handoffId: handoff.id, blockerId, from: resolutionAction.from, to: resolutionAction.to, correlationId: input.correlationId, fromStatus, toStatus: nextStatus, reason: resolutionAction.nextStep, solution, resolutionAction }
+  const receipt = createReceipt({ correlationId: input.correlationId, operation: 'blocker.forward', status: 'completed', actor: actor.actor, jobId: activeJob?.jobId, metadata: { blockerId, handoffId: handoff.id } }); const event: Event = { id: `event-forward-${input.correlationId}`, time: now, actor: actor.actor, action: isDecision ? 'registered Sergio decision and forwarded blocker' : 'forwarded blocker', cardId, jobId: activeJob?.jobId, handoffId: handoff.id, blockerId, from: resolutionAction.from, to: resolutionAction.to, correlationId: input.correlationId, fromStatus, toStatus: nextStatus, reason: resolutionAction.nextStep, solution, resolutionAction, receipt }
   const requiredAction: RequiredActionRecord = { id: `required-action-forward-${input.correlationId}`, dedupeKey: `blocker-forward|${blockerId}|${input.correlationId}`, what: resolutionAction.nextStep, why: blocker.cause, who: resolutionAction.to, from: actor.actor, to: resolutionAction.to, objective: resolutionAction.objective, deliverable: resolutionAction.deliverable, acceptanceCriteria: resolutionAction.acceptanceCriteria, dueCheck: resolutionAction.nextStep, fallback: resolutionAction.fallback?.trim() || 'Escalar a Sergio se o owner não entregar a evidência.', status: 'hold', reasonCode: 'BLOCKER_OPEN', correlationId: input.correlationId, createdAt: now, updatedAt: now }
   state.requiredActions ||= []; state.requiredActions.push(requiredAction)
-  state.handoffs.push(handoff); state.events.push(event); await save(state, file)
-  return { event, handoff, idempotent: false }
+  state.handoffs.push(handoff); state.events.push(event)
+  return { event, handoff, receipt, idempotent: false }
+  }, file)
 }
 
-export type IrisPersistInput = Omit<IrisTriageInput, 'snapshot' | 'blocker' | 'handoff'> & { blockerId?: string; handoff: NonNullable<IrisTriageInput['handoff']> }
+export type IrisPersistInput = Omit<IrisTriageInput, 'snapshot' | 'blocker' | 'handoff'> & { blockerId?: string; tenantId?: string; handoff: NonNullable<IrisTriageInput['handoff']> }
 export async function runIrisTriage(input: IrisPersistInput, actor: LocalActor, file?: string) {
   validateLocal(actor)
   if (!input.correlationId?.trim()) throw new FluxError('CORRELATION_REQUIRED', 'correlationId is required')
-  const state = await load(file)
+  return mutateState((state) => {
   const candidates = [...(state.blockers || []), ...state.handoffs.flatMap((item) => item.blockers || [])]
   const raw = input.blockerId ? candidates.find((item) => item.id === input.blockerId) : undefined
   if (input.blockerId && !raw) throw new FluxError('BLOCKER_NOT_FOUND', `Blocker ${input.blockerId} not found`, 404)
@@ -323,29 +350,34 @@ export async function runIrisTriage(input: IrisPersistInput, actor: LocalActor, 
   if (input.dryRun || result.decision === 'needs_revision') return { ...result, idempotent: false }
   const card = state.cards.find((item) => item.id === input.handoff.cardId)
   if (!card || !result.owner || !result.instruction) throw new FluxError('INVALID_HANDOFF', 'Triagem só persiste Handoff completo', 422)
+  validateTenant(actor, input.tenantId); validateTenant(actor, card.tenantId); if (input.tenantId && card.tenantId && input.tenantId !== card.tenantId) throw new FluxError('TENANT_MISMATCH', 'Operation crosses tenant boundary', 403)
   const now = new Date().toISOString(); const jobId = `job-iris-${createHash('sha256').update(input.correlationId).digest('hex').slice(0, 16)}`
   const action: ResolutionAction = { from: 'Íris', to: result.owner, objective: result.instruction.objective, deliverable: result.instruction.deliverable, acceptanceCriteria: result.instruction.acceptanceCriteria, evidenceRequired: result.instruction.evidence, nextStep: result.instruction.nextStep }
   const handoff: Handoff = { id: `handoff-iris-${input.correlationId}`, cardId: card.id, project: card.project, from: 'Íris', to: result.owner, summary: result.instruction.objective, done: 'Triagem registrada; execução não realizada', risks: raw?.cause || 'Nenhum blocker declarado', nextStep: result.instruction.nextStep, acceptanceCriteria: result.instruction.acceptanceCriteria, evidenceRef: result.instruction.evidence, createdAt: now, status: result.decision === 'ready' ? 'received' : result.decision === 'awaiting_owner' ? 'awaiting_owner' : 'blocked', correlationId: input.correlationId, blockerId: raw?.id, jobId, sourceType: 'local', source: 'iris-orchestrator', resolutionAction: action, activeBlocker: raw?.status === 'open' }
   const job: Job = { jobId, cardId: card.id, project: card.project, agent: result.owner, role: result.owner, objective: result.instruction.objective, status: result.decision === 'ready' ? 'ready' : result.decision === 'awaiting_owner' ? 'awaiting_owner' : 'blocked', updatedAt: now, artifactRefs: [], handoffRefs: [handoff.id], evidenceRefs: result.evidence, blockers: result.blockers, nextStep: result.instruction.nextStep, correlationId: input.correlationId, source: 'local/iris-orchestrator', sourceType: 'local', historical: false, activeBlocker: raw?.status === 'open', owner: result.owner, verification: 'not_verified', lastEvent: 'handoff_sent' }
-  const event: Event = { id: `event-iris-${input.correlationId}`, time: now, actor: actor.actor, action: 'iris triage', cardId: card.id, jobId, handoffId: handoff.id, correlationId: input.correlationId, from: 'Íris', to: result.owner, owner: result.owner, nextAction: result.instruction.nextStep, reason: result.reason, solution: { cause: result.reason, owner: result.owner, nextAction: result.instruction.nextStep, resolutionPlan: result.instruction.objective, resolutionEvidence: result.instruction.evidence }, resolutionAction: action }
-  state.handoffs.push(handoff); state.jobs = [...(state.jobs || []), job]; state.agentRuns = state.jobs; state.events.push(event); await save(state, file)
+  const receipt = createReceipt({ correlationId: input.correlationId, operation: 'iris.triage', status: 'completed', actor: actor.actor, jobId, metadata: { handoffId: handoff.id } }); const event: Event = { id: `event-iris-${input.correlationId}`, time: now, actor: actor.actor, action: 'iris triage', cardId: card.id, jobId, handoffId: handoff.id, correlationId: input.correlationId, from: 'Íris', to: result.owner, owner: result.owner, nextAction: result.instruction.nextStep, reason: result.reason, solution: { cause: result.reason, owner: result.owner, nextAction: result.instruction.nextStep, resolutionPlan: result.instruction.objective, resolutionEvidence: result.instruction.evidence }, resolutionAction: action, receipt }
+  state.handoffs.push(handoff); state.jobs = [...(state.jobs || []), job]; state.agentRuns = state.jobs; state.events.push(event)
   const requiredActions: import('./iris-orchestrator').RequiredAction[] = [{ what: result.instruction.nextStep, why: result.reason, who: result.owner, from: 'Íris', to: result.owner, objective: result.instruction.objective, deliverable: result.instruction.deliverable, acceptanceCriteria: result.instruction.acceptanceCriteria, dueCheck: result.instruction.nextStep, fallback: 'Escalar a Sergio se o plano não cobrir a decisão.', status: result.decision === 'ready' ? 'ready' : 'hold' }]
-  return { ...result, requiredActions, handoff, job, event, idempotent: false, readback: { blockerStatus: raw?.status, persisted: true } }
+  return { ...result, requiredActions, handoff, job, event, receipt, idempotent: false, readback: { blockerStatus: raw?.status, persisted: true } }
+  }, file)
 }
 
-export async function resolveBlocker(blockerId: string, input: { cardId?: string; evidenceRef: string; artifactId?: string; correlationId: string }, actor: LocalActor, file?: string) {
+export async function resolveBlocker(blockerId: string, input: { cardId?: string; evidenceRef: string; artifactId?: string; correlationId: string; tenantId?: string }, actor: LocalActor, file?: string) {
   validateLocal(actor)
   if (!input.correlationId?.trim() || !input.evidenceRef?.trim()) throw new FluxError('EVIDENCE_REQUIRED', 'correlationId and evidenceRef are required', 422)
-  const state = await load(file)
+  return mutateState((state) => {
   const candidates: Array<{ raw: BlockerInput; source?: Handoff }> = [...(state.blockers || []).map((raw) => ({ raw })), ...state.handoffs.flatMap((source) => (source.blockers || []).map((raw) => ({ raw, source })))]
   const candidate = candidates.find(({ raw, source }) => raw.id === blockerId && (!input.cardId || (raw.cardId || source?.cardId) === input.cardId))
   if (!candidate) throw new FluxError('BLOCKER_NOT_FOUND', `Blocker ${blockerId} not found`, 404)
   const blocker = normalizeBlocker(candidate.raw, candidate.source?.id); const cardId = input.cardId || blocker.cardId || candidate.source?.cardId
+  validateTenant(actor, input.tenantId); validateTenant(actor, state.cards.find((card) => card.id === cardId)?.tenantId)
+  if (input.tenantId && state.cards.find((card) => card.id === cardId)?.tenantId && input.tenantId !== state.cards.find((card) => card.id === cardId)?.tenantId) throw new FluxError('TENANT_MISMATCH', 'Operation crosses tenant boundary', 403)
   const evidence = state.artifacts.find((item) => item.status === 'available' && (!cardId || item.cardId === cardId) && (input.artifactId ? item.id === input.artifactId : item.path === input.evidenceRef || item.sourcePath === input.evidenceRef || item.name === input.evidenceRef))
   if (!evidence) throw new FluxError('MISSING_EVIDENCE', 'Resolution requires a persisted available artifact/readback', 422)
   if (blocker.status !== 'open') throw new FluxError('BLOCKER_NOT_OPEN', 'Only open blockers can be resolved', 409)
   if (candidate.source) { candidate.raw.status = 'resolved'; candidate.raw.resolution = 'declared'; candidate.raw.resolutionEvidence = input.evidenceRef }
   else { const original = state.blockers!.find((item) => item.id === blockerId)!; original.status = 'resolved'; original.resolution = 'declared'; original.resolutionEvidence = input.evidenceRef }
-  const event: Event = { id: `event-resolve-${input.correlationId}`, time: new Date().toISOString(), actor: actor.actor, action: 'resolved blocker with evidence', cardId, blockerId, correlationId: input.correlationId, reason: input.evidenceRef }
-  state.events.push(event); await save(state, file); return { blocker: normalizeBlocker(candidate.raw, candidate.source?.id), event }
+  const receipt = createReceipt({ correlationId: input.correlationId, operation: 'blocker.resolve', status: 'completed', actor: actor.actor, metadata: { blockerId, artifactId: evidence.id } }); const event: Event = { id: `event-resolve-${input.correlationId}`, time: new Date().toISOString(), actor: actor.actor, action: 'resolved blocker with evidence', cardId, blockerId, correlationId: input.correlationId, reason: input.evidenceRef, receipt }
+  state.events.push(event); return { blocker: normalizeBlocker(candidate.raw, candidate.source?.id), event, receipt }
+  }, file)
 }

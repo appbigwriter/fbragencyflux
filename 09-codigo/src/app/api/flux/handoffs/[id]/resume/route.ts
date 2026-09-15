@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server'
 import { jsonError } from '@/lib/api'
 import { requireRole } from '@/lib/auth'
-import { resumeHandoff, resumeLegacyHandoff } from '@/lib/flux-repository'
+import { resumeHandoff, resumeLegacyHandoff, type HandoffActionInput } from '@/lib/flux-repository'
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const session = requireRole(request, 'coordinator')
-    const body = await request.json()
+    const body = await request.json() as HandoffActionInput
     const id = (await params).id
     const current = (await import('@/lib/flux-repository')).getState
     const handoff = (await current()).handoffs.find((item) => item.id === id)

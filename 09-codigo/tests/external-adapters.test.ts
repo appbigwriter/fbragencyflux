@@ -38,7 +38,7 @@ describe('Supabase persistence diagnostics', () => {
   })
 
   it('loads state successfully and does not expose request credentials', async () => {
-    const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify([{ state }]), { status: 200, headers: { 'content-type': 'application/json' } }))
+    const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify([{ state, version: state.version }]), { status: 200, headers: { 'content-type': 'application/json' } }))
     vi.stubGlobal('fetch', fetchMock)
     const secret = 'service-role-secret-that-must-not-leak'
     await expect(new SupabaseFluxRepository('https://project.supabase.co', secret, 'smoke-key').load()).resolves.toEqual(state)

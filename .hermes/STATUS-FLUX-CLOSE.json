@@ -1,0 +1,12 @@
+{
+  "project": "FBR Agency Flux",
+  "prd": "02-prd/PRD-FECHAMENTO-FBR-AGENCY-FLUX.md",
+  "status": "in_progress",
+  "current_sprint": "S0",
+  "current_story": "S0-01",
+  "completed": [],
+  "blocked": [],
+  "deferred_external_gates": ["S2-01", "S2-02", "S2-06", "S3-01", "S3-03", "S5-05", "S7"],
+  "qa": "deferred_until_all_local_stories_and_external_gates_are_done",
+  "started_at": "2026-09-15"
+}

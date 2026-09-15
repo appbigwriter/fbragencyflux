@@ -1,8 +1,9 @@
 import { createHash, timingSafeEqual } from 'node:crypto'
-import { FluxError, updateJobEvent, type AgentRun, type AgentRunEvent, type LocalActor } from './flux-repository'
+import { FluxError, mutateState, type AgentRun, type AgentRunEvent, type LocalActor } from './flux-repository'
+import { createReceipt, sanitizeError, type Receipt } from './observability'
 
 export type FluxDispatchEvent = { eventId: string; type: 'job' | 'agent_run' | 'heartbeat'; jobId: string; event?: AgentRunEvent; payload: Partial<AgentRun>; sentAt: string; correlationId: string }
-export interface DispatcherAdapter { publish(event: FluxDispatchEvent): Promise<void>; receive(event: FluxDispatchEvent): Promise<{ duplicate: boolean; job?: AgentRun }> }
+export interface DispatcherAdapter { publish(event: FluxDispatchEvent): Promise<void>; receive(event: FluxDispatchEvent): Promise<{ duplicate: boolean; job?: AgentRun; receipt?: Receipt }> }
 const seen = new Set<string>()
 export class FakeDispatcherAdapter implements DispatcherAdapter {
   readonly emitted: FluxDispatchEvent[] = []
@@ -21,17 +22,36 @@ export function configuredDispatcher(): DispatcherAdapter {
   if (!endpoint || !token) throw new FluxError('DISPATCHER_NOT_CONFIGURED', 'Dispatcher requires FLUX_DISPATCHER_URL and FLUX_DISPATCHER_TOKEN in runtime', 503)
   return new HttpDispatcherAdapter(endpoint, token)
 }
-export async function dispatchIncoming(event: FluxDispatchEvent, actor: LocalActor) {
+const statusMap: Partial<Record<AgentRunEvent, AgentRun['status']>> = { started: 'in_progress', progress: 'in_progress', waiting_input: 'blocked', blocked: 'blocked', review: 'review', completed: 'completed', failed: 'failed', cancelled: 'failed' }
+function baseline(event: FluxDispatchEvent, now: string): AgentRun {
+  if (!event.payload.cardId || !event.payload.agent || !event.payload.objective) throw new FluxError('INVALID_DISPATCH_EVENT', 'New dispatcher jobs require cardId, agent and objective', 400)
+  const { jobId: _jobId, cardId: _cardId, agent: _agent, objective: _objective, updatedAt: _updatedAt, ...payload } = event.payload
+  return { jobId: event.jobId, cardId: event.payload.cardId, project: event.payload.project || 'FBR Agency Flux', agent: event.payload.agent, role: event.payload.role || event.payload.agent, objective: event.payload.objective, status: 'planned', updatedAt: now, artifactRefs: [], handoffRefs: [], evidenceRefs: [], blockers: [], nextStep: event.payload.nextStep || 'Registrar evidência e readback', correlationId: event.correlationId, source: event.payload.source || 'local/dispatcher', sourceType: 'live', historical: false, activeBlocker: false, verification: 'not_verified', ...payload }
+}
+export async function dispatchIncoming(event: FluxDispatchEvent, actor: LocalActor, file?: string) {
   if (!event.eventId || !event.jobId || !event.type || !event.sentAt || !event.correlationId) throw new FluxError('INVALID_DISPATCH_EVENT', 'eventId, type, jobId, sentAt and correlationId are required', 400)
-  if (seen.has(event.eventId)) return { duplicate: true }
-  seen.add(event.eventId)
-  if (event.type === 'heartbeat') {
-    const job = await updateJobEvent(event.jobId, 'progress', { ...event.payload, sourceType: 'live', historical: false, lastSeen: event.sentAt }, actor)
-    return { duplicate: false, job }
+  if (!file && seen.has(event.eventId)) return { duplicate: true }
+  try {
+    return await mutateState((state) => {
+      state.events ||= []; state.jobs ||= []; state.agentRuns = state.jobs
+      if (state.events.some((item) => item.action === 'dispatcher event accepted' && item.reason === event.eventId)) { seen.add(event.eventId); return { duplicate: true } }
+      const now = new Date().toISOString()
+      const current = state.jobs.find((item) => item.jobId === event.jobId)
+      const nextEvent = event.type === 'heartbeat' ? 'progress' : event.event
+      if (event.type !== 'heartbeat' && !nextEvent) throw new FluxError('EVENT_REQUIRED', 'job and agent_run events require event', 400)
+      const job = { ...(current || baseline(event, now)), ...event.payload, jobId: event.jobId, updatedAt: now, lastSeen: event.sentAt, sourceType: 'live' as const, historical: false, activeBlocker: event.payload.activeBlocker ?? current?.activeBlocker ?? false, status: event.payload.status || (nextEvent ? statusMap[nextEvent] : undefined) || current?.status || 'in_progress', lastEvent: nextEvent } as AgentRun
+      if (job.status === 'completed' && !job.evidenceRefs.length && !job.artifactRefs.length) job.status = 'not_verified'
+      if (current) state.jobs = state.jobs.map((item) => item.jobId === job.jobId ? job : item); else state.jobs.push(job)
+      state.agentRuns = state.jobs
+      const receipt = createReceipt({ correlationId: event.correlationId, operation: 'dispatcher.receive', status: 'completed', actor: actor.actor, jobId: job.jobId, startedAt: event.sentAt, completedAt: now, metadata: { eventId: event.eventId, type: event.type } })
+      state.events.push({ id: `event-dispatch-${event.eventId}`, time: event.sentAt, actor: actor.actor, action: 'dispatcher event accepted', jobId: event.jobId, correlationId: event.correlationId, reason: event.eventId, receipt })
+      seen.add(event.eventId)
+      return { duplicate: false, job, receipt }
+    }, file)
+  } catch (error) {
+    seen.delete(event.eventId)
+    throw error instanceof FluxError ? error : new FluxError('DISPATCH_FAILED', sanitizeError(error), 503)
   }
-  if (!event.event) throw new FluxError('EVENT_REQUIRED', 'job and agent_run events require event', 400)
-  const job = await updateJobEvent(event.jobId, event.event, { ...event.payload, sourceType: 'live', historical: false }, actor)
-  return { duplicate: false, job }
 }
 export function verifyDispatcherToken(request: Request) {
   const expected = process.env.FLUX_DISPATCHER_TOKEN

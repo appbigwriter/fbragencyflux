@@ -24,8 +24,8 @@ describe('getDashboardSnapshot', () => {
     expect(snapshot.pendingGates).toBe(4)
     expect(snapshot.pendingCards).toBe(1)
     expect(snapshot.blockerCount).toBe(4)
-    expect(snapshot.projectCards['After Forty'].map((card) => card.id)).toEqual(['AF-001'])
-    expect(snapshot.projectCards['FBR Agency Flux']).toEqual([])
+    expect(snapshot.projectCards['after-forty'].map((card) => card.id)).toEqual(['AF-001'])
+    expect(snapshot.projectCards['project-flux']).toEqual([])
   })
 
   it('keeps approval, card and artifact details tied to After Forty', async () => {
