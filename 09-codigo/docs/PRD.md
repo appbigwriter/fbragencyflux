@@ -10,6 +10,9 @@ Permitir que operadores leiam, encaminhem e retomem trabalho bloqueado com instr
 - Loading, sucesso, erro HTTP/rede e idempotência são visíveis ao operador.
 - O encaminhamento persiste Handoff, job, evento e HOLD sem resolver o blocker open.
 - Todos os Handoffs oferece busca, filtros por status/owner/projeto, abertura de detalhes e ações condicionais.
+- Cada blocker na home e nos detalhes de Handoff oferece `Chat with blocker`/`Conversar sobre este blocker` sem login; o prompt é sanitizado, limitado e inclui autor/originador, owner, causa, HOLD/plano, próxima ação, aceite/evidência e a pergunta operacional.
+- A ponte usa `data-hermes-send` e feature detection de `window.hermes.send`; envia ao chat atual do Hermes, confirma o envio e oferece cópia do contexto quando a ponte não está disponível. Não altera o estado do blocker.
+- Não há contrato oficial para selecionar sessão ou agent específico a partir do app; qualquer integração desse tipo só pode ser adicionada quando o contrato oficial existir.
 - Jobs apresenta cards/lista executiva com agente, objetivo, etapa, status semântico, progresso, última atividade, dependências e ações. JSON técnico é opcional nos detalhes.
 
 ## Contratos de API

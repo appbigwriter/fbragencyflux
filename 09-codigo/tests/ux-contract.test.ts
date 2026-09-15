@@ -11,6 +11,9 @@ describe('operational UX contracts', () => {
     expect(source).toContain('Enviando…')
     expect(source).toContain('role="alert"')
     expect(source).not.toContain('actor: session.actor')
+    expect(source).toContain('Chat with blocker')
+    expect(source).toContain('data-hermes-send')
+    expect(source).toContain('Contexto enviado ao chat do Hermes')
   })
 
   it('makes handoffs filterable, expandable and action-oriented', async () => {
@@ -22,6 +25,8 @@ describe('operational UX contracts', () => {
     expect(source).toContain('setProject')
     expect(source).toContain('/resume')
     expect(source).toContain('Consultar no dashboard')
+    expect(source).toContain('Conversar sobre este blocker')
+    expect(source).toContain('data-hermes-send')
   })
 
   it('keeps jobs executive by default and makes technical JSON optional', async () => {

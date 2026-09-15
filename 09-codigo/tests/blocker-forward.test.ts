@@ -23,24 +23,34 @@ async function authCookie(actor = 'Íris') {
   return response.headers.get('set-cookie')?.split(';')[0] || ''
 }
 
+const action = { to: 'Gabe', objective: 'Obter e revisar a evidência faltante', deliverable: 'Relatório revisado anexado ao card', acceptanceCriteria: 'Relatório contém fonte, data e conclusão verificável', evidenceRequired: 'artifact:report.md', nextStep: 'Gabe deve revisar e anexar report.md' }
+
 describe('blocker forward/unblock', () => {
-  it('forwards an open blocker, waits for owner, and readbacks one event', async () => {
+  it('accepts Sergio interaction as the executable resolution for a blocker with no prior action', async () => {
+    const file = await fixture({ owner: '', nextAction: '', resolutionPlan: '', resolutionAction: undefined }); process.env.FLUX_DATA_FILE = file
+    const result = await forwardBlocker('b-1', { cardId: 'C-1', correlationId: 'corr-interaction', interaction: { ...action, type: 'instruction', message: 'Gabe, execute a revisão e anexe o relatório.' } }, { actor: 'Sergio', scope: 'local' }, file)
+    expect(result.handoff).toMatchObject({ from: 'Sergio', to: 'Gabe', status: 'awaiting_owner' }); const snapshot = await getSnapshot(file)
+    expect(snapshot.cards.find((c) => c.id === 'C-1')?.status).toBe('awaiting_owner'); expect(snapshot.blockers[0]).toMatchObject({ status: 'open', resolution: 'forwarded' }); expect(snapshot.requiredActions?.find((a) => a.correlationId === 'corr-interaction')).toMatchObject({ status: 'hold' })
+  })
+  it('forwards an open blocker, waits for owner, and is idempotent', async () => {
     const file = await fixture(); process.env.FLUX_DATA_FILE = file; const cookie = await authCookie()
-    const response = await forward(req({ cardId: 'C-1', correlationId: 'corr-1', actor: 'Sergio' }, cookie), { params: Promise.resolve({ id: 'b-1' }) })
-    expect(response.status).toBe(200)
+    const response = await forward(req({ cardId: 'C-1', correlationId: 'corr-1', resolutionAction: action }, cookie), { params: Promise.resolve({ id: 'b-1' }) }); expect(response.status).toBe(200)
     const body = await response.json(); expect(body.event).toMatchObject({ actor: 'Íris', correlationId: 'corr-1', cardId: 'C-1' }); expect(body.handoff).toMatchObject({ from: 'Íris', to: 'Gabe', blockerId: 'b-1' })
     const snapshot = await getSnapshot(file); expect(snapshot.cards.find((c) => c.id === 'C-1')?.status).toBe('awaiting_owner'); expect(snapshot.blockers[0].status).toBe('open'); expect(snapshot.requiredActions?.find((a) => a.correlationId === 'corr-1')).toMatchObject({ status: 'hold', reasonCode: 'BLOCKER_OPEN' }); expect(snapshot.recentEvents.filter((e) => e.correlationId === 'corr-1')).toHaveLength(1)
-    const again = await forward(req({ cardId: 'C-1', correlationId: 'corr-1' }, cookie), { params: Promise.resolve({ id: 'b-1' }) }); expect(again.status).toBe(200); expect((await getSnapshot(file)).recentEvents.filter((e) => e.correlationId === 'corr-1')).toHaveLength(1)
+    const again = await forward(req({ cardId: 'C-1', correlationId: 'corr-1', resolutionAction: action }, cookie), { params: Promise.resolve({ id: 'b-1' }) }); expect(again.status).toBe(200); expect((await getSnapshot(file)).recentEvents.filter((e) => e.correlationId === 'corr-1')).toHaveLength(1)
   })
-  it('rejects missing solution, legacy and resolved blockers', async () => {
-    for (const status of ['open', 'legacy', 'resolved'] as const) {
-      const file = await fixture(status === 'open' ? { owner: '' } : { status });
-      await expect(forwardBlocker('b-1', { cardId: 'C-1', correlationId: `c-${status}` }, { actor: 'Íris', scope: 'local' }, file)).rejects.toMatchObject({ code: status === 'open' ? 'SOLUTION_NOT_DECLARED' : 'BLOCKER_NOT_OPEN' })
-    }
+  it('rejects passive or undeclared interactions, legacy and resolved blockers', async () => {
+    const empty = await fixture({ owner: '', nextAction: '', resolutionPlan: '', resolutionAction: undefined });
+    await expect(forwardBlocker('b-1', { cardId: 'C-1', correlationId: 'c-empty' }, { actor: 'Íris', scope: 'local' }, empty)).rejects.toMatchObject({ code: 'SOLUTION_NOT_DECLARED' })
+    await expect(forwardBlocker('b-1', { cardId: 'C-1', correlationId: 'c-passive', interaction: { ...action, message: 'Aguardar Sergio.' } }, { actor: 'Íris', scope: 'local' }, empty)).rejects.toMatchObject({ code: 'INVALID_FORWARDING_INSTRUCTION' })
+    for (const status of ['legacy', 'resolved'] as const) { const file = await fixture({ status }); await expect(forwardBlocker('b-1', { cardId: 'C-1', correlationId: `c-${status}`, resolutionAction: action }, { actor: 'Íris', scope: 'local' }, file)).rejects.toMatchObject({ code: 'BLOCKER_NOT_OPEN' }) }
   })
   it('requires authentication and never accepts actor spoofing', async () => {
     const file = await fixture(); process.env.FLUX_DATA_FILE = file
-    expect((await forward(req({ cardId: 'C-1', correlationId: 'c-unauth' }), { params: Promise.resolve({ id: 'b-1' }) })).status).toBe(401)
-    const cookie = await authCookie('Íris'); const response = await forward(req({ cardId: 'C-1', correlationId: 'c-spoof', actor: 'Sergio' }, cookie), { params: Promise.resolve({ id: 'b-1' }) }); expect(response.status).toBe(200); expect((await response.json()).event.actor).toBe('Íris')
+    expect((await forward(req({ cardId: 'C-1', correlationId: 'c-unauth', resolutionAction: action }), { params: Promise.resolve({ id: 'b-1' }) })).status).toBe(401)
+    const cookie = await authCookie('Íris'); const response = await forward(req({ cardId: 'C-1', correlationId: 'c-spoof', actor: 'Sergio', resolutionAction: action }, cookie), { params: Promise.resolve({ id: 'b-1' }) }); expect(response.status).toBe(200); expect((await response.json()).event.actor).toBe('Íris')
+  })
+  it('rejects resolving without a real persisted artifact', async () => {
+    const file = await fixture(); await expect(import('../src/lib/flux-repository').then(({ resolveBlocker }) => resolveBlocker('b-1', { cardId: 'C-1', evidenceRef: 'fake.md', correlationId: 'c-resolve' }, { actor: 'Íris', scope: 'local' }, file))).rejects.toMatchObject({ code: 'MISSING_EVIDENCE' })
   })
 })
