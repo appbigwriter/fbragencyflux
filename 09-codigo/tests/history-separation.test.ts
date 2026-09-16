@@ -44,17 +44,19 @@ describe('initial state and historical archive separation', () => {
     expect(imported.handoffs.some((item) => item.historical)).toBe(true)
   })
 
-  it('keeps the repository base fixture empty after isolated tests', async () => {
+  it('preserves the versioned historical archive after isolated tests', async () => {
     const base = JSON.parse(await readFile(join(process.cwd(), 'data', 'flux-state.json'), 'utf8')) as FluxState
     expect(base.projects).toEqual([])
     expect(base.cards).toEqual([])
     expect(base.approvals).toEqual([])
     expect(base.gates).toEqual([])
     expect(base.events).toEqual([])
-    expect(base.handoffs).toEqual([])
+    expect(base.handoffs.length).toBeGreaterThan(0)
+    expect(base.handoffs.every((item) => item.historical)).toBe(true)
     expect(base.artifacts).toEqual([])
     expect(base.blockers).toEqual([])
-    expect(base.jobs).toEqual([])
-    expect(base.agentRuns).toEqual([])
+    expect(base.jobs!.length).toBeGreaterThan(0)
+    expect(base.jobs!.every((item) => item.historical)).toBe(true)
+    expect(base.agentRuns!.length).toBe(base.jobs!.length)
   })
 })

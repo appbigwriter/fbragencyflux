@@ -39,7 +39,8 @@ export type Job = AgentRun
 export type FluxState = { version: number; projects: Project[]; cards: Card[]; approvals: Approval[]; gates: Gate[]; events: Event[]; handoffs: Handoff[]; artifacts: Artifact[]; blockers?: BlockerInput[]; jobs?: Job[]; agentRuns?: AgentRun[]; requiredActions?: RequiredActionRecord[]; coordinator?: { lastCoordinatorRun?: CoordinatorRun; waitingReasons?: string[] } }
 export type DashboardSnapshot = Omit<FluxState, 'approvals' | 'events' | 'blockers'> & { approvals: { pending: number; items: Approval[] }; recentEvents: Event[]; activeCards: number; blockers: Blocker[]; risks: Risk[]; pendingGates: number; pendingCards: number; blockerCount: number; projectCards: Record<string, Card[]> }
 export type LocalActor = { actor: string; scope: 'local'; tenantId?: string }
-export type FluxReadScope = { tenantId: string; projectId: string; visibility: 'private' | 'public' }
+export type FluxReadScopePair = { tenantId: string; projectId: string }
+export type FluxReadScope = { scopes: FluxReadScopePair[]; visibility: 'private' | 'public' }
 
 export function validateBlocker(input: BlockerInput): void {
   if (input.status === 'open') {
@@ -196,36 +197,46 @@ export async function getGates(file?: string): Promise<Gate[]> { return (await l
 export async function getSnapshot(file?: string): Promise<DashboardSnapshot> {
   return buildSnapshot(await load(file))
 }
-export async function getScopedSnapshot(scope: FluxReadScope, file?: string): Promise<DashboardSnapshot> {
+
+/** Build a read-only aggregate from the explicitly allowed tenant/project pairs. */
+export async function getAggregatedSnapshot(scopes: FluxReadScopePair[], file?: string, allowTenantless = false): Promise<DashboardSnapshot> {
+  if (!scopes.length) throw new FluxError('READ_SCOPE_REQUIRED', 'At least one tenant/project scope is required', 400)
   const state = await load(file)
-  const project = state.projects.find((item) => item.id === scope.projectId)
-  if (!project) throw new FluxError('PROJECT_NOT_FOUND', `Project ${scope.projectId} not found`, 404)
-  if (scope.visibility === 'private' && project.tenantId !== scope.tenantId) throw new FluxError('TENANT_MISMATCH', 'Project does not belong to the requested tenant', 403)
-  const projectNames = new Set([project.id, project.name])
-  const owns = (tenantId?: string) => scope.visibility === 'public' ? (!tenantId || tenantId === scope.tenantId) : tenantId === scope.tenantId
-  const cardIds = new Set(state.cards.filter((card) => projectNames.has(card.project) && owns(card.tenantId)).map((card) => card.id))
+  const requested = new Set(scopes.map((scope) => `${scope.tenantId}/${scope.projectId}`))
+  const projects = state.projects.filter((project) => (project.tenantId ? requested.has(`${project.tenantId}/${project.id}`) : allowTenantless && requested.has(`${scopes[0].tenantId}/${project.id}`)))
+
+  const projectNames = new Set(projects.flatMap((project) => [project.id, project.name]))
+  const allowedTenant = (tenantId?: string) => tenantId ? scopes.some((scope) => scope.tenantId === tenantId) : allowTenantless
+  const cards = state.cards.filter((card) => projectNames.has(card.project) && allowedTenant(card.tenantId) && projects.some((project) => project.id === card.project || project.name === card.project))
+  const cardIds = new Set(cards.map((card) => card.id))
+  const handoffs = state.handoffs.filter((item) => cardIds.has(item.cardId))
+  const jobs = (state.jobs || []).filter((item) => cardIds.has(item.cardId) && allowedTenant(item.tenantId))
   const filtered: FluxState = {
-    ...state,
-    projects: [project],
-    cards: state.cards.filter((card) => cardIds.has(card.id)),
-    approvals: state.approvals.filter((item) => cardIds.has(item.cardId) && owns(item.tenantId)),
+    ...state, projects, cards,
+    approvals: state.approvals.filter((item) => cardIds.has(item.cardId) && allowedTenant(item.tenantId)),
     gates: state.gates.filter((item) => cardIds.has(item.cardId)),
-    events: state.events.filter((item) => !item.cardId || cardIds.has(item.cardId)),
-    handoffs: state.handoffs.filter((item) => cardIds.has(item.cardId)),
-    artifacts: state.artifacts.filter((item) => cardIds.has(item.cardId)),
-    blockers: (state.blockers || []).filter((item) => !item.cardId || cardIds.has(item.cardId)),
-    jobs: (state.jobs || []).filter((item) => cardIds.has(item.cardId) && owns(item.tenantId)),
+    handoffs, artifacts: state.artifacts.filter((item) => cardIds.has(item.cardId)),
+    blockers: (state.blockers || []).filter((item) => Boolean(item.cardId && cardIds.has(item.cardId))),
+    jobs,
+    events: state.events.filter((item) => Boolean(item.cardId && cardIds.has(item.cardId))),
   }
   return buildSnapshot(filtered)
 }
+
+export async function getScopedSnapshot(scope: FluxReadScope, file?: string): Promise<DashboardSnapshot> {
+  return getAggregatedSnapshot(scope.scopes, file, scope.visibility === 'public')
+}
+
 async function buildSnapshot(state: FluxState): Promise<DashboardSnapshot> {
-  const graph = new Map(buildDependencyGraph(state).map((item) => [item.jobId, item])); state.jobs = (state.jobs || []).map((job) => ({ ...job, ...graph.get(job.jobId) })); state.agentRuns = state.jobs
-  const projectCards = Object.fromEntries(state.projects.map((project) => [project.id, state.cards.filter((card) => (card.project === project.id || card.project === project.name) && (!project.tenantId || !card.tenantId || card.tenantId === project.tenantId))]))
-  const handoffs = state.handoffs.map((handoff) => ({ ...handoff, activeBlocker: (handoff.blockers || []).some((item) => normalizeBlocker(item, handoff.id).status === 'open') }))
-  const blockers = [...(state.blockers || []), ...handoffs.flatMap((handoff) => (handoff.blockers || []).map((blocker) => ({ ...blocker, author: blocker.author || handoff.from, sourceId: handoff.id, cardId: blocker.cardId || handoff.cardId })))]
+  const graph = new Map(buildDependencyGraph(state).map((item) => [item.jobId, item]))
+  const jobs = (state.jobs || []).map((job) => ({ ...job, ...graph.get(job.jobId) }))
+  const snapshotState: FluxState = { ...state, jobs, agentRuns: jobs }
+  const projectCards = Object.fromEntries(snapshotState.projects.map((project) => [project.id, snapshotState.cards.filter((card) => (card.project === project.id || card.project === project.name) && (!project.tenantId || card.tenantId === project.tenantId))]))
+  const handoffs = snapshotState.handoffs.map((handoff) => ({ ...handoff, activeBlocker: (handoff.blockers || []).some((item) => normalizeBlocker(item, handoff.id).status === 'open') }))
+  const blockers = [...(snapshotState.blockers || []), ...handoffs.flatMap((handoff) => (handoff.blockers || []).map((blocker) => ({ ...blocker, author: blocker.author || handoff.from, sourceId: handoff.id, cardId: blocker.cardId || handoff.cardId })))]
     .map((blocker) => normalizeBlocker(blocker, blocker.sourceId)).filter((blocker) => blocker.status === 'open')
   const risks = handoffs.filter((handoff) => handoff.risks?.trim()).map((handoff) => ({ sourceId: handoff.id, cause: handoff.risks }))
-  return { ...state, handoffs, blockers, risks, approvals: { pending: state.approvals.filter((i) => i.status === 'pending').length, items: state.approvals }, recentEvents: state.events.slice(-50).reverse(), activeCards: state.cards.filter((c) => !['blocked', 'completed', 'failed'].includes(c.status)).length, pendingGates: state.gates.filter((gate) => gate.status === 'pending').length, pendingCards: state.cards.filter((card) => !['completed', 'failed'].includes(card.status)).length, blockerCount: blockers.filter((blocker) => blocker.status === 'open').length, projectCards }
+  return { ...snapshotState, handoffs, blockers, risks, approvals: { pending: snapshotState.approvals.filter((i) => i.status === 'pending').length, items: snapshotState.approvals }, recentEvents: snapshotState.events.slice(-50).reverse(), activeCards: snapshotState.cards.filter((c) => !['blocked', 'completed', 'failed'].includes(c.status)).length, pendingGates: snapshotState.gates.filter((gate) => gate.status === 'pending').length, pendingCards: snapshotState.cards.filter((card) => !['completed', 'failed'].includes(card.status)).length, blockerCount: blockers.filter((blocker) => blocker.status === 'open').length, projectCards }
 }
 export function validNextStatuses(status: CardStatus) { return transitions[status] }
 export async function transitionCard(cardId: string, status: CardStatus, actor: LocalActor, file?: string, reason = 'operational transition') {

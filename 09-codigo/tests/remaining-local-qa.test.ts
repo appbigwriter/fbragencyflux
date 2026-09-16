@@ -6,6 +6,7 @@ import { parseBriefing, createProjectPlan, persistIntake } from '../src/lib/inta
 import { getSnapshot, getState, type FluxState } from '../src/lib/flux-repository'
 import { GET as snapshotGET } from '../src/app/api/flux/snapshot/route'
 import { GET as cardsGET } from '../src/app/api/flux/cards/route'
+import { POST as login } from '../src/app/api/auth/login/route'
 
 const dirs: string[] = []
 const empty = (): FluxState => ({ version: 1, projects: [], cards: [], approvals: [], gates: [], events: [], handoffs: [], artifacts: [] })
@@ -68,8 +69,10 @@ describe('remaining local QA regressions', () => {
       { id: 'card-b', title: 'B', project: 'project-b', tenantId: 'tenant-b', status: 'ready', assignee: 'Kora', priority: 'normal', detail: 'B', acceptanceCriteria: [], updatedAt: '' },
     ]
     state.events = [{ id: 'event-a', time: '', actor: 'Kora', action: 'A', cardId: 'card-a' }, { id: 'event-b', time: '', actor: 'Kora', action: 'B', cardId: 'card-b' }]
-    await writeFile(file, JSON.stringify(state)); process.env.FLUX_DATA_FILE = file
-    const request = new Request('http://localhost/api/flux/snapshot?tenantId=tenant-a&projectId=project-a')
+    await writeFile(file, JSON.stringify(state)); process.env.FLUX_DATA_FILE = file; process.env.FLUX_LOCAL_LOGIN_ACTOR = 'Sergio'; process.env.FLUX_LOCAL_LOGIN_SECRET = 'test-only-secret'
+    const loggedIn = await login(new Request('http://localhost/api/auth/login', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ actor: 'Sergio', secret: 'test-only-secret' }) }))
+    const cookie = loggedIn.headers.get('set-cookie')?.split(';')[0] || ''
+    const request = new Request('http://localhost/api/flux/snapshot?tenantId=tenant-a&projectId=project-a', { headers: { cookie } })
     const snapshotResponse = await snapshotGET(request); const cardsResponse = await cardsGET(new Request(request))
     expect(snapshotResponse.status).toBe(200); expect(cardsResponse.status).toBe(200)
     await expect(snapshotResponse.json()).resolves.toMatchObject({ projects: [{ id: 'project-a' }], cards: [{ id: 'card-a' }], recentEvents: [{ id: 'event-a' }] })

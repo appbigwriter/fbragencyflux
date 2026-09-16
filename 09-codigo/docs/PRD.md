@@ -19,5 +19,9 @@ Permitir que operadores leiam, encaminhem e retomem trabalho bloqueado com instr
 - `POST /api/flux/blockers/:id/forward`: sessão com role `operator`; payload contém `cardId`, `jobId`, `correlationId` e `resolutionAction`, sem actor.
 - `POST /api/flux/handoffs/:id/resume`: sessão com role `coordinator`; usado para retomada de Handoffs legacy/HOLD.
 
-## Evidências de validação
-Executar no diretório `09-codigo`: `npm test`, `npm run typecheck`, `npm run lint`, `npm run build`. O teste de integração `tests/blocker-forward.test.ts` verifica sessão, anti-spoofing, persistência, blocker open e repetição idempotente.
+## Dashboard multi-projeto e leitura segura
+- `FLUX_PUBLIC_READ_SCOPE` é uma allowlist obrigatória no formato `tenantId/projectId,tenantId/projectId`. Whitespace ao redor dos pares é aceito; entradas vazias/malformadas, curingas e duplicatas normalizadas são inválidas e deixam o dashboard indisponível (fail-closed).
+- Home constrói um snapshot agregado dos pares permitidos; não exige projeto único e não expõe estado global quando a variável não está configurada.
+- `GET /api/flux/snapshot` e `GET /api/flux/cards` aceitam `readScope` ou `x-flux-read-scope` com múltiplos pares explícitos. Compatibilidade de um par permanece disponível via `tenantId`/`projectId` ou headers equivalentes.
+- Leituras privadas exigem sessão autenticada. Leituras públicas exigem `scope=public`, allowlist de runtime e pertencimento de todos os pares solicitados à allowlist. Cross-tenant é rejeitado.
+- O filtro agregado cobre projetos, cards, jobs, Handoffs, artifacts, approvals, events, blockers e gates, preservando `tenantId` e sem mutar o estado carregado.

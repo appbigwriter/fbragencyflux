@@ -26,9 +26,11 @@ O endpoint `POST /api/flux/intake` exige sessão com papel `coordinator`, normal
 
 JSON é persistência local/fixture. O adapter Supabase exige versão coerente e usa CAS por `state_key + version`; resposta HTTP sem uma linha atualizada, erro ou ausência de representação falha fechado como conflito. Isso não é uma transação remota e o Supabase real não foi validado. Resume/forward/triage/resolve agora executam validações e alterações dentro de `mutateState`; o lock local mantém read-modify-write serializado e sem gravação parcial. `tenantId` é exigido no intake novo e checado quando fornecido, enquanto registros legados sem tenant continuam legíveis. RLS, dispatcher Hermes remoto, heartbeat outbound real, deploy, backup externo, E2E e S7 continuam bloqueados. `nextCheck`: solicitar QA independente, sem declarar esta passagem como QA final.
 
-## Leitura server-side por tenant/projeto
+## Leitura server-side agregada por allowlist
 
-`GET /api/flux/snapshot` e `GET /api/flux/cards` exigem `tenantId` e `projectId` (query string ou headers `x-flux-tenant-id`/`x-flux-project-id`) e filtram no servidor projetos, cards e entidades relacionadas. Registros sem `tenantId` não entram em uma leitura privada. Leitura pública só existe quando `scope=public` é explícito e `FLUX_PUBLIC_READ_SCOPE=tenantId/projectId` está definido no runtime; não há fallback público para o snapshot completo.
+`GET /api/flux/snapshot` e `GET /api/flux/cards` aceitam uma allowlist explícita em `readScope=tenantId/projectId,tenantId/projectId` ou no header `x-flux-read-scope` (whitespace ao redor é aceito). O parser rejeita entradas vazias, malformadas, curingas e duplicatas normalizadas, sempre falhando fechado. A leitura `private` exige sessão autenticada; a leitura `public` exige `scope=public` e cada par solicitado precisa estar em `FLUX_PUBLIC_READ_SCOPE`, configurado no mesmo formato.
+
+O snapshot agregado filtra no servidor projetos, cards, jobs, Handoffs, artefatos, approvals, eventos, blockers e gates exclusivamente pelos pares permitidos. Todo projeto e entidade tenant-scoped preserva `tenantId`; nenhum estado global é exposto ou mutado durante a construção do snapshot. O dashboard Home usa diretamente essa allowlist e mostra indisponibilidade controlada quando ela não existe; não há requisito de projeto único.
 
 ## Tracing do filesystem
 
