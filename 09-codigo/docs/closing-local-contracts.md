@@ -28,9 +28,11 @@ JSON é persistência local/fixture. O adapter Supabase exige versão coerente e
 
 ## Leitura server-side agregada por allowlist
 
-`GET /api/flux/snapshot` e `GET /api/flux/cards` aceitam uma allowlist explícita em `readScope=tenantId/projectId,tenantId/projectId` ou no header `x-flux-read-scope` (whitespace ao redor é aceito). O parser rejeita entradas vazias, malformadas, curingas e duplicatas normalizadas, sempre falhando fechado. A leitura `private` exige sessão autenticada; a leitura `public` exige `scope=public` e cada par solicitado precisa estar em `FLUX_PUBLIC_READ_SCOPE`, configurado no mesmo formato.
+`GET /api/flux/snapshot` e `GET /api/flux/cards` aceitam uma allowlist explícita em `readScope=tenantId/projectId,tenantId/projectId` ou no header `x-flux-read-scope` (whitespace ao redor é aceito). `tenantId/*` autoriza todos os projetos desse tenant; `*` global, entradas vazias, malformadas e duplicatas normalizadas são rejeitados, sempre falhando fechado. A leitura `private` exige sessão autenticada; a leitura `public` exige `scope=public` e pertencimento à política em `FLUX_PUBLIC_READ_SCOPE`. Com `tenantId/*`, o `projectId` público pode ser omitido.
 
-O snapshot agregado filtra no servidor projetos, cards, jobs, Handoffs, artefatos, approvals, eventos, blockers e gates exclusivamente pelos pares permitidos. Todo projeto e entidade tenant-scoped preserva `tenantId`; nenhum estado global é exposto ou mutado durante a construção do snapshot. O dashboard Home usa diretamente essa allowlist e mostra indisponibilidade controlada quando ela não existe; não há requisito de projeto único.
+O snapshot agregado filtra no servidor projetos, cards, jobs, Handoffs, artefatos, approvals, eventos, blockers e gates exclusivamente pela política: pares exatos ou qualquer projeto cujo `tenantId` esteja coberto por `tenantId/*`. Registros legados sem `tenantId` não entram em leitura pública wildcard. Todo projeto e entidade tenant-scoped preserva `tenantId`; nenhum estado global é exposto ou mutado durante a construção do snapshot. O dashboard Home usa diretamente essa allowlist e mostra indisponibilidade controlada quando ela não existe; não há requisito de projeto único.
+
+`FLUX_PUBLIC_READ_SCOPE=fbr-news/*` é uma decisão única de visibilidade para o tenant `fbr-news`, não uma autorização global. O runtime público ainda precisa ser configurado uma vez para o tenant correto; o wildcard só elimina a reconfiguração manual a cada novo projeto desse tenant.
 
 ## Tracing do filesystem
 

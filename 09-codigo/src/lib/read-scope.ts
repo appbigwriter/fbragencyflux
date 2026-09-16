@@ -1,6 +1,6 @@
 import { FluxError } from './flux-repository'
 
-export type FluxReadScopePair = { tenantId: string; projectId: string }
+export type FluxReadScopePair = { tenantId: string; projectId: string | '*' }
 export type FluxReadScope = { scopes: FluxReadScopePair[]; visibility: 'private' | 'public' }
 
 const PUBLIC_SCOPE_ENV = 'FLUX_PUBLIC_READ_SCOPE'
@@ -17,7 +17,7 @@ export function parseReadScopeAllowlist(value: string | undefined | null): FluxR
     if (!match) return null
     const tenantId = match[1].trim()
     const projectId = match[2].trim()
-    if (!tenantId || !projectId || tenantId.includes('*') || projectId.includes('*')) return null
+    if (!tenantId || !projectId || tenantId.includes('*') || (projectId !== '*' && projectId.includes('*'))) return null
     const key = `${tenantId}/${projectId}`
     if (seen.has(key)) return null
     seen.add(key)
@@ -38,16 +38,17 @@ export function readScopeFromRequest(request: Request): FluxReadScope {
   const explicitRaw = request.headers.get('x-flux-read-scope') ?? url.searchParams.get('readScope')
   const explicit = explicitRaw?.trim()
   let scopes = explicit ? parseReadScopeAllowlist(explicit) : null
-  if (explicitRaw !== null && !scopes) throw new FluxError('READ_SCOPE_INVALID', 'Read scope must contain unique tenantId/projectId pairs', 400)
+  if (explicitRaw !== null && !scopes) throw new FluxError('READ_SCOPE_INVALID', 'Read scope must contain unique tenantId/projectId pairs or tenantId/*', 400)
   if (explicitRaw === null) {
     const tenantId = request.headers.get('x-flux-tenant-id')?.trim() || url.searchParams.get('tenantId')?.trim() || ''
     const projectId = request.headers.get('x-flux-project-id')?.trim() || url.searchParams.get('projectId')?.trim() || ''
     if (tenantId && projectId) scopes = [{ tenantId, projectId }]
+    else if (visibility === 'public' && tenantId) scopes = [{ tenantId, projectId: '*' }]
   }
   if (!scopes) throw new FluxError('READ_SCOPE_REQUIRED', 'An explicit tenantId/projectId read scope is required', 400)
   if (visibility === 'public') {
     const allowed = publicReadScope()
-    if (!allowed || scopes.some((scope) => !allowed.some((item) => item.tenantId === scope.tenantId && item.projectId === scope.projectId))) {
+    if (!allowed || scopes.some((scope) => !allowed.some((item) => item.tenantId === scope.tenantId && (item.projectId === '*' || item.projectId === scope.projectId)))) {
       throw new FluxError('PUBLIC_SCOPE_UNDEFINED', 'Public reading is not defined for this tenant/project scope', 403)
     }
   }

@@ -39,7 +39,7 @@ export type Job = AgentRun
 export type FluxState = { version: number; projects: Project[]; cards: Card[]; approvals: Approval[]; gates: Gate[]; events: Event[]; handoffs: Handoff[]; artifacts: Artifact[]; blockers?: BlockerInput[]; jobs?: Job[]; agentRuns?: AgentRun[]; requiredActions?: RequiredActionRecord[]; coordinator?: { lastCoordinatorRun?: CoordinatorRun; waitingReasons?: string[] } }
 export type DashboardSnapshot = Omit<FluxState, 'approvals' | 'events' | 'blockers'> & { approvals: { pending: number; items: Approval[] }; recentEvents: Event[]; activeCards: number; blockers: Blocker[]; risks: Risk[]; pendingGates: number; pendingCards: number; blockerCount: number; projectCards: Record<string, Card[]> }
 export type LocalActor = { actor: string; scope: 'local'; tenantId?: string }
-export type FluxReadScopePair = { tenantId: string; projectId: string }
+export type FluxReadScopePair = { tenantId: string; projectId: string | '*' }
 export type FluxReadScope = { scopes: FluxReadScopePair[]; visibility: 'private' | 'public' }
 
 export function validateBlocker(input: BlockerInput): void {
@@ -202,11 +202,12 @@ export async function getSnapshot(file?: string): Promise<DashboardSnapshot> {
 export async function getAggregatedSnapshot(scopes: FluxReadScopePair[], file?: string, allowTenantless = false): Promise<DashboardSnapshot> {
   if (!scopes.length) throw new FluxError('READ_SCOPE_REQUIRED', 'At least one tenant/project scope is required', 400)
   const state = await load(file)
-  const requested = new Set(scopes.map((scope) => `${scope.tenantId}/${scope.projectId}`))
-  const projects = state.projects.filter((project) => (project.tenantId ? requested.has(`${project.tenantId}/${project.id}`) : allowTenantless && requested.has(`${scopes[0].tenantId}/${project.id}`)))
+  const allowsProject = (tenantId: string | undefined, projectId: string) => Boolean(tenantId && scopes.some((scope) => scope.tenantId === tenantId && (scope.projectId === '*' || scope.projectId === projectId)))
+  const hasTenantWildcard = scopes.some((scope) => scope.projectId === '*')
+  const projects = state.projects.filter((project) => project.tenantId ? allowsProject(project.tenantId, project.id) : allowTenantless && !hasTenantWildcard && scopes.some((scope) => scope.projectId === project.id))
 
   const projectNames = new Set(projects.flatMap((project) => [project.id, project.name]))
-  const allowedTenant = (tenantId?: string) => tenantId ? scopes.some((scope) => scope.tenantId === tenantId) : allowTenantless
+  const allowedTenant = (tenantId?: string) => tenantId ? scopes.some((scope) => scope.tenantId === tenantId) : allowTenantless && !hasTenantWildcard
   const cards = state.cards.filter((card) => projectNames.has(card.project) && allowedTenant(card.tenantId) && projects.some((project) => project.id === card.project || project.name === card.project))
   const cardIds = new Set(cards.map((card) => card.id))
   const handoffs = state.handoffs.filter((item) => cardIds.has(item.cardId))
@@ -224,7 +225,7 @@ export async function getAggregatedSnapshot(scopes: FluxReadScopePair[], file?: 
 }
 
 export async function getScopedSnapshot(scope: FluxReadScope, file?: string): Promise<DashboardSnapshot> {
-  return getAggregatedSnapshot(scope.scopes, file, scope.visibility === 'public')
+  return getAggregatedSnapshot(scope.scopes, file, scope.visibility === 'public' && !scope.scopes.some((item) => item.projectId === '*'))
 }
 
 async function buildSnapshot(state: FluxState): Promise<DashboardSnapshot> {

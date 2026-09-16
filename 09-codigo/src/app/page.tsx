@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic'
 
 export default async function Home() {
   const scopes = publicReadScope()
-  if (!scopes) return <main><h1>Agency Flux indisponível</h1><p>O escopo público do dashboard não está configurado. Defina FLUX_PUBLIC_READ_SCOPE como tenantId/projectId,tenantId/projectId.</p></main>
+  if (!scopes) return <main><h1>Agency Flux indisponível</h1><p>O escopo público do dashboard não está configurado. Defina FLUX_PUBLIC_READ_SCOPE como tenantId/* para autorizar todos os projetos de um tenant, ou use pares tenantId/projectId.</p></main>
   let initial
   try {
     initial = await getAggregatedSnapshot(scopes)

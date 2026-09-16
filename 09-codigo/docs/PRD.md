@@ -20,8 +20,8 @@ Permitir que operadores leiam, encaminhem e retomem trabalho bloqueado com instr
 - `POST /api/flux/handoffs/:id/resume`: sessão com role `coordinator`; usado para retomada de Handoffs legacy/HOLD.
 
 ## Dashboard multi-projeto e leitura segura
-- `FLUX_PUBLIC_READ_SCOPE` é uma allowlist obrigatória no formato `tenantId/projectId,tenantId/projectId`. Whitespace ao redor dos pares é aceito; entradas vazias/malformadas, curingas e duplicatas normalizadas são inválidas e deixam o dashboard indisponível (fail-closed).
+- `FLUX_PUBLIC_READ_SCOPE` é uma allowlist obrigatória no formato `tenantId/projectId,tenantId/projectId` ou `tenantId/*`. O wildcard de tenant autoriza todos os projetos daquele tenant; `*` global não é aceito. Whitespace ao redor é aceito; entradas vazias/malformadas e duplicatas normalizadas são inválidas e deixam o dashboard indisponível (fail-closed).
 - Home constrói um snapshot agregado dos pares permitidos; não exige projeto único e não expõe estado global quando a variável não está configurada.
-- `GET /api/flux/snapshot` e `GET /api/flux/cards` aceitam `readScope` ou `x-flux-read-scope` com múltiplos pares explícitos. Compatibilidade de um par permanece disponível via `tenantId`/`projectId` ou headers equivalentes.
-- Leituras privadas exigem sessão autenticada. Leituras públicas exigem `scope=public`, allowlist de runtime e pertencimento de todos os pares solicitados à allowlist. Cross-tenant é rejeitado.
+- `GET /api/flux/snapshot` e `GET /api/flux/cards` aceitam `readScope` ou `x-flux-read-scope` com múltiplos pares e wildcards de tenant. Compatibilidade de um par permanece disponível via `tenantId`/`projectId` ou headers equivalentes; em leitura pública com tenant wildcard, `projectId` pode ser omitido.
+- Leituras privadas exigem sessão autenticada. Leituras públicas exigem `scope=public`, allowlist de runtime e pertencimento à política configurada. `FLUX_PUBLIC_READ_SCOPE=fbr-news/*` é uma decisão única de visibilidade do tenant, não uma autorização global; o runtime público ainda precisa ser configurado uma vez para o tenant correto. Cross-tenant é rejeitado, e registros legados sem `tenantId` não são expostos por wildcard público.
 - O filtro agregado cobre projetos, cards, jobs, Handoffs, artifacts, approvals, events, blockers e gates, preservando `tenantId` e sem mutar o estado carregado.
