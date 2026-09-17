@@ -48,11 +48,15 @@ Arquivos:
 - `npm run lint`: aprovado;
 - `npm run build`: aprovado.
 
-## Estado atual
+## Verificação do runtime local Supabase
 
-**Código local:** corrigido para usar Supabase remoto nas três superfícies.  
-**Ambiente público:** ainda não contém essa correção; deploy e readback público continuam pendentes.  
-**Reset remoto:** confirmado e preservado no baseline autorizado.
+A configuração `.env.local` declara `FLUX_PERSISTENCE=supabase` e `FLUX_STATE_KEY=fbr-agency-flux`. Uma instância limpa sem sobrescrever essas variáveis foi iniciada na porta 3030. Dashboard, Jobs e Handoffs retornaram a mensagem controlada `Agency Flux indisponível — Não foi possível ler o estado persistido`, confirmando que o runtime local não está conseguindo ler o Supabase configurado.
+
+A instância QA que exibia dados foi iniciada explicitamente com `FLUX_PERSISTENCE=json` e `FLUX_DATA_FILE` temporário; portanto, aqueles dados não representavam o estado remoto.
+
+## Consequência
+
+A preferência por Supabase remoto está registrada, mas ainda falta validar/alinhar URL, service role/schema/migration do `.env.local` com o mesmo runtime remoto usado pelo Easypanel. Não usar JSON local como substituto silencioso.
 
 ## Conclusão
 
