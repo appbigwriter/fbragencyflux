@@ -54,9 +54,20 @@ A configuração `.env.local` declara `FLUX_PERSISTENCE=supabase` e `FLUX_STATE_
 
 A instância QA que exibia dados foi iniciada explicitamente com `FLUX_PERSISTENCE=json` e `FLUX_DATA_FILE` temporário; portanto, aqueles dados não representavam o estado remoto.
 
-## Consequência
+## Diagnóstico upstream confirmado
 
-A preferência por Supabase remoto está registrada, mas ainda falta validar/alinhar URL, service role/schema/migration do `.env.local` com o mesmo runtime remoto usado pelo Easypanel. Não usar JSON local como substituto silencioso.
+Consulta direta ao endpoint REST configurado, usando a credencial somente em memória e sem registrar o valor, retornou:
+
+```text
+HTTP 401 Unauthorized
+{"message":"Unauthorized","request_id":"e3cdc71ad824e913e3a8c805da9d6912"}
+```
+
+A aplicação estava correta ao mascarar esse detalhe na interface. A causa do `Agency Flux indisponível` é a credencial local rejeitada pelo gateway Supabase remoto — potencialmente expirada, de projeto diferente, revogada ou sem autorização. Não é falha do reset remoto nem motivo para fallback silencioso a JSON.
+
+## Próximo desbloqueio
+
+Théo/Sergio devem atualizar a referência segura da service role local a partir do Secret Manager/runtime autorizado, sem colar o valor no chat, Git ou `.env.local` versionado. Depois repetir o readback com `state_key=fbr-agency-flux` e confirmar `HTTP 200`, `version` inteira e Dashboard/Jobs/Handoffs coerentes.
 
 ## Conclusão
 
