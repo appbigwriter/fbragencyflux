@@ -1,8 +1,6 @@
-import { mkdir, open, readFile, rename, unlink, writeFile } from 'node:fs/promises'
-import { randomUUID } from 'node:crypto'
-import path from 'node:path'
+import { createRequire } from 'node:module'
 import { FluxError, type FluxState } from './flux-repository'
-
+import { RelationalFluxRepository, SqlRelationalTransport, type RelationalChange, type RelationalRead, type RelationalTransport } from './relational-repository'
 export type StateMutation<T = void> = (state: FluxState) => T | Promise<T>
 export interface FluxStateRepository { load(): Promise<FluxState | null>; save(state: FluxState): Promise<void>; update<T>(mutation: StateMutation<T>): Promise<T> }
 /** Explicit test double. Never selected from runtime configuration. */
@@ -12,80 +10,60 @@ export class FakeFluxRepository implements FluxStateRepository {
   constructor(initial: FluxState | null = null) { this.state = initial }
   async load() { return this.state ? structuredClone(this.state) : null }
   async save(state: FluxState) { this.state = structuredClone(state) }
-  async update<T>(mutation: StateMutation<T>): Promise<T> { const run = this.queue.then(async () => { if (!this.state) throw new Error('State not initialized'); const next = structuredClone(this.state); const result = await mutation(next); this.state = next; return result }); this.queue = run.then(() => undefined, () => undefined); return run }
+  async update<T>(mutation: StateMutation<T>) { const run = this.queue.then(async () => { if (!this.state) throw new Error('State not initialized'); const next = structuredClone(this.state); const result = await mutation(next); this.state = next; return result }); this.queue = run.then(() => undefined, () => undefined); return run }
 }
-const LOCK_RETRIES = 80
-const RETRY_DELAY_MS = 20
-const LEASE_MS = 1500
-const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
-const retryable = (error: unknown) => ['EACCES', 'EPERM', 'EBUSY', 'ENOTEMPTY'].includes((error as NodeJS.ErrnoException)?.code || '')
-type LockRecord = { token: string; owner: string; heartbeat: number }
+export { RelationalFluxRepository }
 
-/** Local JSON file adapter. Test/local fixture persistence only; never production runtime. */
-export class JsonFluxRepository implements FluxStateRepository {
-  constructor(private readonly file: string) {}
-  async load() { try { return JSON.parse(await readFile(this.file, 'utf8')) as FluxState } catch (error) { if ((error as NodeJS.ErrnoException).code === 'ENOENT') return null; throw error } }
-  private async acquireLock() {
-    await mkdir(path.dirname(this.file), { recursive: true }); const lock = `${this.file}.lock`; const token = randomUUID(); const owner = `${process.pid}:${randomUUID()}`
-    for (let attempt = 0; attempt < LOCK_RETRIES; attempt += 1) {
-      try {
-        const handle = await open(lock, 'wx'); await handle.writeFile(JSON.stringify({ token, owner, heartbeat: Date.now() } satisfies LockRecord)); await handle.close()
-        let stopped = false
-        const heartbeat = setInterval(async () => { if (stopped) return; try { const current = JSON.parse(await readFile(lock, 'utf8')) as LockRecord; if (current.token === token && current.owner === owner) await writeFile(lock, JSON.stringify({ ...current, heartbeat: Date.now() })) } catch { /* owner will fail closed on release */ } }, Math.max(250, Math.floor(LEASE_MS / 3)))
-        heartbeat.unref?.()
-        return async () => { stopped = true; clearInterval(heartbeat); try { const current = JSON.parse(await readFile(lock, 'utf8')) as LockRecord; if (current.token === token && current.owner === owner) await unlink(lock) } catch { /* another owner or already released */ } }
-      } catch (error) {
-        if ((error as NodeJS.ErrnoException).code === 'EEXIST') {
-          try { const current = JSON.parse(await readFile(lock, 'utf8')) as LockRecord; if (!current.token || !current.owner || Date.now() - current.heartbeat > LEASE_MS * 2) await unlink(lock) } catch { /* another writer owns or removes it */ }
-        } else if (!retryable(error)) throw error
-        await sleep(RETRY_DELAY_MS * (attempt + 1))
-      }
+/** Supabase/PostgREST transport: calls the flux_relational_read/commit RPCs granted to service_role. */
+export class SupabaseRestTransport implements RelationalTransport {
+  constructor(private readonly origin: string, private readonly serviceRoleKey: string) {}
+  private headers(): Record<string, string> { return { apikey: this.serviceRoleKey, authorization: `Bearer ${this.serviceRoleKey}`, 'content-type': 'application/json' } }
+  private async rpc<T>(name: string, args?: Record<string, unknown>): Promise<T> {
+    let response: Response
+    try { response = await fetch(`${this.origin}/rest/v1/rpc/${name}`, { method: 'POST', headers: this.headers(), body: args ? JSON.stringify(args) : undefined, cache: 'no-store' }) }
+    catch { throw new FluxError('PERSISTENCE_UNAVAILABLE', 'Relational persistence endpoint is unreachable; verify the runtime project URL and connectivity', 503) }
+    const text = await response.text()
+    if (!response.ok) {
+      let detail = ''
+      try { const parsed = JSON.parse(text) as { code?: string; message?: string }; detail = parsed.code === 'PGRST116' ? '' : `${parsed.code || ''} ${parsed.message || ''}`.trim() } catch { /* non-JSON body */ }
+      if (response.status === 409 || detail.includes('PERSISTENCE_CONFLICT')) throw new FluxError('PERSISTENCE_CONFLICT', 'Relational state changed concurrently; reload and retry', 409)
+      throw new FluxError('PERSISTENCE_UNAVAILABLE', `Relational persistence rejected the operation (HTTP ${response.status}${detail ? `: ${detail}` : ''}); verify the migration and the runtime service role secret`, 503)
     }
-    throw new FluxError('LOCAL_STATE_BUSY', 'Local Flux state is busy; retry the operation', 503)
+    return (text ? JSON.parse(text) : null) as T
   }
-  private async saveUnlocked(state: FluxState) { const tmp = `${this.file}.${process.pid}.${randomUUID()}.tmp`; try { await writeFile(tmp, `${JSON.stringify(state, null, 2)}\n`, { encoding: 'utf8', flag: 'wx' }); for (let attempt = 0; ; attempt += 1) { try { await rename(tmp, this.file); return } catch (error) { if (!retryable(error) || attempt >= LOCK_RETRIES - 1) throw error; await sleep(RETRY_DELAY_MS * (attempt + 1)) } } } finally { await unlink(tmp).catch(() => undefined) } }
-  async save(state: FluxState) { const release = await this.acquireLock(); try { await this.saveUnlocked(state) } finally { await release() } }
-  async update<T>(mutation: StateMutation<T>): Promise<T> { const release = await this.acquireLock(); try { const state = await this.load(); if (!state) throw new Error('State not initialized'); const result = await mutation(state); await this.saveUnlocked(state); return result } finally { await release() } }
+  async read(): Promise<RelationalRead> { return this.rpc<RelationalRead>('flux_relational_read') }
+  async commit(version: number, changes: RelationalChange[], waitingReasons?: string[]): Promise<RelationalRead> { return this.rpc<RelationalRead>('flux_relational_commit', { expected_version: version, changes, waiting_reasons: waitingReasons ?? null }) }
 }
-export function validateSupabaseUrl(value: string): string { let parsed: URL; try { parsed = new URL(value) } catch { throw new FluxError('PERSISTENCE_URL_INVALID', 'Supabase URL must be an absolute HTTPS URL', 503) }; if (parsed.protocol !== 'https:' && !(parsed.protocol === 'http:' && ['localhost', '127.0.0.1'].includes(parsed.hostname))) throw new FluxError('PERSISTENCE_URL_INVALID', 'Supabase URL must use HTTPS', 503); if (parsed.username || parsed.password || parsed.search || parsed.hash || parsed.pathname !== '/') throw new FluxError('PERSISTENCE_URL_INVALID', 'Supabase URL must contain only the project origin', 503); return parsed.origin }
-export function sanitizedSupabaseEndpoint(url: string): string { return `${new URL(validateSupabaseUrl(url)).host}/rest/v1/flux_state` }
-function persistenceDiagnostic(operation: 'read' | 'write', status: number): FluxError { const prefix = operation === 'read' ? 'External persistence read' : 'External persistence write'; if (status === 401) return new FluxError('PERSISTENCE_UNAUTHORIZED', `${prefix} unauthorized (401); verify the runtime service role key belongs to the same Supabase project`, 401); if (status === 403) return new FluxError('PERSISTENCE_FORBIDDEN', `${prefix} forbidden (403); verify database permissions and the service role runtime secret`, 403); if (status === 404) return new FluxError('PERSISTENCE_NOT_FOUND', `${prefix} target not found (404); verify migration 011 and the flux_state REST table`, 404); if (status === 409) return new FluxError('PERSISTENCE_CONFLICT', `${prefix} conflict (409); state changed concurrently, reload and retry`, 409); if (status >= 500) return new FluxError('PERSISTENCE_UPSTREAM_UNAVAILABLE', `${prefix} upstream unavailable (${status}); retry after checking Supabase service health`, 503); return new FluxError('PERSISTENCE_HTTP_ERROR', `${prefix} rejected by upstream (${status}); verify the flux_state schema/migration and runtime configuration`, 503) }
-/** Legacy flux_state snapshot REST adapter (superseded by RelationalFluxRepository; kept for compatibility diagnostics). */
-export class SupabaseFluxRepository implements FluxStateRepository {
-  private readonly baseUrl: string
-  constructor(url: string, private readonly serviceRoleKey: string, private readonly key = process.env.FLUX_STATE_KEY || 'default') { this.baseUrl = validateSupabaseUrl(url) }
-  private endpoint() { return `${this.baseUrl}/rest/v1/flux_state` }
-  private headers(extra: Record<string, string> = {}) { return { apikey: this.serviceRoleKey, Authorization: `Bearer ${this.serviceRoleKey}`, 'content-type': 'application/json', ...extra } }
-  async load() { const response = await fetch(`${this.endpoint()}?state_key=eq.${encodeURIComponent(this.key)}&select=state,version`, { headers: this.headers(), cache: 'no-store' }); if (!response.ok) throw persistenceDiagnostic('read', response.status); const rows = await response.json() as Array<{ state: FluxState; version?: number }>; if (!rows[0]) return null; if (!Number.isInteger(rows[0].version) || rows[0].version !== rows[0].state.version) throw new FluxError('PERSISTENCE_VERSION_REQUIRED', 'Supabase state must expose an integer version matching state.version; refusing unsafe snapshot writes', 503); return rows[0].state }
-  async save(state: FluxState) { if (!Number.isInteger(state.version)) throw new FluxError('PERSISTENCE_VERSION_REQUIRED', 'Supabase writes require an integer state version', 422); const response = await fetch(`${this.endpoint()}?on_conflict=state_key`, { method: 'POST', headers: this.headers({ Prefer: 'resolution=merge-duplicates,return=minimal' }), body: JSON.stringify({ state_key: this.key, state, version: state.version, updated_at: new Date().toISOString() }) }); if (!response.ok) throw persistenceDiagnostic('write', response.status) }
-  async update<T>(mutation: StateMutation<T>): Promise<T> { const state = await this.load(); if (!state) throw new Error('State not initialized'); const expected = state.version; const result = await mutation(state); state.version = expected + 1; const response = await fetch(`${this.endpoint()}?state_key=eq.${encodeURIComponent(this.key)}&version=eq.${expected}`, { method: 'PATCH', headers: this.headers({ Prefer: 'return=representation' }), body: JSON.stringify({ state, version: state.version, updated_at: new Date().toISOString() }) }); if (!response.ok) throw persistenceDiagnostic('write', response.status); const rows = await response.json().catch(() => []); if (!Array.isArray(rows) || rows.length !== 1) throw new FluxError('PERSISTENCE_CONFLICT', 'Supabase CAS update returned no matching row; refusing to report mutation success', 409); return result }
-}
-import { resolveRelationalConfig, createRelationalSqlQuery } from './relational-driver'
-import { RelationalFluxRepository } from './relational-repository'
 
-export { RelationalFluxRepository } from './relational-repository'
-
-/** Relational repository resolved from runtime configuration (FLUX_DATABASE_URL or SUPABASE_URL + service role). */
-const relationalCache = new Map<string, FluxStateRepository>()
-export function relationalRepository(env: NodeJS.ProcessEnv = process.env): FluxStateRepository {
-  const config = resolveRelationalConfig(env)
-  if (!config) throw new FluxError('PERSISTENCE_NOT_CONFIGURED', 'Relational persistence requires FLUX_DATABASE_URL or SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY', 503)
-  // Driver instances carry a connection pool; build once per distinct configuration and reuse.
-  const cacheKey = JSON.stringify(config)
-  let repository = relationalCache.get(cacheKey)
-  if (!repository) { repository = new RelationalFluxRepository(createRelationalSqlQuery(config)); relationalCache.set(cacheKey, repository) }
-  return repository
+const requireModule = createRequire(import.meta.url)
+const pools = new Map<string, SqlRelationalTransport>()
+/** Direct PostgreSQL transport over node-postgres; one pool per connection string. */
+function postgresTransport(url: string): RelationalTransport {
+  let transport = pools.get(url)
+  if (!transport) {
+    const { Pool } = requireModule('pg') as typeof import('pg')
+    transport = new SqlRelationalTransport(new Pool({ connectionString: url, max: Number(process.env.FLUX_DATABASE_POOL_MAX || 5), ssl: /(?:sslmode=require|ssl=true)/i.test(url) ? { rejectUnauthorized: false } : undefined }))
+    pools.set(url, transport)
+  }
+  return transport
 }
+function supabaseOrigin(value: string | undefined): string | null {
+  if (!value?.trim()) return null
+  try { const url = new URL(value.trim()); if (url.protocol !== 'https:' && url.protocol !== 'http:') return null; return `${url.protocol}//${url.host}` } catch { return null }
+}
+
+let overrideRepository: FluxStateRepository | null = null
+/** Test-only injection point. Never consulted by runtime configuration. */
+export function setRepositoryOverride(repository: FluxStateRepository | null): void { overrideRepository = repository }
 
 export function configuredRepository(file?: string): FluxStateRepository {
-  if (file) return new JsonFluxRepository(file)
-  const mode = process.env.FLUX_PERSISTENCE || (process.env.NODE_ENV === 'production' ? 'supabase' : 'json')
-  if (mode === 'json') {
-    if (process.env.NODE_ENV === 'production' && process.env.FLUX_LOCAL_MODE !== '1') throw new FluxError('JSON_PRODUCTION_DISABLED', 'JSON persistence is fixture/local only; configure relational persistence in production', 503)
-    const dataFile = process.env.FLUX_DATA_FILE
-    if (dataFile && process.env.NODE_ENV === 'test') return new JsonFluxRepository(/* turbopackIgnore: true */ dataFile)
-    return new JsonFluxRepository(path.join(process.cwd(), 'data', 'flux-state.json'))
-  }
-  if (mode !== 'supabase') throw new FluxError('PERSISTENCE_MODE_INVALID', `Unsupported FLUX_PERSISTENCE mode: ${mode}`, 500)
-  return relationalRepository()
+  if (file) throw new FluxError('FILESYSTEM_DISABLED', 'Filesystem operational persistence is disabled', 503)
+  if (overrideRepository) return overrideRepository
+  const direct = process.env.FLUX_DATABASE_URL
+  if (direct) return new RelationalFluxRepository(postgresTransport(direct))
+  const origin = supabaseOrigin(process.env.FLUX_SUPABASE_URL || process.env.SUPABASE_URL)
+  const serviceRoleKey = process.env.FLUX_SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY
+  if (origin && serviceRoleKey) return new RelationalFluxRepository(new SupabaseRestTransport(origin, serviceRoleKey))
+  if (process.env.DATABASE_URL) return new RelationalFluxRepository(postgresTransport(process.env.DATABASE_URL))
+  throw new FluxError('PERSISTENCE_NOT_CONFIGURED', 'Relational persistence requires FLUX_SUPABASE_URL + FLUX_SUPABASE_SERVICE_ROLE_KEY (or FLUX_DATABASE_URL / DATABASE_URL) in runtime configuration', 503)
 }
