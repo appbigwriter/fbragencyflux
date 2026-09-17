@@ -46,14 +46,12 @@ export default function AuthControl() {
   const [credential, setCredential] = useState('')
   const [message, setMessage] = useState('')
   const [busy, setBusy] = useState(false)
-  const [expanded, setExpanded] = useState(false)
   const actorRef = useRef<HTMLInputElement>(null)
   const credentialRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     const open = (event: Event) => {
       const reason = (event as CustomEvent<{ reason?: string }>).detail?.reason || 'Entre para continuar'
-      setExpanded(true)
       setMessage(reason)
       window.setTimeout(() => actorRef.current?.focus(), 0)
     }
@@ -71,7 +69,6 @@ export default function AuthControl() {
       if (!response.ok) { setMessage(body.message || 'Não foi possível entrar.'); credentialRef.current?.focus(); return }
       setCredential('')
       await refresh()
-      setExpanded(false)
     } catch { setMessage('Não foi possível conectar ao serviço de autenticação.') } finally { setBusy(false) }
   }
 
@@ -82,13 +79,13 @@ export default function AuthControl() {
   }
 
   return <section className={styles.authControl} aria-label="Autenticação">
-    {loading ? <span className={styles.authStatus}>Verificando sessão…</span> : session ? <div className={styles.authLoggedIn}><span className={styles.authStatus}><strong>{session.actor}</strong> · {session.roles.join(', ')}</span><button type="button" onClick={signOut} disabled={busy}>Sair</button></div> : <>
-      <span className={styles.authStatus}><strong>Não autenticado</strong></span>
-      {!expanded ? <button type="button" onClick={() => { setExpanded(true); setMessage(''); window.setTimeout(() => actorRef.current?.focus(), 0) }}>Entrar</button> : <form className={styles.authForm} onSubmit={submit}>
+    {session ? <div className={styles.authLoggedIn}><span className={styles.authStatus}><strong>{session.actor}</strong> · {session.roles.join(', ')}</span><button type="button" onClick={signOut} disabled={busy}>Sair</button></div> : <>
+      <span className={styles.authStatus}><strong>{loading ? 'Verificando sessão…' : 'Não autenticado'}</strong></span>
+      <form className={styles.authForm} onSubmit={submit} aria-label="Formulário de login">
         <input ref={actorRef} name="actor" aria-label="actor" value={actor} onChange={(event) => setActor(event.target.value)} placeholder="actor" autoComplete="username" />
         <input ref={credentialRef} name="credential" aria-label="credential" type="password" value={credential} onChange={(event) => setCredential(event.target.value)} placeholder="credencial" autoComplete="current-password" />
         <button type="submit" disabled={busy}>Entrar</button>
-      </form>}
+      </form>
     </>}
     {message && <small role="alert" className={styles.authMessage}>{message}</small>}
   </section>
