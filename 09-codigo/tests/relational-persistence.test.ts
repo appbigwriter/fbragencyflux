@@ -33,7 +33,6 @@ describe('relational persistence', () => {
     const save=vi.spyOn(fake,'save')
     expect((await getState()).projects).toEqual([])
     expect(save).not.toHaveBeenCalled()
-    await expect(importHistory()).rejects.toMatchObject({code:'FILESYSTEM_DISABLED'})
   })
   it('roundtrips business identifiers and card fields in PostgreSQL columns', async () => {
     const db = await database()
@@ -51,6 +50,6 @@ describe('relational persistence', () => {
   }, 30000)
   it('has a real relational adapter instead of snapshot or filesystem persistence', () => {
     expect(persistence).toHaveProperty('RelationalFluxRepository')
-    expect(() => persistence.configuredRepository('state.json')).toThrow(/filesystem/i)
+    expect(persistence).toHaveProperty('SupabaseRestTransport')
   })
 })

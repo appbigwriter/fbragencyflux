@@ -12,7 +12,7 @@ export default function DashboardClient({ initial }: { initial: DashboardSnapsho
  const attention = awaiting + initial.blockers.length + stale
  const gates = initial.gates.filter(g => g.status === 'pending' || g.decidedAt).slice(0, 4)
  return <main className={styles.shell}>
-  <header className={styles.header}><div><p className={styles.eyebrow}>FBR Agency / Control Tower</p><h1>Agency Flux</h1></div><nav aria-label="Menu principal"><Link href="/handoffs">Handoffs</Link> · <Link href="/jobs">Jobs</Link> · <Link href="/sprints">Sprints/Stories</Link></nav></header>
+  <header className={styles.dashboardTitleRow}><div><p className={styles.eyebrow}>FBR Agency / Control Tower</p><h1>Agency Flux</h1></div><nav aria-label="Menu principal"><Link href="/handoffs">Handoffs</Link> · <Link href="/jobs">Jobs</Link> · <Link href="/sprints">Sprints/Stories</Link></nav></header>
   <section className={styles.info} aria-label="Info"><strong>Info</strong><p>Estado persistido do escopo autorizado. Decisão registrada não equivale a execução de agente ou autorização de efeito externo.</p></section>
   <section className={styles.metrics} aria-label="Métricas"><Metric label="Gates pendentes" value={initial.pendingGates} href="/?view=gates"/><Metric label="Cards ativos" value={initial.activeCards} href="/?view=cards"/><Metric label="Jobs atuais" value={initial.currentCounts.jobs} href="/jobs?current=true"/><Metric label="Atenção necessária" value={attention} href="/?view=attention"/></section>
   <div className={styles.dashboardGrid} aria-label="Painéis operacionais">

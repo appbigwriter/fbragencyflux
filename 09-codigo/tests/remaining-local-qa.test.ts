@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { mkdtemp, rm, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
-import { JsonFluxRepository, SupabaseFluxRepository } from '../src/lib/persistence'
+import { JsonFluxRepository, SupabaseRestTransport } from '../src/lib/persistence'
 import { parseBriefing, createProjectPlan, persistIntake } from '../src/lib/intake'
 import { getSnapshot, getState, type FluxState } from '../src/lib/flux-repository'
 import { GET as snapshotGET } from '../src/app/api/flux/snapshot/route'
@@ -29,9 +29,9 @@ describe('remaining local QA regressions', () => {
     const dir = await mkdtemp(join(process.cwd(), 'flux-card-key-')); dirs.push(dir); const file = join(dir, 'state.json'); const state = empty(); state.projects = [{ id: 'p-1', name: 'Nome exibido', tenantId: 't-1', status: 'planned', owner: 'Kora', description: 'x' }]; state.cards = [{ id: 'c-1', title: 'x', project: 'p-1', tenantId: 't-1', status: 'planned', assignee: 'Kora', priority: 'normal', detail: 'x', acceptanceCriteria: [], updatedAt: '' }]; await writeFile(file, JSON.stringify(state)); const snapshot = await getSnapshot(file); expect(snapshot.projectCards['p-1']).toHaveLength(1); expect(snapshot.projectCards['Nome exibido']).toBeUndefined()
   })
 
-  it('fails closed when Supabase does not return a matching version', async () => {
-    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(new Response(JSON.stringify([{ state: empty() }]), { status: 200 })))
-    await expect(new SupabaseFluxRepository('https://project.supabase.co', 'key').load()).rejects.toMatchObject({ code: 'PERSISTENCE_VERSION_REQUIRED' })
+  it('fails closed when the relational read transport cannot reach the database', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('network down')))
+    await expect(new SupabaseRestTransport('https://project.supabase.co', 'key').read()).rejects.toMatchObject({ code: 'PERSISTENCE_UNAVAILABLE' })
   })
 
   it('rejects intake and mutation actors crossing tenant boundaries without partial writes', async () => {
@@ -42,13 +42,14 @@ describe('remaining local QA regressions', () => {
     expect((await getState(file)).projects).toHaveLength(0)
   })
 
-  it('treats an empty Supabase PATCH response as a conflict', async () => {
+  it('maps a server CAS conflict to PERSISTENCE_CONFLICT without exposing the upstream body', async () => {
     const fetchMock = vi.fn()
-      .mockResolvedValueOnce(new Response(JSON.stringify([{ state: empty(), version: 1 }]), { status: 200 }))
-      .mockResolvedValueOnce(new Response(null, { status: 204 }))
+      .mockResolvedValueOnce(new Response('{"version":0}', { status: 200 }))
+      .mockResolvedValueOnce(new Response(JSON.stringify({ code: 'P0001', message: 'PERSISTENCE_CONFLICT' }), { status: 400, headers: { 'content-type': 'application/json' } }))
     vi.stubGlobal('fetch', fetchMock)
-    const repository = new SupabaseFluxRepository('https://project.supabase.co', 'key')
-    await expect(repository.update((state) => { state.events.push({ id: 'e', time: '', actor: 'Kora', action: 'test' }) })).rejects.toMatchObject({ code: 'PERSISTENCE_CONFLICT' })
+    const transport = new SupabaseRestTransport('https://project.supabase.co', 'key')
+    await expect(transport.read()).resolves.toMatchObject({ version: 0 })
+    await expect(transport.commit(0, [])).rejects.toMatchObject({ code: 'PERSISTENCE_CONFLICT', status: 409 })
   })
 
   it('requires an explicit tenant/project read scope instead of returning the complete snapshot', async () => {
