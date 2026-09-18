@@ -1,0 +1,5 @@
+{
+  "story": "FLUX-QA-016",
+  "authoritySource": "F:/Projetos/_FBR/AuthorityEngine/05-workflows/authority-engine-to-fbr-flux.md",
+  "briefing": "# Projeto Authority Flux QA 016\nid: authority-flux-qa-016\nowner: Kora\ntenant: tenant-qa-016\nlanguage: pt-BR\nmarket: BR\nobjective: Validar Authority → Flux → Blogs → Control Tower em execução local auditável\ninput: Opção de persona selecionada pelo Authority Engine; execução exclusivamente local\nscope: Mock local, sem secrets, sem migration remota, sem publicação externa\nnextStep: Registrar readback local e Gate de publicação\n\n## Persona\n- Persona package mock/local v1.0.0: identidade, voz, Character Bible, claims permitidos e disclosure\n\n## Design System\n- Blogs recebem somente pacote aprovado e artefato de provisionamento simulado\n\n## Restrictions\n- Não chamar serviços externos; não publicar; não alterar banco remoto\n\n## Acceptance\n- Entrada, persona, approval, evento/inbox, job, provisionamento simulado e readback persistem localmente\n- Publicação permanece bloqueada até Gate explícito de Sergio\n"
+}

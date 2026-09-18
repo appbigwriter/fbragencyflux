@@ -23,7 +23,7 @@ describe('operational UX contracts', () => {
     expect(source).toContain('setStatus')
     expect(source).toContain('setOwner')
     expect(source).toContain('setProject')
-    expect(source).toContain('/resume')
+    expect(source).toContain('performHandoffAction')
     expect(source).toContain('Consultar no dashboard')
     expect(source).toContain('Conversar sobre este blocker')
     expect(source).toContain('data-hermes-send')

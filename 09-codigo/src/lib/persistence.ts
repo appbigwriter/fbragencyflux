@@ -19,8 +19,9 @@ export class FakeFluxRepository implements FluxStateRepository {
 export { RelationalFluxRepository }
 export { SupabaseRestTransport, postgresTransport, resolveRelationalConfig, createRelationalTransport, closeRelationalPools } from './relational-driver'
 
-const LOCK_RETRIES = 80
-const RETRY_DELAY_MS = 20
+const LOCK_RETRIES = 400
+const RETRY_DELAY_MS = 10
+const MAX_RETRY_DELAY_MS = 50
 const LEASE_MS = 1500
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 const retryable = (error: unknown) => ['EACCES', 'EPERM', 'EBUSY', 'ENOTEMPTY'].includes((error as NodeJS.ErrnoException)?.code || '')
@@ -43,7 +44,7 @@ export class JsonFluxRepository implements FluxStateRepository {
         if ((error as NodeJS.ErrnoException).code === 'EEXIST') {
           try { const current = JSON.parse(await readFile(lock, 'utf8')) as LockRecord; if (!current.token || !current.owner || Date.now() - current.heartbeat > LEASE_MS * 2) await unlink(lock) } catch { /* another writer owns or removes it */ }
         } else if (!retryable(error)) throw error
-        await sleep(RETRY_DELAY_MS * (attempt + 1))
+        await sleep(Math.min(MAX_RETRY_DELAY_MS, RETRY_DELAY_MS * (attempt + 1)))
       }
     }
     throw new FluxError('LOCAL_STATE_BUSY', 'Local Flux state is busy; retry the operation', 503)

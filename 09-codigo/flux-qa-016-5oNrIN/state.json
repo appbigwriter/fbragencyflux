@@ -1,0 +1,534 @@
+{
+  "version": 1,
+  "projects": [
+    {
+      "id": "authority-flux-qa-016",
+      "name": "Projeto Authority Flux QA 016",
+      "tenantId": "tenant-qa-016",
+      "status": "planned",
+      "owner": "Kora",
+      "description": "Validar Authority → Flux → Blogs → Control Tower em execução local auditável"
+    }
+  ],
+  "cards": [
+    {
+      "id": "authority-flux-qa-016-foundation",
+      "title": "Projeto Authority Flux QA 016: foundation",
+      "project": "authority-flux-qa-016",
+      "tenantId": "tenant-qa-016",
+      "status": "planned",
+      "assignee": "Kora",
+      "priority": "high",
+      "detail": "Validar Authority → Flux → Blogs → Control Tower em execução local auditável",
+      "acceptanceCriteria": [
+        "Briefing normalizado",
+        "Evidência local anexada"
+      ],
+      "updatedAt": "2026-09-18T16:16:50.680Z"
+    },
+    {
+      "id": "authority-flux-qa-016-execution",
+      "title": "Projeto Authority Flux QA 016: execution",
+      "project": "authority-flux-qa-016",
+      "tenantId": "tenant-qa-016",
+      "status": "planned",
+      "assignee": "Kora",
+      "priority": "normal",
+      "detail": "Validar Authority → Flux → Blogs → Control Tower em execução local auditável",
+      "acceptanceCriteria": [
+        "Entregável versionado",
+        "Readback local persistido"
+      ],
+      "updatedAt": "2026-09-18T16:16:50.680Z"
+    }
+  ],
+  "approvals": [
+    {
+      "cardId": "authority-flux-qa-016-foundation",
+      "tenantId": "tenant-qa-016",
+      "projectId": "authority-flux-qa-016",
+      "project": "Projeto Authority Flux QA 016",
+      "persona": "persona-qa-016",
+      "blog": "authority-flux-qa-016",
+      "type": "project_scope",
+      "title": "Aprovar pacote de persona e escopo local",
+      "requestedBy": "Íris",
+      "impact": "Somente estado local de teste",
+      "scope": "Authority → Flux → Blogs → Control Tower; simulação local",
+      "rollback": "Remover estado temporário e artefatos locais",
+      "packageVersion": 1,
+      "id": "approval-1789748210715",
+      "status": "approved",
+      "decisionReason": "Aprovo o escopo local da QA-016; não autoriza ação externa.",
+      "decidedAt": "2026-09-18T16:16:50.805Z",
+      "decidedBy": "Sergio"
+    }
+  ],
+  "gates": [
+    {
+      "id": "FLUX-QA-016-GATE-PUBLICATION",
+      "cardId": "authority-flux-qa-016-foundation",
+      "project": "FBR Agency Flux",
+      "title": "Gate de publicação QA-016",
+      "requiredDecision": "Autorizar publicação local simulada após readback",
+      "status": "approved",
+      "impact": "Não publica externamente",
+      "cost": "Nenhum",
+      "scope": "Blog authority-flux-qa-016",
+      "reversibility": "Total",
+      "rollback": "Excluir artefato local",
+      "evidence": [
+        "job-qa-016-control-tower",
+        "readback local"
+      ],
+      "owner": "Sergio",
+      "requestedAt": "2026-09-18T16:16:51.152Z",
+      "externalActionAuthorized": false,
+      "blockers": [
+        "Gate pendente"
+      ],
+      "decidedAt": "2026-09-18T16:16:51.582Z",
+      "decidedBy": "Sergio"
+    }
+  ],
+  "events": [
+    {
+      "id": "event-intake-198dc2602044aa19bacc3a5829e2fc5025f577399099c9ea69c898eb754c75f7",
+      "time": "2026-09-18T16:16:50.689Z",
+      "actor": "Íris",
+      "action": "created project from briefing",
+      "correlationId": "flux-qa-016-local-e2e",
+      "reason": "198dc2602044aa19bacc3a5829e2fc5025f577399099c9ea69c898eb754c75f7",
+      "receipt": {
+        "correlationId": "flux-qa-016-local-e2e",
+        "operation": "intake.persist",
+        "status": "completed",
+        "actor": "Íris",
+        "startedAt": "2026-09-18T16:16:50.690Z",
+        "completedAt": "2026-09-18T16:16:50.690Z",
+        "durationMs": 0,
+        "metadata": {
+          "projectId": "authority-flux-qa-016",
+          "tenant": "tenant-qa-016"
+        }
+      }
+    },
+    {
+      "id": "event-persona-qa-016",
+      "time": "2026-09-18T16:16:50.707Z",
+      "actor": "AuthorityEngine",
+      "action": "persona package received (MOCK/LOCAL)",
+      "cardId": "authority-flux-qa-016-foundation",
+      "correlationId": "flux-qa-016-local-e2e",
+      "reason": "344e5a29e5316d4e0865fe9cba04cd02488fe6d9c637fe9b2e78d25710db80d6"
+    },
+    {
+      "id": "event-1789748210715",
+      "time": "2026-09-18T16:16:50.715Z",
+      "actor": "Íris",
+      "action": "criou Gate approval-1789748210715 (LOCAL)",
+      "cardId": "authority-flux-qa-016-foundation",
+      "correlationId": "local-1789748210715",
+      "receipt": {
+        "correlationId": "local-1789748210715",
+        "operation": "approval.create",
+        "status": "completed",
+        "actor": "Íris",
+        "startedAt": "2026-09-18T16:16:50.715Z",
+        "completedAt": "2026-09-18T16:16:50.715Z",
+        "durationMs": 0,
+        "metadata": {
+          "approvalId": "approval-1789748210715"
+        }
+      }
+    },
+    {
+      "id": "event-1789748210806",
+      "time": "2026-09-18T16:16:50.805Z",
+      "actor": "Sergio",
+      "action": "registrou decisão approved para approval-1789748210715 (LOCAL/NO EXTERNAL EFFECT)",
+      "cardId": "authority-flux-qa-016-foundation",
+      "correlationId": "local-1789748210806",
+      "reason": "Aprovo o escopo local da QA-016; não autoriza ação externa.",
+      "receipt": {
+        "correlationId": "local-1789748210806",
+        "operation": "approval.decide",
+        "status": "completed",
+        "actor": "Sergio",
+        "startedAt": "2026-09-18T16:16:50.806Z",
+        "completedAt": "2026-09-18T16:16:50.806Z",
+        "durationMs": 0,
+        "metadata": {
+          "approvalId": "approval-1789748210715",
+          "decision": "approved",
+          "packageVersion": 1
+        }
+      }
+    },
+    {
+      "id": "event-job-job-qa-016-control-tower-2026-09-18T16:16:51.031Z",
+      "time": "2026-09-18T16:16:51.031Z",
+      "actor": "Íris",
+      "action": "upserted job",
+      "jobId": "job-qa-016-control-tower",
+      "cardId": "authority-flux-qa-016-foundation",
+      "correlationId": "flux-qa-016-local-e2e",
+      "receipt": {
+        "correlationId": "flux-qa-016-local-e2e",
+        "operation": "job.upsert",
+        "status": "completed",
+        "actor": "Íris",
+        "jobId": "job-qa-016-control-tower",
+        "startedAt": "2026-09-18T16:16:51.031Z",
+        "completedAt": "2026-09-18T16:16:51.031Z",
+        "durationMs": 0
+      }
+    },
+    {
+      "id": "event-job-job-qa-016-control-tower-2026-09-18T16:16:51.116Z",
+      "time": "2026-09-18T16:16:51.116Z",
+      "actor": "Íris",
+      "action": "upserted job",
+      "jobId": "job-qa-016-control-tower",
+      "cardId": "authority-flux-qa-016-foundation",
+      "correlationId": "flux-qa-016-local-e2e",
+      "receipt": {
+        "correlationId": "flux-qa-016-local-e2e",
+        "operation": "job.upsert",
+        "status": "completed",
+        "actor": "Íris",
+        "jobId": "job-qa-016-control-tower",
+        "startedAt": "2026-09-18T16:16:51.117Z",
+        "completedAt": "2026-09-18T16:16:51.117Z",
+        "durationMs": 0
+      }
+    },
+    {
+      "id": "event-job-job-qa-016-control-tower-2026-09-18T16:16:51.263Z",
+      "time": "2026-09-18T16:16:51.263Z",
+      "actor": "Íris",
+      "action": "upserted job",
+      "jobId": "job-qa-016-control-tower",
+      "cardId": "authority-flux-qa-016-foundation",
+      "correlationId": "flux-qa-016-local-e2e",
+      "receipt": {
+        "correlationId": "flux-qa-016-local-e2e",
+        "operation": "job.upsert",
+        "status": "completed",
+        "actor": "Íris",
+        "jobId": "job-qa-016-control-tower",
+        "startedAt": "2026-09-18T16:16:51.263Z",
+        "completedAt": "2026-09-18T16:16:51.263Z",
+        "durationMs": 0
+      }
+    },
+    {
+      "id": "event-flux-qa-016-publication-before-gate",
+      "time": "2026-09-18T16:16:51.553Z",
+      "actor": "Gabe",
+      "action": "publication blocked until Gate (LOCAL/NO EXTERNAL EFFECT)",
+      "cardId": "authority-flux-qa-016-foundation",
+      "correlationId": "flux-qa-016-publication-before-gate",
+      "reason": "Gate de publicação pendente",
+      "receipt": {
+        "correlationId": "flux-qa-016-publication-before-gate",
+        "operation": "blogs.publication",
+        "status": "blocked",
+        "actor": "Gabe",
+        "startedAt": "2026-09-18T16:16:51.553Z",
+        "completedAt": "2026-09-18T16:16:51.553Z",
+        "durationMs": 0,
+        "metadata": {
+          "gateId": "FLUX-QA-016-GATE-PUBLICATION",
+          "externalActionAuthorized": false
+        }
+      }
+    },
+    {
+      "id": "event-1789748211582",
+      "time": "2026-09-18T16:16:51.582Z",
+      "actor": "Sergio",
+      "action": "registrou decisão approved para FLUX-QA-016-GATE-PUBLICATION (LOCAL DECISION / NO EXTERNAL EFFECT)",
+      "cardId": "authority-flux-qa-016-foundation",
+      "correlationId": "local-1789748211582",
+      "reason": "Decisão conceitual local não autoriza execução externa",
+      "receipt": {
+        "correlationId": "local-1789748211582",
+        "operation": "gate.decide",
+        "status": "completed",
+        "actor": "Sergio",
+        "startedAt": "2026-09-18T16:16:51.582Z",
+        "completedAt": "2026-09-18T16:16:51.582Z",
+        "durationMs": 0,
+        "metadata": {
+          "gateId": "FLUX-QA-016-GATE-PUBLICATION",
+          "decision": "approved"
+        }
+      }
+    },
+    {
+      "id": "event-flux-qa-016-publication-after-gate",
+      "time": "2026-09-18T16:16:51.666Z",
+      "actor": "Gestor Editorial",
+      "action": "publication simulated after Gate (LOCAL/NO EXTERNAL EFFECT)",
+      "cardId": "authority-flux-qa-016-foundation",
+      "correlationId": "flux-qa-016-publication-after-gate",
+      "reason": "Gate aprovado localmente; nenhuma publicação externa foi executada",
+      "receipt": {
+        "correlationId": "flux-qa-016-publication-after-gate",
+        "operation": "blogs.publication",
+        "status": "completed",
+        "actor": "Gestor Editorial",
+        "startedAt": "2026-09-18T16:16:51.666Z",
+        "completedAt": "2026-09-18T16:16:51.666Z",
+        "durationMs": 0,
+        "metadata": {
+          "gateId": "FLUX-QA-016-GATE-PUBLICATION",
+          "externalActionAuthorized": false
+        }
+      }
+    }
+  ],
+  "handoffs": [
+    {
+      "id": "handoff-qa-016-inbox",
+      "cardId": "authority-flux-qa-016-foundation",
+      "project": "Projeto Authority Flux QA 016",
+      "from": "AuthorityEngine",
+      "to": "Íris",
+      "summary": "Inbox: approval e persona recebidos",
+      "done": "Pacote local e decisão persistidos",
+      "risks": "Nenhum efeito externo",
+      "nextStep": "Despachar job de provisionamento simulado",
+      "acceptanceCriteria": "Evento e pacote disponíveis para o próximo owner",
+      "evidenceRef": "event:persona-qa-016",
+      "createdAt": "2026-09-18T16:16:50.989Z",
+      "status": "received",
+      "correlationId": "flux-qa-016-local-e2e",
+      "sourceType": "local",
+      "source": "local/authority-inbox"
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "artifact-persona-qa-016",
+      "cardId": "authority-flux-qa-016-foundation",
+      "name": "persona-package.json",
+      "kind": "persona-package-mock-local",
+      "status": "available",
+      "path": "F:\\Projetos\\_FBR\\FBR Agency Flux\\09-codigo\\flux-qa-016-5oNrIN\\persona-package.json",
+      "sourcePath": "F:/Projetos/_FBR/AuthorityEngine/05-workflows/authority-engine-to-fbr-flux.md",
+      "size": 324
+    },
+    {
+      "id": "artifact-control-tower-readback-qa-016",
+      "cardId": "authority-flux-qa-016-foundation",
+      "name": "control-tower-readback.json",
+      "kind": "simulated-provisioning-readback",
+      "status": "available",
+      "path": "F:\\Projetos\\_FBR\\FBR Agency Flux\\09-codigo\\flux-qa-016-5oNrIN\\control-tower-readback.json",
+      "sourcePath": "F:\\Projetos\\_FBR\\FBR Agency Flux\\09-codigo\\flux-qa-016-5oNrIN\\control-tower-readback.json",
+      "size": 320
+    }
+  ],
+  "jobs": [
+    {
+      "jobId": "authority-flux-qa-016-intake",
+      "cardId": "authority-flux-qa-016-foundation",
+      "project": "authority-flux-qa-016",
+      "tenantId": "tenant-qa-016",
+      "agent": "Íris",
+      "role": "Íris",
+      "objective": "Normalizar briefing e inputs versionados",
+      "status": "planned",
+      "updatedAt": "2026-09-18T16:16:50.680Z",
+      "nextCheck": "2026-09-19T16:16:50.681Z",
+      "artifactRefs": [],
+      "handoffRefs": [],
+      "evidenceRefs": [
+        "briefing.md"
+      ],
+      "blockers": [],
+      "nextStep": "Registrar readback local e Gate de publicação",
+      "correlationId": "flux-qa-016-local-e2e",
+      "source": "local/intake",
+      "sourceType": "local",
+      "historical": false,
+      "activeBlocker": false,
+      "owner": "Íris",
+      "verification": "not_verified",
+      "dependsOn": [],
+      "blocks": [],
+      "canStart": true,
+      "parallelGroup": "parallel-authority-flux-qa-016",
+      "track": "foundation"
+    },
+    {
+      "jobId": "authority-flux-qa-016-execution",
+      "cardId": "authority-flux-qa-016-execution",
+      "project": "authority-flux-qa-016",
+      "tenantId": "tenant-qa-016",
+      "agent": "Kora",
+      "role": "Kora",
+      "objective": "Validar Authority → Flux → Blogs → Control Tower em execução local auditável",
+      "status": "planned",
+      "updatedAt": "2026-09-18T16:16:50.680Z",
+      "nextCheck": "2026-09-19T16:16:50.681Z",
+      "artifactRefs": [],
+      "handoffRefs": [],
+      "evidenceRefs": [
+        "briefing.md"
+      ],
+      "blockers": [],
+      "nextStep": "Registrar readback local e Gate de publicação",
+      "correlationId": "flux-qa-016-local-e2e",
+      "source": "local/intake",
+      "sourceType": "local",
+      "historical": false,
+      "activeBlocker": false,
+      "owner": "Kora",
+      "verification": "not_verified",
+      "dependsOn": [
+        "authority-flux-qa-016-intake"
+      ],
+      "blocks": [],
+      "canStart": false,
+      "track": "execution"
+    },
+    {
+      "role": "Control Tower adapter",
+      "project": "Projeto Authority Flux QA 016",
+      "artifactRefs": [
+        "control-tower-readback.json"
+      ],
+      "handoffRefs": [
+        "handoff-qa-016-inbox"
+      ],
+      "evidenceRefs": [
+        "F:\\Projetos\\_FBR\\FBR Agency Flux\\09-codigo\\flux-qa-016-5oNrIN\\control-tower-readback.json"
+      ],
+      "blockers": [],
+      "nextStep": "Executar adapter local e ler estado de volta",
+      "correlationId": "flux-qa-016-local-e2e",
+      "source": "local/qa-016",
+      "sourceType": "local",
+      "historical": false,
+      "activeBlocker": false,
+      "updatedAt": "2026-09-18T16:16:51.263Z",
+      "jobId": "job-qa-016-control-tower",
+      "cardId": "authority-flux-qa-016-foundation",
+      "tenantId": "tenant-qa-016",
+      "agent": "Théo",
+      "objective": "Provisionar Control Tower simulado para o blog local",
+      "status": "completed",
+      "owner": "Théo",
+      "lastSeen": "2026-09-18T16:16:51.031Z",
+      "verification": "verified",
+      "lastEvent": "completed",
+      "currentStep": "readback verified",
+      "completedAt": "2026-09-18T16:16:51.257Z"
+    }
+  ],
+  "requiredActions": [],
+  "agentRuns": [
+    {
+      "jobId": "authority-flux-qa-016-intake",
+      "cardId": "authority-flux-qa-016-foundation",
+      "project": "authority-flux-qa-016",
+      "tenantId": "tenant-qa-016",
+      "agent": "Íris",
+      "role": "Íris",
+      "objective": "Normalizar briefing e inputs versionados",
+      "status": "planned",
+      "updatedAt": "2026-09-18T16:16:50.680Z",
+      "nextCheck": "2026-09-19T16:16:50.681Z",
+      "artifactRefs": [],
+      "handoffRefs": [],
+      "evidenceRefs": [
+        "briefing.md"
+      ],
+      "blockers": [],
+      "nextStep": "Registrar readback local e Gate de publicação",
+      "correlationId": "flux-qa-016-local-e2e",
+      "source": "local/intake",
+      "sourceType": "local",
+      "historical": false,
+      "activeBlocker": false,
+      "owner": "Íris",
+      "verification": "not_verified",
+      "dependsOn": [],
+      "blocks": [],
+      "canStart": true,
+      "parallelGroup": "parallel-authority-flux-qa-016",
+      "track": "foundation"
+    },
+    {
+      "jobId": "authority-flux-qa-016-execution",
+      "cardId": "authority-flux-qa-016-execution",
+      "project": "authority-flux-qa-016",
+      "tenantId": "tenant-qa-016",
+      "agent": "Kora",
+      "role": "Kora",
+      "objective": "Validar Authority → Flux → Blogs → Control Tower em execução local auditável",
+      "status": "planned",
+      "updatedAt": "2026-09-18T16:16:50.680Z",
+      "nextCheck": "2026-09-19T16:16:50.681Z",
+      "artifactRefs": [],
+      "handoffRefs": [],
+      "evidenceRefs": [
+        "briefing.md"
+      ],
+      "blockers": [],
+      "nextStep": "Registrar readback local e Gate de publicação",
+      "correlationId": "flux-qa-016-local-e2e",
+      "source": "local/intake",
+      "sourceType": "local",
+      "historical": false,
+      "activeBlocker": false,
+      "owner": "Kora",
+      "verification": "not_verified",
+      "dependsOn": [
+        "authority-flux-qa-016-intake"
+      ],
+      "blocks": [],
+      "canStart": false,
+      "track": "execution"
+    },
+    {
+      "role": "Control Tower adapter",
+      "project": "Projeto Authority Flux QA 016",
+      "artifactRefs": [
+        "control-tower-readback.json"
+      ],
+      "handoffRefs": [
+        "handoff-qa-016-inbox"
+      ],
+      "evidenceRefs": [
+        "F:\\Projetos\\_FBR\\FBR Agency Flux\\09-codigo\\flux-qa-016-5oNrIN\\control-tower-readback.json"
+      ],
+      "blockers": [],
+      "nextStep": "Executar adapter local e ler estado de volta",
+      "correlationId": "flux-qa-016-local-e2e",
+      "source": "local/qa-016",
+      "sourceType": "local",
+      "historical": false,
+      "activeBlocker": false,
+      "updatedAt": "2026-09-18T16:16:51.263Z",
+      "jobId": "job-qa-016-control-tower",
+      "cardId": "authority-flux-qa-016-foundation",
+      "tenantId": "tenant-qa-016",
+      "agent": "Théo",
+      "objective": "Provisionar Control Tower simulado para o blog local",
+      "status": "completed",
+      "owner": "Théo",
+      "lastSeen": "2026-09-18T16:16:51.031Z",
+      "verification": "verified",
+      "lastEvent": "completed",
+      "currentStep": "readback verified",
+      "completedAt": "2026-09-18T16:16:51.257Z"
+    }
+  ],
+  "sprints": [],
+  "stories": [],
+  "coordinator": {}
+}

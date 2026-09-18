@@ -1,15 +1,21 @@
 import { createHash, timingSafeEqual } from 'node:crypto'
-import { FluxError, mutateState, type AgentRun, type AgentRunEvent, type LocalActor } from './flux-repository'
+import { FluxError, type AgentRun, type AgentRunEvent, type LocalActor } from './flux-repository'
 import { createReceipt, sanitizeError, type Receipt } from './observability'
+import { configuredRepository, FakeFluxRepository } from './persistence'
+import { enqueueEvent, markEventPublished, processInbox } from './event-store'
 
 export type FluxDispatchEvent = { eventId: string; type: 'job' | 'agent_run' | 'heartbeat'; jobId: string; event?: AgentRunEvent; payload: Partial<AgentRun>; sentAt: string; correlationId: string }
 export interface DispatcherAdapter { publish(event: FluxDispatchEvent): Promise<void>; receive(event: FluxDispatchEvent): Promise<{ duplicate: boolean; job?: AgentRun; receipt?: Receipt }> }
-const seen = new Set<string>()
 export class FakeDispatcherAdapter implements DispatcherAdapter {
   readonly emitted: FluxDispatchEvent[] = []
-  private readonly received = new Set<string>()
-  async publish(event: FluxDispatchEvent) { this.emitted.push(structuredClone(event)) }
-  async receive(event: FluxDispatchEvent) { if (this.received.has(event.eventId)) return { duplicate: true }; this.received.add(event.eventId); return { duplicate: false } }
+  private readonly repository = new FakeFluxRepository({ version: 1, projects: [], cards: [], approvals: [], gates: [], events: [], handoffs: [], artifacts: [] })
+  constructor(private readonly file?: string) {}
+  async publish(event: FluxDispatchEvent) { const repository = this.file ? configuredRepository(this.file) : this.repository; await enqueueEvent(repository, event.eventId, 'dispatcher'); await markEventPublished(repository, event.eventId, 'dispatcher', { type: event.type }); this.emitted.push(structuredClone(event)) }
+  async receive(event: FluxDispatchEvent) {
+    if (this.file) return dispatchIncoming(event, { actor: 'Hermes', scope: 'local' }, this.file)
+    const result = await processInbox(this.repository, event.eventId, 'dispatcher', async () => ({ result: undefined }))
+    return { duplicate: result.duplicate, receipt: result.receipt }
+  }
 }
 export class HttpDispatcherAdapter implements DispatcherAdapter {
   constructor(private readonly endpoint: string, private readonly token: string) {}
@@ -30,11 +36,10 @@ function baseline(event: FluxDispatchEvent, now: string): AgentRun {
 }
 export async function dispatchIncoming(event: FluxDispatchEvent, actor: LocalActor, file?: string) {
   if (!event.eventId || !event.jobId || !event.type || !event.sentAt || !event.correlationId) throw new FluxError('INVALID_DISPATCH_EVENT', 'eventId, type, jobId, sentAt and correlationId are required', 400)
-  if (!file && seen.has(event.eventId)) return { duplicate: true }
   try {
-    return await mutateState((state) => {
+    const repository = configuredRepository(file)
+    const result = await processInbox(repository, event.eventId, 'dispatcher', (state) => {
       state.events ||= []; state.jobs ||= []; state.agentRuns = state.jobs
-      if (state.events.some((item) => item.action === 'dispatcher event accepted' && item.reason === event.eventId)) { seen.add(event.eventId); return { duplicate: true } }
       const now = new Date().toISOString()
       const current = state.jobs.find((item) => item.jobId === event.jobId)
       const nextEvent = event.type === 'heartbeat' ? 'progress' : event.event
@@ -45,11 +50,11 @@ export async function dispatchIncoming(event: FluxDispatchEvent, actor: LocalAct
       state.agentRuns = state.jobs
       const receipt = createReceipt({ correlationId: event.correlationId, operation: 'dispatcher.receive', status: 'completed', actor: actor.actor, jobId: job.jobId, startedAt: event.sentAt, completedAt: now, metadata: { eventId: event.eventId, type: event.type } })
       state.events.push({ id: `event-dispatch-${event.eventId}`, time: event.sentAt, actor: actor.actor, action: 'dispatcher event accepted', jobId: event.jobId, correlationId: event.correlationId, reason: event.eventId, receipt })
-      seen.add(event.eventId)
-      return { duplicate: false, job, receipt }
-    }, file)
+      return { result: { duplicate: false, job, receipt } }
+    })
+    if (result.duplicate) return { duplicate: true, job: undefined, receipt: result.receipt }
+    return result.result || { duplicate: false, receipt: result.receipt }
   } catch (error) {
-    seen.delete(event.eventId)
     throw error instanceof FluxError ? error : new FluxError('DISPATCH_FAILED', sanitizeError(error), 503)
   }
 }

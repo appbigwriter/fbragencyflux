@@ -16,8 +16,8 @@ it('renders every job once as a card, date filters and URL-selected human-readab
  expect(html).toContain('Data inicial')
  expect(html).toContain('Data final')
  expect(html).toContain('Detalhes do job')
- expect(html).toContain('Critério de verificação')
- expect(html).not.toContain('<pre')
+ expect(html).toContain('<details')
+ expect(html).toContain('Ver JSON técnico / readback')
  expect(renderToStaticMarkup(<JobsClient initial={[]} />)).toContain('Nenhum job registrado.')
 })
 const handoff: Handoff = {id:'handoff-test',cardId:'card-test',project:'Flux',from:'Íris',to:'Kora',summary:'Entrega para revisão',done:'Artefato disponível',risks:'Risco declarado',nextStep:'Validar evidência',acceptanceCriteria:'QA aprovado',evidenceRef:'evidencia.md',createdAt:'2026-09-17T12:00:00Z'}

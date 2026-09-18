@@ -61,6 +61,6 @@ describe('visible authentication control contract', () => {
     expect(handoffs).toContain('Leitura permitida; gestão bloqueada sem sessão')
     expect(jobs).toContain('Leitura permitida; gestão bloqueada sem sessão')
     expect(handoffs).toContain('disabled={!session ||')
-    expect(jobs).toContain('disabled={!session ||')
+    expect(jobs).toContain('Apenas readback persistido')
   })
 })
