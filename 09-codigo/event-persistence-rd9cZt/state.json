@@ -1,0 +1,80 @@
+{
+  "version": 1,
+  "projects": [],
+  "cards": [
+    {
+      "id": "card-1",
+      "title": "test",
+      "project": "atlas",
+      "status": "ready",
+      "assignee": "Kora",
+      "priority": "normal",
+      "detail": "test",
+      "acceptanceCriteria": [
+        "evidence"
+      ],
+      "updatedAt": ""
+    }
+  ],
+  "approvals": [],
+  "gates": [],
+  "events": [],
+  "handoffs": [],
+  "artifacts": [],
+  "jobs": [
+    {
+      "jobId": "job-1",
+      "cardId": "card-1",
+      "project": "atlas",
+      "agent": "Kora",
+      "role": "Kora",
+      "objective": "test",
+      "status": "ready",
+      "updatedAt": "",
+      "artifactRefs": [],
+      "handoffRefs": [],
+      "evidenceRefs": [],
+      "blockers": [],
+      "nextStep": "done",
+      "correlationId": "old",
+      "source": "test"
+    }
+  ],
+  "eventInbox": [
+    {
+      "eventId": "evt-timeout",
+      "consumer": "consumer",
+      "status": "failed",
+      "attempts": 1,
+      "attemptCount": 1,
+      "backoffMs": 1,
+      "receivedAt": "2026-09-18T19:45:55.086Z",
+      "updatedAt": "2026-09-18T19:45:55.227Z",
+      "timeoutMs": 80,
+      "heartbeatAt": "2026-09-18T19:45:55.227Z",
+      "lastError": "Event evt-timeout processing timed out after 80ms",
+      "nextRetryAt": "2026-09-18T19:45:55.228Z",
+      "receiptId": "receipt-event-b2e168ee7858f2803a44e084"
+    }
+  ],
+  "eventReceipts": [
+    {
+      "correlationId": "event:evt-timeout",
+      "operation": "event.consume",
+      "status": "failed",
+      "startedAt": "2026-09-18T19:45:55.227Z",
+      "completedAt": "2026-09-18T19:45:55.227Z",
+      "durationMs": 0,
+      "metadata": {
+        "eventId": "evt-timeout",
+        "consumer": "consumer",
+        "attempts": 1,
+        "error": "Event evt-timeout processing timed out after 80ms",
+        "nextRetryAt": "2026-09-18T19:45:55.228Z"
+      },
+      "id": "receipt-event-b2e168ee7858f2803a44e084",
+      "eventId": "evt-timeout",
+      "consumer": "consumer"
+    }
+  ]
+}

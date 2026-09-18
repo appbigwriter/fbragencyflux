@@ -1,7 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;600;700;800&display=swap');
 
-:root { --ink: #15211f; --muted: #6d7b76; --line: #dce5df; --paper: #f4f6f1; --card: #fffefa; --mint: #cdeedc; --green: #16754d; --orange: #e99b4b; --red: #b94e3d; }
+:root { --bg:#0b0d14; --panel:#121622; --panel2:#171c2b; --line:#2a3247; --text:#f5f7fb; --muted:#8f9ab2; --blue:#5b8cff; --purple:#a979ff; --green:#57d6a0; --amber:#f5bd5a; --red:#ff7080; }
 * { box-sizing: border-box; }
-body { margin: 0; background: var(--paper); color: var(--ink); font-family: Manrope, Arial, sans-serif; }
-.appHeader { max-width: 1320px; margin: 0 auto; padding: 14px 32px 0; display: flex; justify-content: space-between; align-items: center; gap: 16px; color: var(--muted); font: 11px 'DM Mono', monospace; }
-@media (max-width: 800px) { .appHeader { padding: 14px 18px 0; align-items: flex-start; } }
+html, body { min-height:100%; }
+body { margin:0; background:var(--bg); color:var(--text); font:14px Manrope, Inter, ui-sans-serif, system-ui, sans-serif; }
+a { color:inherit; }
+button, input, select, textarea { font:inherit; }
+button { cursor:pointer; }
+.appHeader { max-width:1440px; margin:0 auto; padding:24px 42px 0; display:flex; justify-content:space-between; align-items:center; gap:20px; color:var(--muted); }
+.brand { display:flex; align-items:center; gap:10px; color:var(--text); text-decoration:none; line-height:1.05; }
+.brandMark { color:var(--blue); font:800 24px 'DM Mono',monospace; letter-spacing:-.06em; }
+.brand strong { color:var(--text); font-size:18px; letter-spacing:-.03em; }
+@media (max-width:800px) { .appHeader { padding:18px 18px 0; align-items:flex-start; } }
