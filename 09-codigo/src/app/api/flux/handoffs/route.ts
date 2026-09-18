@@ -1,9 +1,15 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { createHandoff, forwardBlocker, getState, normalizeHandoff, resumeHandoff, resumeLegacyHandoff } from '@/lib/flux-repository'
+import { NextResponse } from 'next/server'
+import { createHandoff, getScopedSnapshot } from '@/lib/flux-repository'
 import { jsonError } from '@/lib/api'
-import { requireRole } from '@/lib/auth'
-export async function GET() {
- try { return NextResponse.json((await getState()).handoffs.map((handoff) => ({ ...handoff, status: handoff.status || 'received' }))) } catch (e) { return jsonError(e) }
+import { getSession, requireRole } from '@/lib/auth'
+import { readScopeFromRequest } from '@/lib/read-scope'
+
+export async function GET(request: Request) {
+ try {
+  const scope = readScopeFromRequest(request)
+  if (scope.visibility === 'private') getSession(request)
+  return NextResponse.json((await getScopedSnapshot(scope, process.env.NODE_ENV === 'test' ? process.env.FLUX_DATA_FILE : undefined)).handoffs.map((handoff) => ({ ...handoff, status: handoff.status || 'received' })))
+ } catch (e) { return jsonError(e) }
 }
 export async function POST(request: Request) {
  try {

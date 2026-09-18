@@ -6,11 +6,14 @@ import { parseBriefing, createProjectPlan, persistIntake } from '../src/lib/inta
 import { getSnapshot, getState, type FluxState } from '../src/lib/flux-repository'
 import { GET as snapshotGET } from '../src/app/api/flux/snapshot/route'
 import { GET as cardsGET } from '../src/app/api/flux/cards/route'
+import { GET as jobsGET } from '../src/app/api/flux/jobs/route'
+import { GET as handoffsGET } from '../src/app/api/flux/handoffs/route'
 import { POST as login } from '../src/app/api/auth/login/route'
 
 const dirs: string[] = []
-const empty = (): FluxState => ({ version: 1, projects: [], cards: [], approvals: [], gates: [], events: [], handoffs: [], artifacts: [] })
-afterEach(async () => { vi.restoreAllMocks(); await Promise.all(dirs.splice(0).map((dir) => rm(dir, { recursive: true, force: true })) ) })
+const originalEnv = { ...process.env }
+const empty = (): FluxState => ({ version: 1, projects: [], cards: [], approvals: [], gates: [], events: [], handoffs: [], artifacts: [], jobs: [] })
+afterEach(async () => { process.env = { ...originalEnv }; vi.restoreAllMocks(); await Promise.all(dirs.splice(0).map((dir) => rm(dir, { recursive: true, force: true })) ) })
 
 describe('remaining local QA regressions', () => {
   it('keeps one lock owner through a mutation longer than the old five-second threshold', async () => {
@@ -82,13 +85,44 @@ describe('remaining local QA regressions', () => {
 
   it('allows public reading only for the explicitly configured public scope', async () => {
     const dir = await mkdtemp(join(process.cwd(), 'flux-public-scope-')); dirs.push(dir); const file = join(dir, 'state.json'); const state = empty()
-    state.projects = [{ id: 'public-project', name: 'Public', status: 'active', owner: 'Kora', description: 'public' }]
-    state.cards = [{ id: 'public-card', title: 'public', project: 'public-project', status: 'ready', assignee: 'Kora', priority: 'normal', detail: 'public', acceptanceCriteria: [], updatedAt: '' }]
+    state.projects = [{ id: 'public-project', name: 'Public', tenantId: 'tenant-a', status: 'active', owner: 'Kora', description: 'public' }]
+    state.cards = [{ id: 'public-card', title: 'public', project: 'public-project', tenantId: 'tenant-a', status: 'ready', assignee: 'Kora', priority: 'normal', detail: 'public', acceptanceCriteria: [], updatedAt: '' }]
     await writeFile(file, JSON.stringify(state)); process.env.FLUX_DATA_FILE = file
     const denied = await cardsGET(new Request('http://localhost/api/flux/cards?scope=public&tenantId=tenant-a&projectId=public-project'))
     expect(denied.status).toBe(403)
     process.env.FLUX_PUBLIC_READ_SCOPE = 'tenant-a/public-project'
     const allowed = await cardsGET(new Request('http://localhost/api/flux/cards?scope=public&tenantId=tenant-a&projectId=public-project'))
     expect(allowed.status).toBe(200); await expect(allowed.json()).resolves.toEqual([expect.objectContaining({ id: 'public-card' })])
+  })
+
+  it('filters Jobs and Handoffs GET by readScope and requires auth for private reads', async () => {
+    const dir = await mkdtemp(join(process.cwd(), 'flux-jobs-handoffs-scope-')); dirs.push(dir); const file = join(dir, 'state.json'); const state = empty()
+    state.projects = [
+      { id: 'project-a', name: 'A', tenantId: 'tenant-a', status: 'active', owner: 'Kora', description: 'A' },
+      { id: 'project-b', name: 'B', tenantId: 'tenant-b', status: 'active', owner: 'Kora', description: 'B' },
+    ]
+    state.cards = [
+      { id: 'card-a', title: 'A', project: 'project-a', tenantId: 'tenant-a', status: 'ready', assignee: 'Kora', priority: 'normal', detail: 'A', acceptanceCriteria: [], updatedAt: '' },
+      { id: 'card-b', title: 'B', project: 'project-b', tenantId: 'tenant-b', status: 'ready', assignee: 'Kora', priority: 'normal', detail: 'B', acceptanceCriteria: [], updatedAt: '' },
+    ]
+    state.jobs = [
+      { jobId: 'job-a', cardId: 'card-a', tenantId: 'tenant-a', project: 'project-a', agent: 'Kora', role: 'writer', objective: 'A', status: 'ready', updatedAt: '', artifactRefs: [], handoffRefs: [], evidenceRefs: [], blockers: [], nextStep: 'A', correlationId: 'corr-a', source: 'test' },
+      { jobId: 'job-b', cardId: 'card-b', tenantId: 'tenant-b', project: 'project-b', agent: 'Gabe', role: 'reviewer', objective: 'B', status: 'ready', updatedAt: '', artifactRefs: [], handoffRefs: [], evidenceRefs: [], blockers: [], nextStep: 'B', correlationId: 'corr-b', source: 'test' },
+    ]
+    state.handoffs = [
+      { id: 'handoff-a', cardId: 'card-a', project: 'project-a', from: 'Kora', to: 'Gabe', summary: 'A', done: 'A', risks: 'none', nextStep: 'A', acceptanceCriteria: 'A', evidenceRef: 'A', createdAt: '' },
+      { id: 'handoff-b', cardId: 'card-b', project: 'project-b', from: 'Gabe', to: 'Kora', summary: 'B', done: 'B', risks: 'none', nextStep: 'B', acceptanceCriteria: 'B', evidenceRef: 'B', createdAt: '' },
+    ]
+    await writeFile(file, JSON.stringify(state)); process.env.FLUX_DATA_FILE = file; process.env.FLUX_LOCAL_LOGIN_ACTOR = 'Sergio'; process.env.FLUX_LOCAL_LOGIN_SECRET = 'test-only-secret'
+    const unauthenticated = await jobsGET(new Request('http://localhost/api/flux/jobs?tenantId=tenant-a&projectId=project-a'))
+    expect(unauthenticated.status).toBe(401)
+    const loggedIn = await login(new Request('http://localhost/api/auth/login', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ actor: 'Sergio', secret: 'test-only-secret' }) }))
+    const cookie = loggedIn.headers.get('set-cookie')?.split(';')[0] || ''
+    const scoped = { headers: { cookie } }
+    const jobsResponse = await jobsGET(new Request('http://localhost/api/flux/jobs?tenantId=tenant-a&projectId=project-a', scoped))
+    const handoffsResponse = await handoffsGET(new Request('http://localhost/api/flux/handoffs?tenantId=tenant-a&projectId=project-a', scoped))
+    expect(jobsResponse.status).toBe(200); expect(handoffsResponse.status).toBe(200)
+    await expect(jobsResponse.json()).resolves.toMatchObject({ jobs: [expect.objectContaining({ jobId: 'job-a' })] })
+    await expect(handoffsResponse.json()).resolves.toEqual([expect.objectContaining({ id: 'handoff-a' })])
   })
 })

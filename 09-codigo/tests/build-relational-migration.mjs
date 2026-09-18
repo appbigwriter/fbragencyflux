@@ -72,7 +72,7 @@ DO $$ BEGIN IF EXISTS(SELECT 1 FROM pg_roles WHERE rolname='service_role') THEN
   GRANT EXECUTE ON FUNCTION flux_relational_read() TO service_role;
   GRANT EXECUTE ON FUNCTION flux_relational_commit(bigint,jsonb,text[]) TO service_role;
 END IF; END $$;`)
-for (const t of [...all,'flux_runtime_revision']) sql.push(`ALTER TABLE ${t} ENABLE ROW LEVEL SECURITY; ALTER TABLE ${t} FORCE ROW LEVEL SECURITY;`)
+for (const t of [...all,'flux_runtime_revision']) sql.push(`ALTER TABLE ${t} ENABLE ROW LEVEL SECURITY; ALTER TABLE ${t} NO FORCE ROW LEVEL SECURITY;`)
 sql.push('COMMIT;')
-await writeFile('../04-database/004_flux_runtime_relational.sql',sql.join('\n')+'\n')
-console.log('Generated 004 from explicit relational field contract')
+await writeFile('../04-database/004_flux_relational_rpcs.sql',sql.join('\n')+'\n')
+console.log('Generated canonical 004_flux_relational_rpcs.sql from explicit relational field contract')

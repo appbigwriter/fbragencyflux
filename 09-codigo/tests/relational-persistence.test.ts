@@ -11,7 +11,7 @@ export async function database() {
   const db = new PGlite()
   // pgcrypto is not bundled in WASM; gen_random_uuid is PostgreSQL core.
   await db.exec((await readFile('../04-database/003_flux_relational_persistence.sql','utf8')).replace('create extension if not exists pgcrypto;', ''))
-  await db.exec(await readFile('../04-database/004_flux_runtime_relational.sql','utf8'))
+  await db.exec(await readFile('../04-database/004_flux_relational_rpcs.sql','utf8'))
   return db
 }
 describe('relational persistence', () => {

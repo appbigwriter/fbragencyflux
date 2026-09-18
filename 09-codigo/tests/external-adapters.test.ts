@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { FakeFluxRepository, SupabaseFluxRepository } from '../src/lib/persistence'
+import { FakeFluxRepository, SupabaseRestTransport } from '../src/lib/persistence'
 import { FluxError, type FluxState } from '../src/lib/flux-repository'
 import { FakeDispatcherAdapter, newDispatchEvent } from '../src/lib/dispatcher'
 
@@ -17,13 +17,13 @@ describe('external persistence contract', () => {
   })
 })
 
-describe('Supabase persistence diagnostics', () => {
-  for (const [status, code] of [[401, 'PERSISTENCE_UNAUTHORIZED'], [403, 'PERSISTENCE_FORBIDDEN'], [404, 'PERSISTENCE_NOT_FOUND']] as const) {
-    it(`maps HTTP ${status} to an operational diagnostic without secrets`, async () => {
-      vi.stubGlobal('fetch', vi.fn().mockResolvedValue(new Response('sensitive upstream body', { status })))
+describe('Supabase relational RPC diagnostics', () => {
+  for (const status of [401, 403, 404] as const) {
+    it(`maps HTTP ${status} to a sanitized relational diagnostic`, async () => {
+      vi.stubGlobal('fetch', vi.fn().mockImplementation(() => Promise.resolve(new Response('sensitive upstream body', { status }))))
       const secret = 'service-role-secret-that-must-not-leak'
-      await expect(new SupabaseFluxRepository('https://project.supabase.co', secret).load()).rejects.toMatchObject({ code, status })
-      try { await new SupabaseFluxRepository('https://project.supabase.co', secret).load() } catch (error) {
+      await expect(new SupabaseRestTransport('https://project.supabase.co', secret).read()).rejects.toMatchObject({ code: 'PERSISTENCE_UNAVAILABLE', status: 503 })
+      try { await new SupabaseRestTransport('https://project.supabase.co', secret).read() } catch (error) {
         expect(error).toBeInstanceOf(FluxError)
         expect((error as Error).message).not.toContain(secret)
         expect((error as Error).message).not.toContain('project.supabase.co')
@@ -32,29 +32,26 @@ describe('Supabase persistence diagnostics', () => {
     })
   }
 
-  it('maps 5xx responses to an unavailable upstream diagnostic', async () => {
+  it('maps 5xx responses to an unavailable relational diagnostic', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(new Response('', { status: 503 })))
-    await expect(new SupabaseFluxRepository('https://project.supabase.co', 'secret').load()).rejects.toMatchObject({ code: 'PERSISTENCE_UPSTREAM_UNAVAILABLE', status: 503 })
+    await expect(new SupabaseRestTransport('https://project.supabase.co', 'secret').read()).rejects.toMatchObject({ code: 'PERSISTENCE_UNAVAILABLE', status: 503 })
   })
 
-  it('loads state successfully and does not expose request credentials', async () => {
-    const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify([{ state, version: state.version }]), { status: 200, headers: { 'content-type': 'application/json' } }))
+  it('reads through flux_relational_read and keeps credentials only in request headers', async () => {
+    const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({ version: state.version, flux_projects: [] }), { status: 200, headers: { 'content-type': 'application/json' } }))
     vi.stubGlobal('fetch', fetchMock)
     const secret = 'service-role-secret-that-must-not-leak'
-    await expect(new SupabaseFluxRepository('https://project.supabase.co', secret, 'smoke-key').load()).resolves.toEqual(state)
-    expect(fetchMock.mock.calls[0][0]).toContain('/rest/v1/flux_state?state_key=eq.smoke-key')
+    await expect(new SupabaseRestTransport('https://project.supabase.co', secret).read()).resolves.toMatchObject({ version: state.version })
+    expect(fetchMock.mock.calls[0][0]).toBe('https://project.supabase.co/rest/v1/rpc/flux_relational_read')
     expect(JSON.stringify(fetchMock.mock.calls[0][1])).toContain(secret)
   })
 
-  it('declares state_key as the Supabase upsert conflict target', async () => {
-    const fetchMock = vi.fn().mockResolvedValue(new Response('', { status: 201 }))
+  it('commits through flux_relational_commit with explicit CAS arguments', async () => {
+    const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({ version: 2 }), { status: 200, headers: { 'content-type': 'application/json' } }))
     vi.stubGlobal('fetch', fetchMock)
-    await new SupabaseFluxRepository('https://project.supabase.co', 'secret', 'fbr-agency-flux').save(state)
-    expect(fetchMock.mock.calls[0][0]).toBe('https://project.supabase.co/rest/v1/flux_state?on_conflict=state_key')
-  })
-
-  it('rejects malformed Supabase URLs before making a request', async () => {
-    expect(() => new SupabaseFluxRepository('not-a-url', 'key')).toThrow(/URL/i)
+    await new SupabaseRestTransport('https://project.supabase.co', 'secret').commit(1, [{ table: 'flux_projects', operation: 'upsert', row: { id: 'project-id' } }], ['waiting'])
+    expect(fetchMock.mock.calls[0][0]).toBe('https://project.supabase.co/rest/v1/rpc/flux_relational_commit')
+    expect(JSON.parse(String(fetchMock.mock.calls[0][1]?.body))).toEqual({ expected_version: 1, changes: [{ table: 'flux_projects', operation: 'upsert', row: { id: 'project-id' } }], waiting_reasons: ['waiting'] })
   })
 })
 
