@@ -4,6 +4,10 @@
 
 create extension if not exists pgcrypto;
 
+-- Flux owns an isolated schema. The Control Tower catalog remains in public.
+create schema if not exists custom_agencyflux;
+set search_path = custom_agencyflux, public;
+
 -- Base tables are repeated defensively so this migration can run alone.
 create table if not exists flux_projects (
   id uuid primary key default gen_random_uuid(),
