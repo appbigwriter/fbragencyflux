@@ -235,6 +235,10 @@ Não aplicar ainda. Antes criar e aprovar as migrations de Persona, versões, id
 
 ### 4.2 Segundo: Agency Flux relacional
 
+**Schema proprietário confirmado pelo runtime:** `custom_agencyflux`.
+
+Todas as tabelas, funções, triggers, policies e índices operacionais do Flux devem ser criados/consultados em `custom_agencyflux`. O schema `public` permanece reservado ao catálogo e às entidades próprias do Control Tower.
+
 Somente em banco novo ou após readback confirmar que 003 ainda não foi aplicada:
 
 ```text
@@ -269,7 +273,7 @@ A ordem real precisa ser confirmada pelo histórico de migrations aplicado no Su
 
 ### 4.4 Estado legado Flux
 
-Somente se confirmado que o runtime legado depende de `flux_state`:
+O snapshot legado, quando realmente necessário, também pertence a `custom_agencyflux`:
 
 ```text
 012_flux_external_state.sql

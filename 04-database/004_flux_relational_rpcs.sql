@@ -13,289 +13,292 @@
 -- JSONB existe APENAS como transporte das RPCs, nunca como coluna persistida (ADR-PERSISTENCIA-100).
 -- Idempotente: pode ser re-executada; coexiste com 003 (ordem: 003 -> este arquivo).
 
+create schema if not exists custom_agencyflux;
+set search_path = custom_agencyflux, public;
+
 begin;
 
 -- ============================================================================
 -- 1) DDL ADITIVA — colunas do contrato relational-schema.ts ausentes no 003
 -- ============================================================================
 
-alter table public.flux_tenants add column if not exists external_id text unique;
-alter table public.flux_projects add column if not exists external_id text unique;
-alter table public.flux_projects add column if not exists ordinal bigint;
-alter table public.flux_projects add column if not exists tenant_id_external_ref text;
-alter table public.flux_cards add column if not exists external_id text unique;
-alter table public.flux_cards add column if not exists ordinal bigint;
-alter table public.flux_cards add column if not exists project_id_external_ref text;
-alter table public.flux_cards add column if not exists tenant_id_external_ref text;
-alter table public.flux_cards add column if not exists assignee text;
-alter table public.flux_cards add column if not exists criteria_values text[];
-alter table public.flux_approvals add column if not exists external_id text unique;
-alter table public.flux_approvals add column if not exists ordinal bigint;
-alter table public.flux_approvals add column if not exists card_id_external_ref text;
-alter table public.flux_approvals add column if not exists tenant_id_external_ref text;
-alter table public.flux_approvals add column if not exists title text;
-alter table public.flux_approvals add column if not exists requested_by text;
-alter table public.flux_gates add column if not exists external_id text unique;
-alter table public.flux_gates add column if not exists ordinal bigint;
-alter table public.flux_gates add column if not exists card_id_external_ref text;
-alter table public.flux_gates add column if not exists project_id_external_ref text;
-alter table public.flux_gates add column if not exists evidence_refs text[];
-alter table public.flux_gates add column if not exists blocker_refs text[];
-alter table public.flux_jobs add column if not exists external_id text unique;
-alter table public.flux_jobs add column if not exists ordinal bigint;
-alter table public.flux_jobs add column if not exists card_id_external_ref text;
-alter table public.flux_jobs add column if not exists project_id_external_ref text;
-alter table public.flux_jobs add column if not exists tenant_id_external_ref text;
-alter table public.flux_jobs add column if not exists artifact_refs text[];
-alter table public.flux_jobs add column if not exists handoff_refs text[];
-alter table public.flux_jobs add column if not exists evidence_refs text[];
-alter table public.flux_jobs add column if not exists blockers text[];
-alter table public.flux_jobs add column if not exists correlation_ref text;
-alter table public.flux_jobs add column if not exists domain_source_type text;
-alter table public.flux_jobs add column if not exists historical boolean;
-alter table public.flux_jobs add column if not exists active_blocker boolean;
-alter table public.flux_jobs add column if not exists last_activity text;
-alter table public.flux_jobs add column if not exists next_check_label text;
-alter table public.flux_jobs add column if not exists owner text;
-alter table public.flux_jobs add column if not exists last_event text;
-alter table public.flux_jobs add column if not exists depends_on text[];
-alter table public.flux_jobs add column if not exists blocks text[];
-alter table public.flux_jobs add column if not exists can_start boolean;
-alter table public.flux_jobs add column if not exists parallel_group text;
-alter table public.flux_jobs add column if not exists track text;
-alter table public.flux_jobs add column if not exists dependency_reason text;
-alter table public.flux_handoffs add column if not exists external_id text unique;
-alter table public.flux_handoffs add column if not exists ordinal bigint;
-alter table public.flux_handoffs add column if not exists card_id_external_ref text;
-alter table public.flux_handoffs add column if not exists project_id_external_ref text;
-alter table public.flux_handoffs add column if not exists decisions text[];
-alter table public.flux_handoffs add column if not exists next_check_label text;
-alter table public.flux_handoffs add column if not exists last_activity text;
-alter table public.flux_handoffs add column if not exists acceptance_criteria text;
-alter table public.flux_handoffs add column if not exists last_update text;
-alter table public.flux_handoffs add column if not exists last_blocker text;
-alter table public.flux_handoffs add column if not exists last_release text;
-alter table public.flux_handoffs add column if not exists blocker_id text;
-alter table public.flux_handoffs add column if not exists job_id uuid references flux_jobs(id) on delete restrict;
-alter table public.flux_handoffs add column if not exists job_id_external_ref text;
-alter table public.flux_handoffs add column if not exists correlation_ref text;
-alter table public.flux_handoffs add column if not exists forwarding_key text;
-alter table public.flux_handoffs add column if not exists source_type text;
-alter table public.flux_handoffs add column if not exists legacy boolean;
-alter table public.flux_handoffs add column if not exists active_blocker boolean;
-alter table public.flux_handoffs add column if not exists resolution_action_present boolean;
-alter table public.flux_handoffs add column if not exists resolution_action_from text;
-alter table public.flux_handoffs add column if not exists resolution_action_to text;
-alter table public.flux_handoffs add column if not exists resolution_action_objective text;
-alter table public.flux_handoffs add column if not exists resolution_action_deliverable text;
-alter table public.flux_handoffs add column if not exists resolution_action_acceptance_criteria text;
-alter table public.flux_handoffs add column if not exists resolution_action_evidence_required text;
-alter table public.flux_handoffs add column if not exists resolution_action_next_step text;
-alter table public.flux_handoffs add column if not exists resolution_action_fallback text;
-alter table public.flux_handoffs add column if not exists interaction_present boolean;
-alter table public.flux_handoffs add column if not exists interaction_from text;
-alter table public.flux_handoffs add column if not exists interaction_to text;
-alter table public.flux_handoffs add column if not exists interaction_objective text;
-alter table public.flux_handoffs add column if not exists interaction_deliverable text;
-alter table public.flux_handoffs add column if not exists interaction_acceptance_criteria text;
-alter table public.flux_handoffs add column if not exists interaction_evidence_required text;
-alter table public.flux_handoffs add column if not exists interaction_next_step text;
-alter table public.flux_handoffs add column if not exists interaction_fallback text;
-alter table public.flux_handoffs add column if not exists interaction_actor text;
-alter table public.flux_handoffs add column if not exists interaction_type text;
-alter table public.flux_handoffs add column if not exists interaction_status text;
-alter table public.flux_handoffs add column if not exists interaction_decision text;
-alter table public.flux_handoffs add column if not exists interaction_message text;
-alter table public.flux_handoffs add column if not exists solution_present boolean;
-alter table public.flux_handoffs add column if not exists solution_cause text;
-alter table public.flux_handoffs add column if not exists solution_owner text;
-alter table public.flux_handoffs add column if not exists solution_next_action text;
-alter table public.flux_handoffs add column if not exists solution_resolution_plan text;
-alter table public.flux_handoffs add column if not exists solution_resolution_evidence text;
-alter table public.flux_artifacts add column if not exists external_id text unique;
-alter table public.flux_artifacts add column if not exists ordinal bigint;
-alter table public.flux_artifacts add column if not exists card_id_external_ref text;
-alter table public.flux_artifacts add column if not exists name text;
-alter table public.flux_artifacts add column if not exists status text;
-alter table public.flux_artifacts add column if not exists source_path text;
-alter table public.flux_artifacts add column if not exists size bigint;
-alter table public.flux_artifacts add column if not exists content_text text;
-alter table public.flux_artifacts add column if not exists content_binary bytea;
-alter table public.flux_artifacts add column if not exists content_type text;
-alter table public.flux_blockers add column if not exists external_id text unique;
-alter table public.flux_blockers add column if not exists ordinal bigint;
-alter table public.flux_blockers add column if not exists source_id text;
-alter table public.flux_blockers add column if not exists card_id_external_ref text;
-alter table public.flux_blockers add column if not exists resolution_action_present boolean;
-alter table public.flux_blockers add column if not exists resolution_action_from text;
-alter table public.flux_blockers add column if not exists resolution_action_to text;
-alter table public.flux_blockers add column if not exists resolution_action_objective text;
-alter table public.flux_blockers add column if not exists resolution_action_deliverable text;
-alter table public.flux_blockers add column if not exists resolution_action_acceptance_criteria text;
-alter table public.flux_blockers add column if not exists resolution_action_evidence_required text;
-alter table public.flux_blockers add column if not exists resolution_action_next_step text;
-alter table public.flux_blockers add column if not exists resolution_action_fallback text;
-alter table public.flux_blockers add column if not exists container_handoff_id uuid references flux_handoffs(id) on delete restrict;
-alter table public.flux_sprints add column if not exists external_id text unique;
-alter table public.flux_sprints add column if not exists ordinal bigint;
-alter table public.flux_sprints add column if not exists project_id_external_ref text;
-alter table public.flux_sprints add column if not exists tenant_id_external_ref text;
-alter table public.flux_sprints add column if not exists dependencies text[];
-alter table public.flux_sprints add column if not exists next_check_label text;
-alter table public.flux_stories add column if not exists external_id text unique;
-alter table public.flux_stories add column if not exists ordinal bigint;
-alter table public.flux_stories add column if not exists sprint_id_external_ref text;
-alter table public.flux_stories add column if not exists project_id_external_ref text;
-alter table public.flux_stories add column if not exists tenant_id_external_ref text;
-alter table public.flux_stories add column if not exists criteria_values text[];
-alter table public.flux_stories add column if not exists card_ids text[];
-alter table public.flux_stories add column if not exists job_ids text[];
-alter table public.flux_stories add column if not exists evidence_refs text[];
-alter table public.flux_stories add column if not exists blocker_ids text[];
-alter table public.flux_stories add column if not exists next_check_label text;
-alter table public.flux_required_actions add column if not exists external_id text unique;
-alter table public.flux_required_actions add column if not exists ordinal bigint;
-alter table public.flux_required_actions add column if not exists due_check_label text;
-alter table public.flux_required_actions add column if not exists correlation_ref text;
-alter table public.flux_coordinator_runs add column if not exists external_id text unique;
-alter table public.flux_coordinator_runs add column if not exists ordinal bigint;
-alter table public.flux_coordinator_runs add column if not exists waiting_reasons text[];
-alter table public.flux_coordinator_runs add column if not exists last_check_label text;
-alter table public.flux_coordinator_runs add column if not exists next_follow_up_label text;
-alter table public.flux_coordinator_runs add column if not exists unanswered integer;
-alter table public.flux_coordinator_runs add column if not exists backlog_actionable integer;
-alter table public.flux_receipts add column if not exists external_id text unique;
-alter table public.flux_receipts add column if not exists ordinal bigint;
-alter table public.flux_receipts add column if not exists correlation_ref text;
-alter table public.flux_receipts add column if not exists job_id_external_ref text;
-alter table public.flux_receipts add column if not exists started_at timestamptz;
-alter table public.flux_receipts add column if not exists completed_at timestamptz;
-alter table public.flux_receipts add column if not exists metadata_present boolean;
-alter table public.flux_receipts add column if not exists metadata_card_id text;
-alter table public.flux_receipts add column if not exists metadata_from_status text;
-alter table public.flux_receipts add column if not exists metadata_status text;
-alter table public.flux_receipts add column if not exists metadata_approval_id text;
-alter table public.flux_receipts add column if not exists metadata_decision text;
-alter table public.flux_receipts add column if not exists metadata_gate_id text;
-alter table public.flux_receipts add column if not exists metadata_handoff_id text;
-alter table public.flux_receipts add column if not exists metadata_blocker_id text;
-alter table public.flux_receipts add column if not exists metadata_artifact_id text;
-alter table public.flux_receipts add column if not exists metadata_project_id text;
-alter table public.flux_receipts add column if not exists metadata_tenant text;
-alter table public.flux_receipts add column if not exists metadata_event_id text;
-alter table public.flux_receipts add column if not exists metadata_type text;
-alter table public.flux_receipts add column if not exists metadata_sprint_id text;
-alter table public.flux_receipts add column if not exists metadata_story_id text;
-alter table public.flux_events add column if not exists external_id text unique;
-alter table public.flux_events add column if not exists ordinal bigint;
-alter table public.flux_events add column if not exists card_id_external_ref text;
-alter table public.flux_events add column if not exists correlation_ref text;
-alter table public.flux_events add column if not exists reason text;
-alter table public.flux_events add column if not exists blocker_id text;
-alter table public.flux_events add column if not exists job_id uuid references flux_jobs(id) on delete restrict;
-alter table public.flux_events add column if not exists job_id_external_ref text;
-alter table public.flux_events add column if not exists handoff_id uuid references flux_handoffs(id) on delete restrict;
-alter table public.flux_events add column if not exists handoff_id_external_ref text;
-alter table public.flux_events add column if not exists from_actor text;
-alter table public.flux_events add column if not exists to_actor text;
-alter table public.flux_events add column if not exists owner text;
-alter table public.flux_events add column if not exists next_action text;
-alter table public.flux_events add column if not exists receipt_id uuid references flux_receipts(id) on delete restrict;
-alter table public.flux_events add column if not exists receipt_id_external_ref text;
-alter table public.flux_events add column if not exists solution_present boolean;
-alter table public.flux_events add column if not exists solution_cause text;
-alter table public.flux_events add column if not exists solution_owner text;
-alter table public.flux_events add column if not exists solution_next_action text;
-alter table public.flux_events add column if not exists solution_resolution_plan text;
-alter table public.flux_events add column if not exists solution_resolution_evidence text;
-alter table public.flux_events add column if not exists resolution_action_present boolean;
-alter table public.flux_events add column if not exists resolution_action_from text;
-alter table public.flux_events add column if not exists resolution_action_to text;
-alter table public.flux_events add column if not exists resolution_action_objective text;
-alter table public.flux_events add column if not exists resolution_action_deliverable text;
-alter table public.flux_events add column if not exists resolution_action_acceptance_criteria text;
-alter table public.flux_events add column if not exists resolution_action_evidence_required text;
-alter table public.flux_events add column if not exists resolution_action_next_step text;
-alter table public.flux_events add column if not exists resolution_action_fallback text;
+alter table custom_agencyflux.flux_tenants add column if not exists external_id text unique;
+alter table custom_agencyflux.flux_projects add column if not exists external_id text unique;
+alter table custom_agencyflux.flux_projects add column if not exists ordinal bigint;
+alter table custom_agencyflux.flux_projects add column if not exists tenant_id_external_ref text;
+alter table custom_agencyflux.flux_cards add column if not exists external_id text unique;
+alter table custom_agencyflux.flux_cards add column if not exists ordinal bigint;
+alter table custom_agencyflux.flux_cards add column if not exists project_id_external_ref text;
+alter table custom_agencyflux.flux_cards add column if not exists tenant_id_external_ref text;
+alter table custom_agencyflux.flux_cards add column if not exists assignee text;
+alter table custom_agencyflux.flux_cards add column if not exists criteria_values text[];
+alter table custom_agencyflux.flux_approvals add column if not exists external_id text unique;
+alter table custom_agencyflux.flux_approvals add column if not exists ordinal bigint;
+alter table custom_agencyflux.flux_approvals add column if not exists card_id_external_ref text;
+alter table custom_agencyflux.flux_approvals add column if not exists tenant_id_external_ref text;
+alter table custom_agencyflux.flux_approvals add column if not exists title text;
+alter table custom_agencyflux.flux_approvals add column if not exists requested_by text;
+alter table custom_agencyflux.flux_gates add column if not exists external_id text unique;
+alter table custom_agencyflux.flux_gates add column if not exists ordinal bigint;
+alter table custom_agencyflux.flux_gates add column if not exists card_id_external_ref text;
+alter table custom_agencyflux.flux_gates add column if not exists project_id_external_ref text;
+alter table custom_agencyflux.flux_gates add column if not exists evidence_refs text[];
+alter table custom_agencyflux.flux_gates add column if not exists blocker_refs text[];
+alter table custom_agencyflux.flux_jobs add column if not exists external_id text unique;
+alter table custom_agencyflux.flux_jobs add column if not exists ordinal bigint;
+alter table custom_agencyflux.flux_jobs add column if not exists card_id_external_ref text;
+alter table custom_agencyflux.flux_jobs add column if not exists project_id_external_ref text;
+alter table custom_agencyflux.flux_jobs add column if not exists tenant_id_external_ref text;
+alter table custom_agencyflux.flux_jobs add column if not exists artifact_refs text[];
+alter table custom_agencyflux.flux_jobs add column if not exists handoff_refs text[];
+alter table custom_agencyflux.flux_jobs add column if not exists evidence_refs text[];
+alter table custom_agencyflux.flux_jobs add column if not exists blockers text[];
+alter table custom_agencyflux.flux_jobs add column if not exists correlation_ref text;
+alter table custom_agencyflux.flux_jobs add column if not exists domain_source_type text;
+alter table custom_agencyflux.flux_jobs add column if not exists historical boolean;
+alter table custom_agencyflux.flux_jobs add column if not exists active_blocker boolean;
+alter table custom_agencyflux.flux_jobs add column if not exists last_activity text;
+alter table custom_agencyflux.flux_jobs add column if not exists next_check_label text;
+alter table custom_agencyflux.flux_jobs add column if not exists owner text;
+alter table custom_agencyflux.flux_jobs add column if not exists last_event text;
+alter table custom_agencyflux.flux_jobs add column if not exists depends_on text[];
+alter table custom_agencyflux.flux_jobs add column if not exists blocks text[];
+alter table custom_agencyflux.flux_jobs add column if not exists can_start boolean;
+alter table custom_agencyflux.flux_jobs add column if not exists parallel_group text;
+alter table custom_agencyflux.flux_jobs add column if not exists track text;
+alter table custom_agencyflux.flux_jobs add column if not exists dependency_reason text;
+alter table custom_agencyflux.flux_handoffs add column if not exists external_id text unique;
+alter table custom_agencyflux.flux_handoffs add column if not exists ordinal bigint;
+alter table custom_agencyflux.flux_handoffs add column if not exists card_id_external_ref text;
+alter table custom_agencyflux.flux_handoffs add column if not exists project_id_external_ref text;
+alter table custom_agencyflux.flux_handoffs add column if not exists decisions text[];
+alter table custom_agencyflux.flux_handoffs add column if not exists next_check_label text;
+alter table custom_agencyflux.flux_handoffs add column if not exists last_activity text;
+alter table custom_agencyflux.flux_handoffs add column if not exists acceptance_criteria text;
+alter table custom_agencyflux.flux_handoffs add column if not exists last_update text;
+alter table custom_agencyflux.flux_handoffs add column if not exists last_blocker text;
+alter table custom_agencyflux.flux_handoffs add column if not exists last_release text;
+alter table custom_agencyflux.flux_handoffs add column if not exists blocker_id text;
+alter table custom_agencyflux.flux_handoffs add column if not exists job_id uuid references flux_jobs(id) on delete restrict;
+alter table custom_agencyflux.flux_handoffs add column if not exists job_id_external_ref text;
+alter table custom_agencyflux.flux_handoffs add column if not exists correlation_ref text;
+alter table custom_agencyflux.flux_handoffs add column if not exists forwarding_key text;
+alter table custom_agencyflux.flux_handoffs add column if not exists source_type text;
+alter table custom_agencyflux.flux_handoffs add column if not exists legacy boolean;
+alter table custom_agencyflux.flux_handoffs add column if not exists active_blocker boolean;
+alter table custom_agencyflux.flux_handoffs add column if not exists resolution_action_present boolean;
+alter table custom_agencyflux.flux_handoffs add column if not exists resolution_action_from text;
+alter table custom_agencyflux.flux_handoffs add column if not exists resolution_action_to text;
+alter table custom_agencyflux.flux_handoffs add column if not exists resolution_action_objective text;
+alter table custom_agencyflux.flux_handoffs add column if not exists resolution_action_deliverable text;
+alter table custom_agencyflux.flux_handoffs add column if not exists resolution_action_acceptance_criteria text;
+alter table custom_agencyflux.flux_handoffs add column if not exists resolution_action_evidence_required text;
+alter table custom_agencyflux.flux_handoffs add column if not exists resolution_action_next_step text;
+alter table custom_agencyflux.flux_handoffs add column if not exists resolution_action_fallback text;
+alter table custom_agencyflux.flux_handoffs add column if not exists interaction_present boolean;
+alter table custom_agencyflux.flux_handoffs add column if not exists interaction_from text;
+alter table custom_agencyflux.flux_handoffs add column if not exists interaction_to text;
+alter table custom_agencyflux.flux_handoffs add column if not exists interaction_objective text;
+alter table custom_agencyflux.flux_handoffs add column if not exists interaction_deliverable text;
+alter table custom_agencyflux.flux_handoffs add column if not exists interaction_acceptance_criteria text;
+alter table custom_agencyflux.flux_handoffs add column if not exists interaction_evidence_required text;
+alter table custom_agencyflux.flux_handoffs add column if not exists interaction_next_step text;
+alter table custom_agencyflux.flux_handoffs add column if not exists interaction_fallback text;
+alter table custom_agencyflux.flux_handoffs add column if not exists interaction_actor text;
+alter table custom_agencyflux.flux_handoffs add column if not exists interaction_type text;
+alter table custom_agencyflux.flux_handoffs add column if not exists interaction_status text;
+alter table custom_agencyflux.flux_handoffs add column if not exists interaction_decision text;
+alter table custom_agencyflux.flux_handoffs add column if not exists interaction_message text;
+alter table custom_agencyflux.flux_handoffs add column if not exists solution_present boolean;
+alter table custom_agencyflux.flux_handoffs add column if not exists solution_cause text;
+alter table custom_agencyflux.flux_handoffs add column if not exists solution_owner text;
+alter table custom_agencyflux.flux_handoffs add column if not exists solution_next_action text;
+alter table custom_agencyflux.flux_handoffs add column if not exists solution_resolution_plan text;
+alter table custom_agencyflux.flux_handoffs add column if not exists solution_resolution_evidence text;
+alter table custom_agencyflux.flux_artifacts add column if not exists external_id text unique;
+alter table custom_agencyflux.flux_artifacts add column if not exists ordinal bigint;
+alter table custom_agencyflux.flux_artifacts add column if not exists card_id_external_ref text;
+alter table custom_agencyflux.flux_artifacts add column if not exists name text;
+alter table custom_agencyflux.flux_artifacts add column if not exists status text;
+alter table custom_agencyflux.flux_artifacts add column if not exists source_path text;
+alter table custom_agencyflux.flux_artifacts add column if not exists size bigint;
+alter table custom_agencyflux.flux_artifacts add column if not exists content_text text;
+alter table custom_agencyflux.flux_artifacts add column if not exists content_binary bytea;
+alter table custom_agencyflux.flux_artifacts add column if not exists content_type text;
+alter table custom_agencyflux.flux_blockers add column if not exists external_id text unique;
+alter table custom_agencyflux.flux_blockers add column if not exists ordinal bigint;
+alter table custom_agencyflux.flux_blockers add column if not exists source_id text;
+alter table custom_agencyflux.flux_blockers add column if not exists card_id_external_ref text;
+alter table custom_agencyflux.flux_blockers add column if not exists resolution_action_present boolean;
+alter table custom_agencyflux.flux_blockers add column if not exists resolution_action_from text;
+alter table custom_agencyflux.flux_blockers add column if not exists resolution_action_to text;
+alter table custom_agencyflux.flux_blockers add column if not exists resolution_action_objective text;
+alter table custom_agencyflux.flux_blockers add column if not exists resolution_action_deliverable text;
+alter table custom_agencyflux.flux_blockers add column if not exists resolution_action_acceptance_criteria text;
+alter table custom_agencyflux.flux_blockers add column if not exists resolution_action_evidence_required text;
+alter table custom_agencyflux.flux_blockers add column if not exists resolution_action_next_step text;
+alter table custom_agencyflux.flux_blockers add column if not exists resolution_action_fallback text;
+alter table custom_agencyflux.flux_blockers add column if not exists container_handoff_id uuid references flux_handoffs(id) on delete restrict;
+alter table custom_agencyflux.flux_sprints add column if not exists external_id text unique;
+alter table custom_agencyflux.flux_sprints add column if not exists ordinal bigint;
+alter table custom_agencyflux.flux_sprints add column if not exists project_id_external_ref text;
+alter table custom_agencyflux.flux_sprints add column if not exists tenant_id_external_ref text;
+alter table custom_agencyflux.flux_sprints add column if not exists dependencies text[];
+alter table custom_agencyflux.flux_sprints add column if not exists next_check_label text;
+alter table custom_agencyflux.flux_stories add column if not exists external_id text unique;
+alter table custom_agencyflux.flux_stories add column if not exists ordinal bigint;
+alter table custom_agencyflux.flux_stories add column if not exists sprint_id_external_ref text;
+alter table custom_agencyflux.flux_stories add column if not exists project_id_external_ref text;
+alter table custom_agencyflux.flux_stories add column if not exists tenant_id_external_ref text;
+alter table custom_agencyflux.flux_stories add column if not exists criteria_values text[];
+alter table custom_agencyflux.flux_stories add column if not exists card_ids text[];
+alter table custom_agencyflux.flux_stories add column if not exists job_ids text[];
+alter table custom_agencyflux.flux_stories add column if not exists evidence_refs text[];
+alter table custom_agencyflux.flux_stories add column if not exists blocker_ids text[];
+alter table custom_agencyflux.flux_stories add column if not exists next_check_label text;
+alter table custom_agencyflux.flux_required_actions add column if not exists external_id text unique;
+alter table custom_agencyflux.flux_required_actions add column if not exists ordinal bigint;
+alter table custom_agencyflux.flux_required_actions add column if not exists due_check_label text;
+alter table custom_agencyflux.flux_required_actions add column if not exists correlation_ref text;
+alter table custom_agencyflux.flux_coordinator_runs add column if not exists external_id text unique;
+alter table custom_agencyflux.flux_coordinator_runs add column if not exists ordinal bigint;
+alter table custom_agencyflux.flux_coordinator_runs add column if not exists waiting_reasons text[];
+alter table custom_agencyflux.flux_coordinator_runs add column if not exists last_check_label text;
+alter table custom_agencyflux.flux_coordinator_runs add column if not exists next_follow_up_label text;
+alter table custom_agencyflux.flux_coordinator_runs add column if not exists unanswered integer;
+alter table custom_agencyflux.flux_coordinator_runs add column if not exists backlog_actionable integer;
+alter table custom_agencyflux.flux_receipts add column if not exists external_id text unique;
+alter table custom_agencyflux.flux_receipts add column if not exists ordinal bigint;
+alter table custom_agencyflux.flux_receipts add column if not exists correlation_ref text;
+alter table custom_agencyflux.flux_receipts add column if not exists job_id_external_ref text;
+alter table custom_agencyflux.flux_receipts add column if not exists started_at timestamptz;
+alter table custom_agencyflux.flux_receipts add column if not exists completed_at timestamptz;
+alter table custom_agencyflux.flux_receipts add column if not exists metadata_present boolean;
+alter table custom_agencyflux.flux_receipts add column if not exists metadata_card_id text;
+alter table custom_agencyflux.flux_receipts add column if not exists metadata_from_status text;
+alter table custom_agencyflux.flux_receipts add column if not exists metadata_status text;
+alter table custom_agencyflux.flux_receipts add column if not exists metadata_approval_id text;
+alter table custom_agencyflux.flux_receipts add column if not exists metadata_decision text;
+alter table custom_agencyflux.flux_receipts add column if not exists metadata_gate_id text;
+alter table custom_agencyflux.flux_receipts add column if not exists metadata_handoff_id text;
+alter table custom_agencyflux.flux_receipts add column if not exists metadata_blocker_id text;
+alter table custom_agencyflux.flux_receipts add column if not exists metadata_artifact_id text;
+alter table custom_agencyflux.flux_receipts add column if not exists metadata_project_id text;
+alter table custom_agencyflux.flux_receipts add column if not exists metadata_tenant text;
+alter table custom_agencyflux.flux_receipts add column if not exists metadata_event_id text;
+alter table custom_agencyflux.flux_receipts add column if not exists metadata_type text;
+alter table custom_agencyflux.flux_receipts add column if not exists metadata_sprint_id text;
+alter table custom_agencyflux.flux_receipts add column if not exists metadata_story_id text;
+alter table custom_agencyflux.flux_events add column if not exists external_id text unique;
+alter table custom_agencyflux.flux_events add column if not exists ordinal bigint;
+alter table custom_agencyflux.flux_events add column if not exists card_id_external_ref text;
+alter table custom_agencyflux.flux_events add column if not exists correlation_ref text;
+alter table custom_agencyflux.flux_events add column if not exists reason text;
+alter table custom_agencyflux.flux_events add column if not exists blocker_id text;
+alter table custom_agencyflux.flux_events add column if not exists job_id uuid references flux_jobs(id) on delete restrict;
+alter table custom_agencyflux.flux_events add column if not exists job_id_external_ref text;
+alter table custom_agencyflux.flux_events add column if not exists handoff_id uuid references flux_handoffs(id) on delete restrict;
+alter table custom_agencyflux.flux_events add column if not exists handoff_id_external_ref text;
+alter table custom_agencyflux.flux_events add column if not exists from_actor text;
+alter table custom_agencyflux.flux_events add column if not exists to_actor text;
+alter table custom_agencyflux.flux_events add column if not exists owner text;
+alter table custom_agencyflux.flux_events add column if not exists next_action text;
+alter table custom_agencyflux.flux_events add column if not exists receipt_id uuid references flux_receipts(id) on delete restrict;
+alter table custom_agencyflux.flux_events add column if not exists receipt_id_external_ref text;
+alter table custom_agencyflux.flux_events add column if not exists solution_present boolean;
+alter table custom_agencyflux.flux_events add column if not exists solution_cause text;
+alter table custom_agencyflux.flux_events add column if not exists solution_owner text;
+alter table custom_agencyflux.flux_events add column if not exists solution_next_action text;
+alter table custom_agencyflux.flux_events add column if not exists solution_resolution_plan text;
+alter table custom_agencyflux.flux_events add column if not exists solution_resolution_evidence text;
+alter table custom_agencyflux.flux_events add column if not exists resolution_action_present boolean;
+alter table custom_agencyflux.flux_events add column if not exists resolution_action_from text;
+alter table custom_agencyflux.flux_events add column if not exists resolution_action_to text;
+alter table custom_agencyflux.flux_events add column if not exists resolution_action_objective text;
+alter table custom_agencyflux.flux_events add column if not exists resolution_action_deliverable text;
+alter table custom_agencyflux.flux_events add column if not exists resolution_action_acceptance_criteria text;
+alter table custom_agencyflux.flux_events add column if not exists resolution_action_evidence_required text;
+alter table custom_agencyflux.flux_events add column if not exists resolution_action_next_step text;
+alter table custom_agencyflux.flux_events add column if not exists resolution_action_fallback text;
 
 -- Relaxamentos NOT NULL exigidos pelo domínio atual (coordinator global, handoff/job legado
 -- parcial): o repositório grava NULL explícito quando o domínio não provê o valor.
-alter table public.flux_sprints alter column tenant_id drop not null;
-alter table public.flux_sprints alter column next_check drop not null;
-alter table public.flux_stories alter column tenant_id drop not null;
-alter table public.flux_stories alter column next_check drop not null;
-alter table public.flux_jobs alter column tenant_id drop not null;
-alter table public.flux_jobs alter column correlation_id drop not null;
-alter table public.flux_gates alter column tenant_id drop not null;
-alter table public.flux_required_actions alter column tenant_id drop not null;
-alter table public.flux_required_actions alter column project_id drop not null;
-alter table public.flux_required_actions alter column due_check drop not null;
-alter table public.flux_required_actions alter column correlation_id drop not null;
-alter table public.flux_coordinator_runs alter column tenant_id drop not null;
-alter table public.flux_coordinator_runs alter column correlation_id drop not null;
-alter table public.flux_receipts alter column tenant_id drop not null;
-alter table public.flux_receipts alter column correlation_id drop not null;
-alter table public.flux_receipts alter column actor drop not null;
-alter table public.flux_events alter column project_id drop not null;
-alter table public.flux_blockers alter column tenant_id drop not null;
-alter table public.flux_blockers alter column project_id drop not null;
-alter table public.flux_blockers alter column owner drop not null;
-alter table public.flux_blockers alter column next_action drop not null;
-alter table public.flux_blockers alter column resolution_plan drop not null;
-alter table public.flux_blockers alter column status drop not null;
-alter table public.flux_blockers alter column resolution drop not null;
-alter table public.flux_blockers alter column verification_status drop not null;
+alter table custom_agencyflux.flux_sprints alter column tenant_id drop not null;
+alter table custom_agencyflux.flux_sprints alter column next_check drop not null;
+alter table custom_agencyflux.flux_stories alter column tenant_id drop not null;
+alter table custom_agencyflux.flux_stories alter column next_check drop not null;
+alter table custom_agencyflux.flux_jobs alter column tenant_id drop not null;
+alter table custom_agencyflux.flux_jobs alter column correlation_id drop not null;
+alter table custom_agencyflux.flux_gates alter column tenant_id drop not null;
+alter table custom_agencyflux.flux_required_actions alter column tenant_id drop not null;
+alter table custom_agencyflux.flux_required_actions alter column project_id drop not null;
+alter table custom_agencyflux.flux_required_actions alter column due_check drop not null;
+alter table custom_agencyflux.flux_required_actions alter column correlation_id drop not null;
+alter table custom_agencyflux.flux_coordinator_runs alter column tenant_id drop not null;
+alter table custom_agencyflux.flux_coordinator_runs alter column correlation_id drop not null;
+alter table custom_agencyflux.flux_receipts alter column tenant_id drop not null;
+alter table custom_agencyflux.flux_receipts alter column correlation_id drop not null;
+alter table custom_agencyflux.flux_receipts alter column actor drop not null;
+alter table custom_agencyflux.flux_events alter column project_id drop not null;
+alter table custom_agencyflux.flux_blockers alter column tenant_id drop not null;
+alter table custom_agencyflux.flux_blockers alter column project_id drop not null;
+alter table custom_agencyflux.flux_blockers alter column owner drop not null;
+alter table custom_agencyflux.flux_blockers alter column next_action drop not null;
+alter table custom_agencyflux.flux_blockers alter column resolution_plan drop not null;
+alter table custom_agencyflux.flux_blockers alter column status drop not null;
+alter table custom_agencyflux.flux_blockers alter column resolution drop not null;
+alter table custom_agencyflux.flux_blockers alter column verification_status drop not null;
 
 -- CHECKs: apenas ALARGAMENTO (superset de valores; não invalida dado existente).
-alter table public.flux_cards drop constraint if exists flux_cards_status_check;
-alter table public.flux_cards add constraint flux_cards_status_check
+alter table custom_agencyflux.flux_cards drop constraint if exists flux_cards_status_check;
+alter table custom_agencyflux.flux_cards add constraint flux_cards_status_check
   check (status in ('planned','ready','in_progress','review','blocked','awaiting_owner','awaiting_approval','approved','executing','verifying','completed','failed'));
-alter table public.flux_receipts drop constraint if exists flux_receipts_status_check;
-alter table public.flux_receipts add constraint flux_receipts_status_check
+alter table custom_agencyflux.flux_receipts drop constraint if exists flux_receipts_status_check;
+alter table custom_agencyflux.flux_receipts add constraint flux_receipts_status_check
   check (status in ('started','completed','failed','blocked','rejected'));
-alter table public.flux_artifacts drop constraint if exists flux_artifact_content_exclusive;
-alter table public.flux_artifacts add constraint flux_artifact_content_exclusive
+alter table custom_agencyflux.flux_artifacts drop constraint if exists flux_artifact_content_exclusive;
+alter table custom_agencyflux.flux_artifacts add constraint flux_artifact_content_exclusive
   check (content_text is null or content_binary is null);
 
 -- ============================================================================
 -- 2) VERSÃO GLOBAL CAS (fonte de verdade do version para as RPCs; sem snapshot)
 -- ============================================================================
-create table if not exists public.flux_runtime_revision (
+create table if not exists custom_agencyflux.flux_runtime_revision (
   id boolean primary key default true check (id),
   version bigint not null default 0,
   coordinator_waiting_reasons text[]
 );
-insert into public.flux_runtime_revision (id) values (true) on conflict do nothing;
+insert into custom_agencyflux.flux_runtime_revision (id) values (true) on conflict do nothing;
 
 -- ============================================================================
 -- 3) ÍNDICES DE DASHBOARD (tenant + status + created_at) e filas ativas
 -- ============================================================================
 create index if not exists flux_cards_tenant_status_created_idx
-  on public.flux_cards (tenant_id, status, created_at desc);
+  on custom_agencyflux.flux_cards (tenant_id, status, created_at desc);
 create index if not exists flux_jobs_tenant_status_created_idx
-  on public.flux_jobs (tenant_id, status, created_at desc);
+  on custom_agencyflux.flux_jobs (tenant_id, status, created_at desc);
 create index if not exists flux_handoffs_tenant_status_created_idx
-  on public.flux_handoffs (tenant_id, status, created_at desc);
+  on custom_agencyflux.flux_handoffs (tenant_id, status, created_at desc);
 create index if not exists flux_blockers_tenant_status_created_idx
-  on public.flux_blockers (tenant_id, status, created_at desc);
+  on custom_agencyflux.flux_blockers (tenant_id, status, created_at desc);
 create index if not exists flux_gates_tenant_status_requested_idx
-  on public.flux_gates (tenant_id, status, requested_at desc);
+  on custom_agencyflux.flux_gates (tenant_id, status, requested_at desc);
 create index if not exists flux_required_actions_tenant_status_due_idx
-  on public.flux_required_actions (tenant_id, status, due_check);
+  on custom_agencyflux.flux_required_actions (tenant_id, status, due_check);
 create index if not exists flux_jobs_active_partial_idx
-  on public.flux_jobs (tenant_id, updated_at desc)
+  on custom_agencyflux.flux_jobs (tenant_id, updated_at desc)
   where status in ('planned','ready','in_progress','review','blocked','awaiting_owner');
 create index if not exists flux_blockers_open_partial_idx
-  on public.flux_blockers (tenant_id, created_at desc)
+  on custom_agencyflux.flux_blockers (tenant_id, created_at desc)
   where status = 'open';
-create index if not exists flux_events_card_idx on public.flux_events (card_id, created_at desc);
-create index if not exists flux_jobs_card_idx on public.flux_jobs (card_id);
-create index if not exists flux_handoffs_card_idx on public.flux_handoffs (card_id);
+create index if not exists flux_events_card_idx on custom_agencyflux.flux_events (card_id, created_at desc);
+create index if not exists flux_jobs_card_idx on custom_agencyflux.flux_jobs (card_id);
+create index if not exists flux_handoffs_card_idx on custom_agencyflux.flux_handoffs (card_id);
 
 -- ============================================================================
 -- 4) TRIGGER updated_at AUTOMÁTICO (toda tabela flux_* com a coluna)
 -- ============================================================================
-create or replace function public.flux_touch_updated_at() returns trigger
+create or replace function custom_agencyflux.flux_touch_updated_at() returns trigger
 language plpgsql as $$
 begin
   -- Preserve updated_at quando o escritor define o valor explicitamente (contrato das RPCs);
@@ -314,9 +317,9 @@ begin
            where table_schema = 'public' and column_name = 'updated_at'
              and table_name like 'flux\_%' escape '\'
   loop
-    execute format('drop trigger if exists flux_touch_updated_at on public.%I', t);
-    execute format('create trigger flux_touch_updated_at before update on public.%I
-                    for each row execute function public.flux_touch_updated_at()', t);
+    execute format('drop trigger if exists flux_touch_updated_at on custom_agencyflux.%I', t);
+    execute format('create trigger flux_touch_updated_at before update on custom_agencyflux.%I
+                    for each row execute function custom_agencyflux.flux_touch_updated_at()', t);
   end loop;
 end $$;
 
@@ -332,156 +335,156 @@ end $$;
 do $$
 declare t text;
 begin
-  for t in select tablename from pg_tables where schemaname = 'public' and tablename like 'flux\_%' escape '\'
+  for t in select tablename from pg_tables where schemaname = 'custom_agencyflux' and tablename like 'flux\_%' escape '\'
   loop
-    execute format('alter table public.%I enable row level security', t);
+    execute format('alter table custom_agencyflux.%I enable row level security', t);
     -- desfaz FORCE (se algum script anterior aplicou): com FORCE, as RPCs SECURITY DEFINER
     -- do owner seriam filtradas pelas próprias policies de tenant e falhariam fechado.
-    execute format('alter table public.%I no force row level security', t);
+    execute format('alter table custom_agencyflux.%I no force row level security', t);
   end loop;
 end $$;
 
-create or replace function public.flux_app_tenant() returns uuid
+create or replace function custom_agencyflux.flux_app_tenant() returns uuid
 language sql stable as $$
   select nullif(current_setting('app.tenant_id', true), '')::uuid
 $$;
 
 do $$
 begin
-  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'public.flux_agent_run_events'::regclass) then
-    execute 'create policy flux_tenant_isolation on public.flux_agent_run_events for all using (tenant_id = public.flux_app_tenant()) with check (tenant_id = public.flux_app_tenant())';
+  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'custom_agencyflux.flux_agent_run_events'::regclass) then
+    execute 'create policy flux_tenant_isolation on custom_agencyflux.flux_agent_run_events for all using (tenant_id = custom_agencyflux.flux_app_tenant()) with check (tenant_id = custom_agencyflux.flux_app_tenant())';
   end if;
-  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'public.flux_agent_runs'::regclass) then
-    execute 'create policy flux_tenant_isolation on public.flux_agent_runs for all using (tenant_id = public.flux_app_tenant()) with check (tenant_id = public.flux_app_tenant())';
+  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'custom_agencyflux.flux_agent_runs'::regclass) then
+    execute 'create policy flux_tenant_isolation on custom_agencyflux.flux_agent_runs for all using (tenant_id = custom_agencyflux.flux_app_tenant()) with check (tenant_id = custom_agencyflux.flux_app_tenant())';
   end if;
-  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'public.flux_agents'::regclass) then
-    execute 'create policy flux_tenant_isolation on public.flux_agents for all using (tenant_id = public.flux_app_tenant()) with check (tenant_id = public.flux_app_tenant())';
+  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'custom_agencyflux.flux_agents'::regclass) then
+    execute 'create policy flux_tenant_isolation on custom_agencyflux.flux_agents for all using (tenant_id = custom_agencyflux.flux_app_tenant()) with check (tenant_id = custom_agencyflux.flux_app_tenant())';
   end if;
-  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'public.flux_approval_events'::regclass) then
-    execute 'create policy flux_tenant_isolation on public.flux_approval_events for all using (tenant_id = public.flux_app_tenant()) with check (tenant_id = public.flux_app_tenant())';
+  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'custom_agencyflux.flux_approval_events'::regclass) then
+    execute 'create policy flux_tenant_isolation on custom_agencyflux.flux_approval_events for all using (tenant_id = custom_agencyflux.flux_app_tenant()) with check (tenant_id = custom_agencyflux.flux_app_tenant())';
   end if;
-  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'public.flux_approvals'::regclass) then
-    execute 'create policy flux_tenant_isolation on public.flux_approvals for all using (tenant_id = public.flux_app_tenant()) with check (tenant_id = public.flux_app_tenant())';
+  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'custom_agencyflux.flux_approvals'::regclass) then
+    execute 'create policy flux_tenant_isolation on custom_agencyflux.flux_approvals for all using (tenant_id = custom_agencyflux.flux_app_tenant()) with check (tenant_id = custom_agencyflux.flux_app_tenant())';
   end if;
-  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'public.flux_artifact_versions'::regclass) then
-    execute 'create policy flux_tenant_isolation on public.flux_artifact_versions for all using (tenant_id = public.flux_app_tenant()) with check (tenant_id = public.flux_app_tenant())';
+  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'custom_agencyflux.flux_artifact_versions'::regclass) then
+    execute 'create policy flux_tenant_isolation on custom_agencyflux.flux_artifact_versions for all using (tenant_id = custom_agencyflux.flux_app_tenant()) with check (tenant_id = custom_agencyflux.flux_app_tenant())';
   end if;
-  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'public.flux_artifacts'::regclass) then
-    execute 'create policy flux_tenant_isolation on public.flux_artifacts for all using (tenant_id = public.flux_app_tenant()) with check (tenant_id = public.flux_app_tenant())';
+  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'custom_agencyflux.flux_artifacts'::regclass) then
+    execute 'create policy flux_tenant_isolation on custom_agencyflux.flux_artifacts for all using (tenant_id = custom_agencyflux.flux_app_tenant()) with check (tenant_id = custom_agencyflux.flux_app_tenant())';
   end if;
-  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'public.flux_audit_log'::regclass) then
-    execute 'create policy flux_tenant_isolation on public.flux_audit_log for all using (tenant_id = public.flux_app_tenant()) with check (tenant_id = public.flux_app_tenant())';
+  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'custom_agencyflux.flux_audit_log'::regclass) then
+    execute 'create policy flux_tenant_isolation on custom_agencyflux.flux_audit_log for all using (tenant_id = custom_agencyflux.flux_app_tenant()) with check (tenant_id = custom_agencyflux.flux_app_tenant())';
   end if;
-  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'public.flux_blocker_actions'::regclass) then
-    execute 'create policy flux_tenant_isolation on public.flux_blocker_actions for all using (tenant_id = public.flux_app_tenant()) with check (tenant_id = public.flux_app_tenant())';
+  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'custom_agencyflux.flux_blocker_actions'::regclass) then
+    execute 'create policy flux_tenant_isolation on custom_agencyflux.flux_blocker_actions for all using (tenant_id = custom_agencyflux.flux_app_tenant()) with check (tenant_id = custom_agencyflux.flux_app_tenant())';
   end if;
-  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'public.flux_blocker_events'::regclass) then
-    execute 'create policy flux_tenant_isolation on public.flux_blocker_events for all using (tenant_id = public.flux_app_tenant()) with check (tenant_id = public.flux_app_tenant())';
+  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'custom_agencyflux.flux_blocker_events'::regclass) then
+    execute 'create policy flux_tenant_isolation on custom_agencyflux.flux_blocker_events for all using (tenant_id = custom_agencyflux.flux_app_tenant()) with check (tenant_id = custom_agencyflux.flux_app_tenant())';
   end if;
-  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'public.flux_blockers'::regclass) then
-    execute 'create policy flux_tenant_isolation on public.flux_blockers for all using (tenant_id = public.flux_app_tenant()) with check (tenant_id = public.flux_app_tenant())';
+  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'custom_agencyflux.flux_blockers'::regclass) then
+    execute 'create policy flux_tenant_isolation on custom_agencyflux.flux_blockers for all using (tenant_id = custom_agencyflux.flux_app_tenant()) with check (tenant_id = custom_agencyflux.flux_app_tenant())';
   end if;
-  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'public.flux_card_risks'::regclass) then
-    execute 'create policy flux_tenant_isolation on public.flux_card_risks for all using (tenant_id = public.flux_app_tenant()) with check (tenant_id = public.flux_app_tenant())';
+  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'custom_agencyflux.flux_card_risks'::regclass) then
+    execute 'create policy flux_tenant_isolation on custom_agencyflux.flux_card_risks for all using (tenant_id = custom_agencyflux.flux_app_tenant()) with check (tenant_id = custom_agencyflux.flux_app_tenant())';
   end if;
-  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'public.flux_cards'::regclass) then
-    execute 'create policy flux_tenant_isolation on public.flux_cards for all using (tenant_id = public.flux_app_tenant()) with check (tenant_id = public.flux_app_tenant())';
+  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'custom_agencyflux.flux_cards'::regclass) then
+    execute 'create policy flux_tenant_isolation on custom_agencyflux.flux_cards for all using (tenant_id = custom_agencyflux.flux_app_tenant()) with check (tenant_id = custom_agencyflux.flux_app_tenant())';
   end if;
-  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'public.flux_coordinator_runs'::regclass) then
-    execute 'create policy flux_tenant_isolation on public.flux_coordinator_runs for all using (tenant_id = public.flux_app_tenant()) with check (tenant_id = public.flux_app_tenant())';
+  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'custom_agencyflux.flux_coordinator_runs'::regclass) then
+    execute 'create policy flux_tenant_isolation on custom_agencyflux.flux_coordinator_runs for all using (tenant_id = custom_agencyflux.flux_app_tenant()) with check (tenant_id = custom_agencyflux.flux_app_tenant())';
   end if;
-  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'public.flux_events'::regclass) then
-    execute 'create policy flux_tenant_isolation on public.flux_events for all using (tenant_id = public.flux_app_tenant()) with check (tenant_id = public.flux_app_tenant())';
+  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'custom_agencyflux.flux_events'::regclass) then
+    execute 'create policy flux_tenant_isolation on custom_agencyflux.flux_events for all using (tenant_id = custom_agencyflux.flux_app_tenant()) with check (tenant_id = custom_agencyflux.flux_app_tenant())';
   end if;
-  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'public.flux_gates'::regclass) then
-    execute 'create policy flux_tenant_isolation on public.flux_gates for all using (tenant_id = public.flux_app_tenant()) with check (tenant_id = public.flux_app_tenant())';
+  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'custom_agencyflux.flux_gates'::regclass) then
+    execute 'create policy flux_tenant_isolation on custom_agencyflux.flux_gates for all using (tenant_id = custom_agencyflux.flux_app_tenant()) with check (tenant_id = custom_agencyflux.flux_app_tenant())';
   end if;
-  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'public.flux_handoff_decisions'::regclass) then
-    execute 'create policy flux_tenant_isolation on public.flux_handoff_decisions for all using (tenant_id = public.flux_app_tenant()) with check (tenant_id = public.flux_app_tenant())';
+  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'custom_agencyflux.flux_handoff_decisions'::regclass) then
+    execute 'create policy flux_tenant_isolation on custom_agencyflux.flux_handoff_decisions for all using (tenant_id = custom_agencyflux.flux_app_tenant()) with check (tenant_id = custom_agencyflux.flux_app_tenant())';
   end if;
-  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'public.flux_handoff_risks'::regclass) then
-    execute 'create policy flux_tenant_isolation on public.flux_handoff_risks for all using (tenant_id = public.flux_app_tenant()) with check (tenant_id = public.flux_app_tenant())';
+  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'custom_agencyflux.flux_handoff_risks'::regclass) then
+    execute 'create policy flux_tenant_isolation on custom_agencyflux.flux_handoff_risks for all using (tenant_id = custom_agencyflux.flux_app_tenant()) with check (tenant_id = custom_agencyflux.flux_app_tenant())';
   end if;
-  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'public.flux_handoffs'::regclass) then
-    execute 'create policy flux_tenant_isolation on public.flux_handoffs for all using (tenant_id = public.flux_app_tenant()) with check (tenant_id = public.flux_app_tenant())';
+  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'custom_agencyflux.flux_handoffs'::regclass) then
+    execute 'create policy flux_tenant_isolation on custom_agencyflux.flux_handoffs for all using (tenant_id = custom_agencyflux.flux_app_tenant()) with check (tenant_id = custom_agencyflux.flux_app_tenant())';
   end if;
-  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'public.flux_heartbeats'::regclass) then
-    execute 'create policy flux_tenant_isolation on public.flux_heartbeats for all using (tenant_id = public.flux_app_tenant()) with check (tenant_id = public.flux_app_tenant())';
+  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'custom_agencyflux.flux_heartbeats'::regclass) then
+    execute 'create policy flux_tenant_isolation on custom_agencyflux.flux_heartbeats for all using (tenant_id = custom_agencyflux.flux_app_tenant()) with check (tenant_id = custom_agencyflux.flux_app_tenant())';
   end if;
-  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'public.flux_jobs'::regclass) then
-    execute 'create policy flux_tenant_isolation on public.flux_jobs for all using (tenant_id = public.flux_app_tenant()) with check (tenant_id = public.flux_app_tenant())';
+  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'custom_agencyflux.flux_jobs'::regclass) then
+    execute 'create policy flux_tenant_isolation on custom_agencyflux.flux_jobs for all using (tenant_id = custom_agencyflux.flux_app_tenant()) with check (tenant_id = custom_agencyflux.flux_app_tenant())';
   end if;
-  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'public.flux_project_agents'::regclass) then
-    execute 'create policy flux_tenant_isolation on public.flux_project_agents for all using (tenant_id = public.flux_app_tenant()) with check (tenant_id = public.flux_app_tenant())';
+  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'custom_agencyflux.flux_project_agents'::regclass) then
+    execute 'create policy flux_tenant_isolation on custom_agencyflux.flux_project_agents for all using (tenant_id = custom_agencyflux.flux_app_tenant()) with check (tenant_id = custom_agencyflux.flux_app_tenant())';
   end if;
-  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'public.flux_projects'::regclass) then
-    execute 'create policy flux_tenant_isolation on public.flux_projects for all using (tenant_id = public.flux_app_tenant()) with check (tenant_id = public.flux_app_tenant())';
+  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'custom_agencyflux.flux_projects'::regclass) then
+    execute 'create policy flux_tenant_isolation on custom_agencyflux.flux_projects for all using (tenant_id = custom_agencyflux.flux_app_tenant()) with check (tenant_id = custom_agencyflux.flux_app_tenant())';
   end if;
-  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'public.flux_receipts'::regclass) then
-    execute 'create policy flux_tenant_isolation on public.flux_receipts for all using (tenant_id = public.flux_app_tenant()) with check (tenant_id = public.flux_app_tenant())';
+  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'custom_agencyflux.flux_receipts'::regclass) then
+    execute 'create policy flux_tenant_isolation on custom_agencyflux.flux_receipts for all using (tenant_id = custom_agencyflux.flux_app_tenant()) with check (tenant_id = custom_agencyflux.flux_app_tenant())';
   end if;
-  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'public.flux_required_action_events'::regclass) then
-    execute 'create policy flux_tenant_isolation on public.flux_required_action_events for all using (tenant_id = public.flux_app_tenant()) with check (tenant_id = public.flux_app_tenant())';
+  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'custom_agencyflux.flux_required_action_events'::regclass) then
+    execute 'create policy flux_tenant_isolation on custom_agencyflux.flux_required_action_events for all using (tenant_id = custom_agencyflux.flux_app_tenant()) with check (tenant_id = custom_agencyflux.flux_app_tenant())';
   end if;
-  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'public.flux_required_actions'::regclass) then
-    execute 'create policy flux_tenant_isolation on public.flux_required_actions for all using (tenant_id = public.flux_app_tenant()) with check (tenant_id = public.flux_app_tenant())';
+  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'custom_agencyflux.flux_required_actions'::regclass) then
+    execute 'create policy flux_tenant_isolation on custom_agencyflux.flux_required_actions for all using (tenant_id = custom_agencyflux.flux_app_tenant()) with check (tenant_id = custom_agencyflux.flux_app_tenant())';
   end if;
-  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'public.flux_source_citations'::regclass) then
-    execute 'create policy flux_tenant_isolation on public.flux_source_citations for all using (tenant_id = public.flux_app_tenant()) with check (tenant_id = public.flux_app_tenant())';
+  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'custom_agencyflux.flux_source_citations'::regclass) then
+    execute 'create policy flux_tenant_isolation on custom_agencyflux.flux_source_citations for all using (tenant_id = custom_agencyflux.flux_app_tenant()) with check (tenant_id = custom_agencyflux.flux_app_tenant())';
   end if;
-  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'public.flux_sources'::regclass) then
-    execute 'create policy flux_tenant_isolation on public.flux_sources for all using (tenant_id = public.flux_app_tenant()) with check (tenant_id = public.flux_app_tenant())';
+  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'custom_agencyflux.flux_sources'::regclass) then
+    execute 'create policy flux_tenant_isolation on custom_agencyflux.flux_sources for all using (tenant_id = custom_agencyflux.flux_app_tenant()) with check (tenant_id = custom_agencyflux.flux_app_tenant())';
   end if;
-  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'public.flux_sprints'::regclass) then
-    execute 'create policy flux_tenant_isolation on public.flux_sprints for all using (tenant_id = public.flux_app_tenant()) with check (tenant_id = public.flux_app_tenant())';
+  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'custom_agencyflux.flux_sprints'::regclass) then
+    execute 'create policy flux_tenant_isolation on custom_agencyflux.flux_sprints for all using (tenant_id = custom_agencyflux.flux_app_tenant()) with check (tenant_id = custom_agencyflux.flux_app_tenant())';
   end if;
-  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'public.flux_stories'::regclass) then
-    execute 'create policy flux_tenant_isolation on public.flux_stories for all using (tenant_id = public.flux_app_tenant()) with check (tenant_id = public.flux_app_tenant())';
+  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'custom_agencyflux.flux_stories'::regclass) then
+    execute 'create policy flux_tenant_isolation on custom_agencyflux.flux_stories for all using (tenant_id = custom_agencyflux.flux_app_tenant()) with check (tenant_id = custom_agencyflux.flux_app_tenant())';
   end if;
-  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'public.flux_card_acceptance_criteria'::regclass) then
-    execute 'create policy flux_tenant_isolation on public.flux_card_acceptance_criteria for all using (exists (select 1 from public.flux_cards p where p.id = public.flux_card_acceptance_criteria.card_id and p.tenant_id = public.flux_app_tenant())) with check (exists (select 1 from public.flux_cards p where p.id = public.flux_card_acceptance_criteria.card_id and p.tenant_id = public.flux_app_tenant()))';
+  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'custom_agencyflux.flux_card_acceptance_criteria'::regclass) then
+    execute 'create policy flux_tenant_isolation on custom_agencyflux.flux_card_acceptance_criteria for all using (exists (select 1 from custom_agencyflux.flux_cards p where p.id = custom_agencyflux.flux_card_acceptance_criteria.card_id and p.tenant_id = custom_agencyflux.flux_app_tenant())) with check (exists (select 1 from custom_agencyflux.flux_cards p where p.id = custom_agencyflux.flux_card_acceptance_criteria.card_id and p.tenant_id = custom_agencyflux.flux_app_tenant()))';
   end if;
-  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'public.flux_artifact_evidence'::regclass) then
-    execute 'create policy flux_tenant_isolation on public.flux_artifact_evidence for all using (exists (select 1 from public.flux_artifacts p where p.id = public.flux_artifact_evidence.artifact_id and p.tenant_id = public.flux_app_tenant())) with check (exists (select 1 from public.flux_artifacts p where p.id = public.flux_artifact_evidence.artifact_id and p.tenant_id = public.flux_app_tenant()))';
+  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'custom_agencyflux.flux_artifact_evidence'::regclass) then
+    execute 'create policy flux_tenant_isolation on custom_agencyflux.flux_artifact_evidence for all using (exists (select 1 from custom_agencyflux.flux_artifacts p where p.id = custom_agencyflux.flux_artifact_evidence.artifact_id and p.tenant_id = custom_agencyflux.flux_app_tenant())) with check (exists (select 1 from custom_agencyflux.flux_artifacts p where p.id = custom_agencyflux.flux_artifact_evidence.artifact_id and p.tenant_id = custom_agencyflux.flux_app_tenant()))';
   end if;
-  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'public.flux_artifact_contents'::regclass) then
-    execute 'create policy flux_tenant_isolation on public.flux_artifact_contents for all using (exists (select 1 from public.flux_artifact_versions v join public.flux_artifacts p on p.id = v.artifact_id where v.id = public.flux_artifact_contents.artifact_version_id and p.tenant_id = public.flux_app_tenant())) with check (exists (select 1 from public.flux_artifact_versions v join public.flux_artifacts p on p.id = v.artifact_id where v.id = public.flux_artifact_contents.artifact_version_id and p.tenant_id = public.flux_app_tenant()))';
+  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'custom_agencyflux.flux_artifact_contents'::regclass) then
+    execute 'create policy flux_tenant_isolation on custom_agencyflux.flux_artifact_contents for all using (exists (select 1 from custom_agencyflux.flux_artifact_versions v join custom_agencyflux.flux_artifacts p on p.id = v.artifact_id where v.id = custom_agencyflux.flux_artifact_contents.artifact_version_id and p.tenant_id = custom_agencyflux.flux_app_tenant())) with check (exists (select 1 from custom_agencyflux.flux_artifact_versions v join custom_agencyflux.flux_artifacts p on p.id = v.artifact_id where v.id = custom_agencyflux.flux_artifact_contents.artifact_version_id and p.tenant_id = custom_agencyflux.flux_app_tenant()))';
   end if;
-  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'public.flux_card_dependencies'::regclass) then
-    execute 'create policy flux_tenant_isolation on public.flux_card_dependencies for all using (exists (select 1 from public.flux_cards p where p.id = public.flux_card_dependencies.card_id and p.tenant_id = public.flux_app_tenant())) with check (exists (select 1 from public.flux_cards p where p.id = public.flux_card_dependencies.card_id and p.tenant_id = public.flux_app_tenant()))';
+  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'custom_agencyflux.flux_card_dependencies'::regclass) then
+    execute 'create policy flux_tenant_isolation on custom_agencyflux.flux_card_dependencies for all using (exists (select 1 from custom_agencyflux.flux_cards p where p.id = custom_agencyflux.flux_card_dependencies.card_id and p.tenant_id = custom_agencyflux.flux_app_tenant())) with check (exists (select 1 from custom_agencyflux.flux_cards p where p.id = custom_agencyflux.flux_card_dependencies.card_id and p.tenant_id = custom_agencyflux.flux_app_tenant()))';
   end if;
-  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'public.flux_coordinator_waiting_reasons'::regclass) then
-    execute 'create policy flux_tenant_isolation on public.flux_coordinator_waiting_reasons for all using (exists (select 1 from public.flux_coordinator_runs p where p.id = public.flux_coordinator_waiting_reasons.coordinator_run_id and p.tenant_id = public.flux_app_tenant())) with check (exists (select 1 from public.flux_coordinator_runs p where p.id = public.flux_coordinator_waiting_reasons.coordinator_run_id and p.tenant_id = public.flux_app_tenant()))';
+  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'custom_agencyflux.flux_coordinator_waiting_reasons'::regclass) then
+    execute 'create policy flux_tenant_isolation on custom_agencyflux.flux_coordinator_waiting_reasons for all using (exists (select 1 from custom_agencyflux.flux_coordinator_runs p where p.id = custom_agencyflux.flux_coordinator_waiting_reasons.coordinator_run_id and p.tenant_id = custom_agencyflux.flux_app_tenant())) with check (exists (select 1 from custom_agencyflux.flux_coordinator_runs p where p.id = custom_agencyflux.flux_coordinator_waiting_reasons.coordinator_run_id and p.tenant_id = custom_agencyflux.flux_app_tenant()))';
   end if;
-  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'public.flux_event_attributes'::regclass) then
-    execute 'create policy flux_tenant_isolation on public.flux_event_attributes for all using (exists (select 1 from public.flux_events p where p.id = public.flux_event_attributes.event_id and p.tenant_id = public.flux_app_tenant())) with check (exists (select 1 from public.flux_events p where p.id = public.flux_event_attributes.event_id and p.tenant_id = public.flux_app_tenant()))';
+  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'custom_agencyflux.flux_event_attributes'::regclass) then
+    execute 'create policy flux_tenant_isolation on custom_agencyflux.flux_event_attributes for all using (exists (select 1 from custom_agencyflux.flux_events p where p.id = custom_agencyflux.flux_event_attributes.event_id and p.tenant_id = custom_agencyflux.flux_app_tenant())) with check (exists (select 1 from custom_agencyflux.flux_events p where p.id = custom_agencyflux.flux_event_attributes.event_id and p.tenant_id = custom_agencyflux.flux_app_tenant()))';
   end if;
-  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'public.flux_gate_evidence'::regclass) then
-    execute 'create policy flux_tenant_isolation on public.flux_gate_evidence for all using (exists (select 1 from public.flux_gates p where p.id = public.flux_gate_evidence.gate_id and p.tenant_id = public.flux_app_tenant())) with check (exists (select 1 from public.flux_gates p where p.id = public.flux_gate_evidence.gate_id and p.tenant_id = public.flux_app_tenant()))';
+  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'custom_agencyflux.flux_gate_evidence'::regclass) then
+    execute 'create policy flux_tenant_isolation on custom_agencyflux.flux_gate_evidence for all using (exists (select 1 from custom_agencyflux.flux_gates p where p.id = custom_agencyflux.flux_gate_evidence.gate_id and p.tenant_id = custom_agencyflux.flux_app_tenant())) with check (exists (select 1 from custom_agencyflux.flux_gates p where p.id = custom_agencyflux.flux_gate_evidence.gate_id and p.tenant_id = custom_agencyflux.flux_app_tenant()))';
   end if;
-  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'public.flux_handoff_acceptance_criteria'::regclass) then
-    execute 'create policy flux_tenant_isolation on public.flux_handoff_acceptance_criteria for all using (exists (select 1 from public.flux_handoffs p where p.id = public.flux_handoff_acceptance_criteria.handoff_id and p.tenant_id = public.flux_app_tenant())) with check (exists (select 1 from public.flux_handoffs p where p.id = public.flux_handoff_acceptance_criteria.handoff_id and p.tenant_id = public.flux_app_tenant()))';
+  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'custom_agencyflux.flux_handoff_acceptance_criteria'::regclass) then
+    execute 'create policy flux_tenant_isolation on custom_agencyflux.flux_handoff_acceptance_criteria for all using (exists (select 1 from custom_agencyflux.flux_handoffs p where p.id = custom_agencyflux.flux_handoff_acceptance_criteria.handoff_id and p.tenant_id = custom_agencyflux.flux_app_tenant())) with check (exists (select 1 from custom_agencyflux.flux_handoffs p where p.id = custom_agencyflux.flux_handoff_acceptance_criteria.handoff_id and p.tenant_id = custom_agencyflux.flux_app_tenant()))';
   end if;
-  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'public.flux_job_dependencies'::regclass) then
-    execute 'create policy flux_tenant_isolation on public.flux_job_dependencies for all using (exists (select 1 from public.flux_jobs p where p.id = public.flux_job_dependencies.job_id and p.tenant_id = public.flux_app_tenant())) with check (exists (select 1 from public.flux_jobs p where p.id = public.flux_job_dependencies.job_id and p.tenant_id = public.flux_app_tenant()))';
+  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'custom_agencyflux.flux_job_dependencies'::regclass) then
+    execute 'create policy flux_tenant_isolation on custom_agencyflux.flux_job_dependencies for all using (exists (select 1 from custom_agencyflux.flux_jobs p where p.id = custom_agencyflux.flux_job_dependencies.job_id and p.tenant_id = custom_agencyflux.flux_app_tenant())) with check (exists (select 1 from custom_agencyflux.flux_jobs p where p.id = custom_agencyflux.flux_job_dependencies.job_id and p.tenant_id = custom_agencyflux.flux_app_tenant()))';
   end if;
-  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'public.flux_job_evidence'::regclass) then
-    execute 'create policy flux_tenant_isolation on public.flux_job_evidence for all using (exists (select 1 from public.flux_jobs p where p.id = public.flux_job_evidence.job_id and p.tenant_id = public.flux_app_tenant())) with check (exists (select 1 from public.flux_jobs p where p.id = public.flux_job_evidence.job_id and p.tenant_id = public.flux_app_tenant()))';
+  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'custom_agencyflux.flux_job_evidence'::regclass) then
+    execute 'create policy flux_tenant_isolation on custom_agencyflux.flux_job_evidence for all using (exists (select 1 from custom_agencyflux.flux_jobs p where p.id = custom_agencyflux.flux_job_evidence.job_id and p.tenant_id = custom_agencyflux.flux_app_tenant())) with check (exists (select 1 from custom_agencyflux.flux_jobs p where p.id = custom_agencyflux.flux_job_evidence.job_id and p.tenant_id = custom_agencyflux.flux_app_tenant()))';
   end if;
-  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'public.flux_receipt_attributes'::regclass) then
-    execute 'create policy flux_tenant_isolation on public.flux_receipt_attributes for all using (exists (select 1 from public.flux_receipts p where p.id = public.flux_receipt_attributes.receipt_id and p.tenant_id = public.flux_app_tenant())) with check (exists (select 1 from public.flux_receipts p where p.id = public.flux_receipt_attributes.receipt_id and p.tenant_id = public.flux_app_tenant()))';
+  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'custom_agencyflux.flux_receipt_attributes'::regclass) then
+    execute 'create policy flux_tenant_isolation on custom_agencyflux.flux_receipt_attributes for all using (exists (select 1 from custom_agencyflux.flux_receipts p where p.id = custom_agencyflux.flux_receipt_attributes.receipt_id and p.tenant_id = custom_agencyflux.flux_app_tenant())) with check (exists (select 1 from custom_agencyflux.flux_receipts p where p.id = custom_agencyflux.flux_receipt_attributes.receipt_id and p.tenant_id = custom_agencyflux.flux_app_tenant()))';
   end if;
-  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'public.flux_story_acceptance_criteria'::regclass) then
-    execute 'create policy flux_tenant_isolation on public.flux_story_acceptance_criteria for all using (exists (select 1 from public.flux_stories p where p.id = public.flux_story_acceptance_criteria.story_id and p.tenant_id = public.flux_app_tenant())) with check (exists (select 1 from public.flux_stories p where p.id = public.flux_story_acceptance_criteria.story_id and p.tenant_id = public.flux_app_tenant()))';
+  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'custom_agencyflux.flux_story_acceptance_criteria'::regclass) then
+    execute 'create policy flux_tenant_isolation on custom_agencyflux.flux_story_acceptance_criteria for all using (exists (select 1 from custom_agencyflux.flux_stories p where p.id = custom_agencyflux.flux_story_acceptance_criteria.story_id and p.tenant_id = custom_agencyflux.flux_app_tenant())) with check (exists (select 1 from custom_agencyflux.flux_stories p where p.id = custom_agencyflux.flux_story_acceptance_criteria.story_id and p.tenant_id = custom_agencyflux.flux_app_tenant()))';
   end if;
-  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'public.flux_story_card_links'::regclass) then
-    execute 'create policy flux_tenant_isolation on public.flux_story_card_links for all using (exists (select 1 from public.flux_stories p where p.id = public.flux_story_card_links.story_id and p.tenant_id = public.flux_app_tenant())) with check (exists (select 1 from public.flux_stories p where p.id = public.flux_story_card_links.story_id and p.tenant_id = public.flux_app_tenant()))';
+  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'custom_agencyflux.flux_story_card_links'::regclass) then
+    execute 'create policy flux_tenant_isolation on custom_agencyflux.flux_story_card_links for all using (exists (select 1 from custom_agencyflux.flux_stories p where p.id = custom_agencyflux.flux_story_card_links.story_id and p.tenant_id = custom_agencyflux.flux_app_tenant())) with check (exists (select 1 from custom_agencyflux.flux_stories p where p.id = custom_agencyflux.flux_story_card_links.story_id and p.tenant_id = custom_agencyflux.flux_app_tenant()))';
   end if;
-  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'public.flux_story_job_links'::regclass) then
-    execute 'create policy flux_tenant_isolation on public.flux_story_job_links for all using (exists (select 1 from public.flux_stories p where p.id = public.flux_story_job_links.story_id and p.tenant_id = public.flux_app_tenant())) with check (exists (select 1 from public.flux_stories p where p.id = public.flux_story_job_links.story_id and p.tenant_id = public.flux_app_tenant()))';
+  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'custom_agencyflux.flux_story_job_links'::regclass) then
+    execute 'create policy flux_tenant_isolation on custom_agencyflux.flux_story_job_links for all using (exists (select 1 from custom_agencyflux.flux_stories p where p.id = custom_agencyflux.flux_story_job_links.story_id and p.tenant_id = custom_agencyflux.flux_app_tenant())) with check (exists (select 1 from custom_agencyflux.flux_stories p where p.id = custom_agencyflux.flux_story_job_links.story_id and p.tenant_id = custom_agencyflux.flux_app_tenant()))';
   end if;
-  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'public.flux_tenants'::regclass) then
-    execute 'create policy flux_tenant_isolation on public.flux_tenants for all using (id = public.flux_app_tenant()) with check (id = public.flux_app_tenant())';
+  if not exists (select 1 from pg_policy where polname = 'flux_tenant_isolation' and polrelid = 'custom_agencyflux.flux_tenants'::regclass) then
+    execute 'create policy flux_tenant_isolation on custom_agencyflux.flux_tenants for all using (id = custom_agencyflux.flux_app_tenant()) with check (id = custom_agencyflux.flux_app_tenant())';
   end if;
 end $$;
 
@@ -492,8 +495,8 @@ end $$;
 --    Whitelist explícita por tabela: coluna fora do contrato => erro (fail closed).
 --    Apenas operation='upsert'; delete não é suportado (histórico é imutável fora de Gate).
 -- ============================================================================
-create or replace function public.flux_relational_read() returns jsonb
-language plpgsql security definer set search_path = pg_catalog, public as $$
+create or replace function custom_agencyflux.flux_relational_read() returns jsonb
+language plpgsql security definer set search_path = pg_catalog, custom_agencyflux as $$
 declare
   result jsonb;
   t text;
@@ -501,23 +504,37 @@ declare
 begin
   select jsonb_build_object('version', version, 'waitingReasons', coordinator_waiting_reasons)
     into result
-    from public.flux_runtime_revision
+    from custom_agencyflux.flux_runtime_revision
    where id = true;
 
-  foreach t in array array['flux_projects', 'flux_cards', 'flux_approvals', 'flux_gates', 'flux_jobs', 'flux_handoffs', 'flux_artifacts', 'flux_blockers', 'flux_sprints', 'flux_stories', 'flux_required_actions', 'flux_coordinator_runs', 'flux_receipts', 'flux_events', 'flux_tenants'] loop
-    execute format('select coalesce(jsonb_agg(to_jsonb(r)), ''[]''::jsonb) from public.%I r', t)
+  foreach t in array ARRAY[
+    'flux_agent_run_events', 'flux_agent_runs', 'flux_agents',
+    'flux_approval_events', 'flux_approvals',
+    'flux_artifact_contents', 'flux_artifact_evidence', 'flux_artifact_versions', 'flux_artifacts',
+    'flux_audit_log', 'flux_blocker_actions', 'flux_blocker_events', 'flux_blockers',
+    'flux_card_acceptance_criteria', 'flux_card_dependencies', 'flux_card_risks', 'flux_cards',
+    'flux_coordinator_runs', 'flux_coordinator_waiting_reasons', 'flux_event_attributes', 'flux_events',
+    'flux_gate_evidence', 'flux_gates',
+    'flux_handoff_acceptance_criteria', 'flux_handoff_decisions', 'flux_handoff_risks', 'flux_handoffs',
+    'flux_heartbeats', 'flux_job_dependencies', 'flux_job_evidence', 'flux_jobs',
+    'flux_project_agents', 'flux_projects', 'flux_receipt_attributes', 'flux_receipts',
+    'flux_required_action_events', 'flux_required_actions', 'flux_runtime_revision',
+    'flux_source_citations', 'flux_sources', 'flux_sprints', 'flux_stories',
+    'flux_story_acceptance_criteria', 'flux_story_card_links', 'flux_story_job_links', 'flux_tenants'
+  ] loop
+    execute format('select coalesce(jsonb_agg(to_jsonb(r)), ''[]''::jsonb) from custom_agencyflux.%I r', t)
       into items;
     result := result || jsonb_build_object(t, items);
   end loop;
   return result;
 end $$;
 
-create or replace function public.flux_relational_commit(
+create or replace function custom_agencyflux.flux_relational_commit(
   expected_version bigint,
   changes jsonb,
   waiting_reasons text[] default null
 ) returns jsonb
-language plpgsql security definer set search_path = pg_catalog, public as $$
+language plpgsql security definer set search_path = pg_catalog, custom_agencyflux as $$
 declare
   current_version bigint;
   item jsonb;
@@ -530,7 +547,7 @@ declare
 begin
   -- CAS: trava a linha da revisão global; versão divergente => 40001 (repositório mapeia p/ 409)
   select version into current_version
-    from public.flux_runtime_revision
+    from custom_agencyflux.flux_runtime_revision
    where id = true
    for update;
   if expected_version is distinct from current_version then
@@ -581,33 +598,33 @@ begin
 
     if length(rtrim(updates, ',')) = 0 then
       -- row só com id: insert-or-nothing (não sobrescreve a linha existente com nulos)
-      execute format('insert into public.%I (%s) select %s from jsonb_populate_record(null::public.%I, $1) r
+      execute format('insert into custom_agencyflux.%I (%s) select %s from jsonb_populate_record(null::custom_agencyflux.%I, $1) r
                       on conflict (id) do nothing',
                      t, rtrim(cols, ','), rtrim(vals, ','), t)
         using item->'row';
     else
-      execute format('insert into public.%I (%s) select %s from jsonb_populate_record(null::public.%I, $1) r
+      execute format('insert into custom_agencyflux.%I (%s) select %s from jsonb_populate_record(null::custom_agencyflux.%I, $1) r
                       on conflict (id) do update set %s',
                      t, rtrim(cols, ','), rtrim(vals, ','), t, rtrim(updates, ','))
         using item->'row';
     end if;
   end loop;
 
-  update public.flux_runtime_revision
+  update custom_agencyflux.flux_runtime_revision
      set version = version + 1,
          coordinator_waiting_reasons = waiting_reasons
    where id = true;
 
-  return public.flux_relational_read();
+  return custom_agencyflux.flux_relational_read();
 end $$;
 
-revoke all on function public.flux_relational_read() from public;
-revoke all on function public.flux_relational_commit(bigint, jsonb, text[]) from public;
+revoke all on function custom_agencyflux.flux_relational_read() from public;
+revoke all on function custom_agencyflux.flux_relational_commit(bigint, jsonb, text[]) from public;
 do $$
 begin
   if exists (select 1 from pg_roles where rolname = 'service_role') then
-    grant execute on function public.flux_relational_read() to service_role;
-    grant execute on function public.flux_relational_commit(bigint, jsonb, text[]) to service_role;
+    grant execute on function custom_agencyflux.flux_relational_read() to service_role;
+    grant execute on function custom_agencyflux.flux_relational_commit(bigint, jsonb, text[]) to service_role;
   end if;
 end $$;
 

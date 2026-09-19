@@ -3,6 +3,8 @@ import { writeFile } from 'node:fs/promises'
 const sql = [`-- 004: relational runtime completion for 003; no data deletion/backfill and no snapshot storage.
 -- JSONB exists ONLY as RPC transport/local variables, never as a persisted column.
 -- Execute with a migration owner; RPC execute is restricted to service_role.
+CREATE SCHEMA IF NOT EXISTS custom_agencyflux;
+SET search_path = custom_agencyflux, public;
 BEGIN;
 CREATE TABLE IF NOT EXISTS flux_runtime_revision (id boolean PRIMARY KEY DEFAULT true CHECK(id), version bigint NOT NULL DEFAULT 0, coordinator_waiting_reasons text[]);
 INSERT INTO flux_runtime_revision(id) VALUES(true) ON CONFLICT DO NOTHING;
@@ -34,20 +36,20 @@ for (const [t, cols] of Object.entries(nullable)) for (const c of cols) sql.push
 sql[sql.length - Object.values(nullable).flat().length - 1] = sql[sql.length - Object.values(nullable).flat().length - 1].replace('ALTER TABLE flux_artifacts ADD CONSTRAINT flux_artifact_content_exclusive', 'ALTER TABLE flux_artifacts DROP CONSTRAINT IF EXISTS flux_artifact_content_exclusive;\nALTER TABLE flux_artifacts ADD CONSTRAINT flux_artifact_content_exclusive')
 const whitelist = Object.values(relationalSpecs).map(s => `WHEN '${s.table}' THEN ARRAY[${[...new Set(['id','external_id','ordinal',...Object.values(s.fields).flatMap(f=>f.ref?[f.column,`${f.column}_external_ref`]:[f.column]),...(extra[s.table] || [])])].map(c=>`'${c}'`).join(',')}]::text[]`).join('\n')
 const all = [...names,'flux_tenants']
-sql.push(`CREATE OR REPLACE FUNCTION flux_relational_read() RETURNS jsonb LANGUAGE plpgsql SECURITY DEFINER SET search_path = pg_catalog, public AS $$
+sql.push(`CREATE OR REPLACE FUNCTION flux_relational_read() RETURNS jsonb LANGUAGE plpgsql SECURITY DEFINER SET search_path = pg_catalog, custom_agencyflux AS $$
 DECLARE result jsonb; t text; items jsonb;
 BEGIN
-  SELECT jsonb_build_object('version',version,'waitingReasons',coordinator_waiting_reasons) INTO result FROM public.flux_runtime_revision WHERE id=true;
+  SELECT jsonb_build_object('version',version,'waitingReasons',coordinator_waiting_reasons) INTO result FROM custom_agencyflux.flux_runtime_revision WHERE id=true;
   FOREACH t IN ARRAY ARRAY[${all.map(t=>`'${t}'`).join(',')}] LOOP
-    EXECUTE format('SELECT coalesce(jsonb_agg(to_jsonb(r)), ''[]''::jsonb) FROM public.%I r',t) INTO items;
+    EXECUTE format('SELECT coalesce(jsonb_agg(to_jsonb(r)), ''[]''::jsonb) FROM custom_agencyflux.%I r',t) INTO items;
     result := result || jsonb_build_object(t,items);
   END LOOP;
   RETURN result;
 END $$;
-CREATE OR REPLACE FUNCTION flux_relational_commit(expected_version bigint, changes jsonb, waiting_reasons text[] DEFAULT NULL) RETURNS jsonb LANGUAGE plpgsql SECURITY DEFINER SET search_path = pg_catalog, public AS $$
+CREATE OR REPLACE FUNCTION flux_relational_commit(expected_version bigint, changes jsonb, waiting_reasons text[] DEFAULT NULL) RETURNS jsonb LANGUAGE plpgsql SECURITY DEFINER SET search_path = pg_catalog, custom_agencyflux AS $$
 DECLARE current_version bigint; item jsonb; t text; c text; allowed text[]; cols text; vals text; updates text;
 BEGIN
-  SELECT version INTO current_version FROM public.flux_runtime_revision WHERE id=true FOR UPDATE;
+  SELECT version INTO current_version FROM custom_agencyflux.flux_runtime_revision WHERE id=true FOR UPDATE;
   IF expected_version IS DISTINCT FROM current_version THEN RAISE EXCEPTION 'PERSISTENCE_CONFLICT' USING ERRCODE='40001'; END IF;
   IF jsonb_typeof(changes) <> 'array' THEN RAISE EXCEPTION 'INVALID_RELATIONAL_CHANGES'; END IF;
   FOR item IN SELECT value FROM jsonb_array_elements(changes) LOOP
@@ -61,10 +63,10 @@ BEGIN
       IF c <> 'id' THEN updates := updates || format('%I=EXCLUDED.%I,',c,c); END IF;
     END LOOP;
     IF item->>'operation' IS DISTINCT FROM 'upsert' THEN RAISE EXCEPTION 'DELETION_NOT_SUPPORTED'; END IF;
-    EXECUTE format('INSERT INTO public.%I (%s) SELECT %s FROM jsonb_populate_record(NULL::public.%I,$1) r ON CONFLICT(id) DO UPDATE SET %s', t,rtrim(cols,','),rtrim(vals,','),t,rtrim(updates,',')) USING item->'row';
+    EXECUTE format('INSERT INTO custom_agencyflux.%I (%s) SELECT %s FROM jsonb_populate_record(NULL::custom_agencyflux.%I,$1) r ON CONFLICT(id) DO UPDATE SET %s', t,rtrim(cols,','),rtrim(vals,','),t,rtrim(updates,',')) USING item->'row';
   END LOOP;
-  UPDATE public.flux_runtime_revision SET version=version+1, coordinator_waiting_reasons=waiting_reasons WHERE id=true;
-  RETURN public.flux_relational_read();
+  UPDATE custom_agencyflux.flux_runtime_revision SET version=version+1, coordinator_waiting_reasons=waiting_reasons WHERE id=true;
+  RETURN custom_agencyflux.flux_relational_read();
 END $$;
 REVOKE ALL ON FUNCTION flux_relational_read() FROM PUBLIC;
 REVOKE ALL ON FUNCTION flux_relational_commit(bigint,jsonb,text[]) FROM PUBLIC;

@@ -17,7 +17,7 @@ try { url = new URL(urlValue) } catch { fail('Use an absolute HTTPS Supabase pro
 if (url.protocol !== 'https:' || url.username || url.password || url.search || url.hash || url.pathname !== '/') fail('Use an absolute HTTPS Supabase project URL without query, credentials, or a path')
 
 const endpoint = `${url.host}/rest/v1/rpc/flux_relational_read`
-const headers = { apikey: serviceRoleKey, authorization: `Bearer ${serviceRoleKey}`, 'content-type': 'application/json' }
+const headers = { apikey: serviceRoleKey, authorization: `Bearer ${serviceRoleKey}`, 'content-type': 'application/json', 'accept-profile': 'custom_agencyflux', 'content-profile': 'custom_agencyflux' }
 
 function solutionFor(status, operation) {
   if (status === 401) return 'Verify the service role key belongs to the same project, is in runtime Environment/Secrets, and is not a Build Arg, anon key, Control Tower token, or Easypanel token'

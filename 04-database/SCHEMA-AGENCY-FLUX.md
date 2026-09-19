@@ -116,9 +116,9 @@ A migration habilita Row Level Security em todas as oito tabelas da fundação:
 
 A migration não cria policies públicas. O comentário define comportamento fail-closed: as policies devem ser adicionadas pelo contrato de autenticação do projeto.
 
-## 4. Snapshot operacional `public.flux_state`
+## 4. Snapshot operacional `custom_agencyflux.flux_state`
 
-A migration `002_flux_state_version_cas.sql` **não cria** essa tabela; ela pressupõe que `public.flux_state` já exista no schema autorizado.
+A migration `002_flux_state_version_cas.sql` **não cria** essa tabela; ela pressupõe que `custom_agencyflux.flux_state` já exista no schema autorizado.
 
 Campos usados pelo adapter Supabase:
 
@@ -168,7 +168,7 @@ Os tipos completos estão em `09-codigo/src/lib/flux-repository.ts`, incluindo t
 ## 6. O que este documento não afirma
 
 - Não confirma que o schema remoto está aplicado.
-- Não confirma a existência atual de `public.flux_state` no Supabase.
+- Não confirma a existência atual de `custom_agencyflux.flux_state` no Supabase.
 - Não é uma leitura do banco remoto.
 - Não contém credenciais.
 

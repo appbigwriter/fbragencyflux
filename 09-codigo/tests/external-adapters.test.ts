@@ -43,6 +43,7 @@ describe('Supabase relational RPC diagnostics', () => {
     const secret = 'service-role-secret-that-must-not-leak'
     await expect(new SupabaseRestTransport('https://project.supabase.co', secret).read()).resolves.toMatchObject({ version: state.version })
     expect(fetchMock.mock.calls[0][0]).toBe('https://project.supabase.co/rest/v1/rpc/flux_relational_read')
+    expect(fetchMock.mock.calls[0][1]?.headers).toMatchObject({ 'accept-profile': 'custom_agencyflux', 'content-profile': 'custom_agencyflux' })
     expect(JSON.stringify(fetchMock.mock.calls[0][1])).toContain(secret)
   })
 

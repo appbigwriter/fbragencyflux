@@ -1,6 +1,6 @@
 import { createRequire } from 'node:module'
 import { FluxError } from './flux-repository'
-import { SqlRelationalTransport, type RelationalChange, type RelationalRead, type RelationalTransport } from './relational-repository'
+import { SqlRelationalTransport, FLUX_DB_SCHEMA, type RelationalChange, type RelationalRead, type RelationalTransport } from './relational-repository'
 
 /**
  * Runtime relational drivers for RelationalFluxRepository.
@@ -49,7 +49,7 @@ export function resolveRelationalConfig(env: NodeJS.ProcessEnv = process.env): R
 /** Supabase/PostgREST transport: calls the flux_relational_read/commit RPCs granted to service_role. */
 export class SupabaseRestTransport implements RelationalTransport {
   constructor(private readonly origin: string, private readonly serviceRoleKey: string) {}
-  private headers(): Record<string, string> { return { apikey: this.serviceRoleKey, authorization: `Bearer ${this.serviceRoleKey}`, 'content-type': 'application/json' } }
+  private headers(): Record<string, string> { return { apikey: this.serviceRoleKey, authorization: `Bearer ${this.serviceRoleKey}`, 'content-type': 'application/json', 'accept-profile': FLUX_DB_SCHEMA, 'content-profile': FLUX_DB_SCHEMA } }
   private async rpc<T>(name: string, args?: Record<string, unknown>): Promise<T> {
     let response: Response
     try { response = await fetch(`${this.origin}/rest/v1/rpc/${name}`, { method: 'POST', headers: this.headers(), body: args ? JSON.stringify(args) : undefined, cache: 'no-store' }) }

@@ -9,11 +9,13 @@ export type RelationalRead = { version: number; waitingReasons?: string[] | null
 export interface SqlQuery { query(sql: string, values?: unknown[]): Promise<{ rows: unknown[] }> }
 export interface RelationalTransport { read(): Promise<RelationalRead>; commit(version: number, changes: RelationalChange[], waitingReasons?: string[]): Promise<RelationalRead> }
 export type RelationalChange = { table: string; operation: 'upsert'; row: Row }
+export const FLUX_DB_SCHEMA = 'custom_agencyflux'
+
 export class SqlRelationalTransport implements RelationalTransport {
   constructor(private db: SqlQuery) {}
-  async read() { const result = await this.db.query('SELECT flux_relational_read() AS result'); return (result.rows[0] as {result: RelationalRead}).result }
+  async read() { const result = await this.db.query(`SELECT ${FLUX_DB_SCHEMA}.flux_relational_read() AS result`); return (result.rows[0] as {result: RelationalRead}).result }
   async commit(version: number, changes: RelationalChange[], waitingReasons?: string[]) {
-    try { const result = await this.db.query('SELECT flux_relational_commit($1,$2::jsonb,$3::text[]) AS result', [version, JSON.stringify(changes), waitingReasons || null]); return (result.rows[0] as {result: RelationalRead}).result }
+    try { const result = await this.db.query(`SELECT ${FLUX_DB_SCHEMA}.flux_relational_commit($1,$2::jsonb,$3::text[]) AS result`, [version, JSON.stringify(changes), waitingReasons || null]); return (result.rows[0] as {result: RelationalRead}).result }
     catch (error) { if ((error as {code?: string}).code === '40001') throw new FluxError('PERSISTENCE_CONFLICT','Relational state changed concurrently; reload and retry',409); throw error }
   }
 }
