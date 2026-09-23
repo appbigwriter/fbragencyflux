@@ -21,7 +21,12 @@ on conflict (slug) do nothing;
 
 -- Inserir projeto piloto After Forty
 insert into custom_agencyflux.flux_projects (id, name, slug, project_type, status, owner_name, description, external_id, tenant_id) values
-  ('00000000-0000-0000-0000-000000000020', 'After Forty', 'after-forty', 'blog', 'planned', 'Sergio', 'Piloto operacional de publisher FBR News para público 40+', 'after-forty', '00000000-0000-0000-0000-000000000002')
+  ('00000000-0000-0000-0000-000000000020', 'After Forty', 'after-forty', 'blog', 'active', 'Sergio', 'Piloto operacional de publisher FBR News para público 40+', 'after-forty', '00000000-0000-0000-0000-000000000002')
+on conflict (slug) do nothing;
+
+-- Inserir projeto Talk to Your Crowd (Storefront & POS Hacks)
+insert into custom_agencyflux.flux_projects (id, name, slug, project_type, status, owner_name, description, external_id, tenant_id) values
+  ('00000000-0000-0000-0000-000000000030', 'Talk to Your Crowd', 'talk-to-your-crowd', 'blog', 'active', 'Marcus Cole', 'Publisher FBR News de marketing e conversão para varejo local nos EUA', 'talk-to-your-crowd', '00000000-0000-0000-0000-000000000001')
 on conflict (slug) do nothing;
 
 -- Garantir que a linha de controle de versão global exista
@@ -30,3 +35,4 @@ values (true, 1, array[]::text[])
 on conflict (id) do nothing;
 
 commit;
+

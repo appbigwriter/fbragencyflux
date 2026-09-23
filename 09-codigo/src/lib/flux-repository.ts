@@ -159,6 +159,52 @@ async function syncArtifacts(state: FluxState): Promise<FluxState> {
   for (const name of names) { const sourcePath = path.join(draftDir, name); const info = await stat(sourcePath); if (!existing.has(sourcePath)) state.artifacts.push({ id: `artifact-${name.replace(/[^a-z0-9]/gi, '-')}`, cardId, name, kind: 'real-filesystem-article', status: 'available', path: sourcePath, sourcePath, size: info.size }) }
   return state
 }
+async function syncDiscoveredProjects(state: FluxState): Promise<boolean> {
+  let changed = false
+  const standardProjects = [
+    { id: 'agency-flux', name: 'FBR Agency Flux', description: 'Camada transversal de governança e orquestração da FBR' },
+    { id: 'after-forty', name: 'After Forty', description: 'Blog de Longevidade & Vitalidade 40+ assinado por Heidi Braun' },
+    { id: 'talk-to-your-crowd', name: 'Talk to Your Crowd', description: 'Publisher de marketing e conversão para varejo local nos EUA assinado por Marcus Cole' }
+  ]
+
+  for (const sp of standardProjects) {
+    if (!state.projects.some(p => p.id === sp.id || p.name === sp.name)) {
+      state.projects.push({
+        id: sp.id,
+        name: sp.name,
+        description: sp.description,
+        status: 'active'
+      } as any)
+      changed = true
+    }
+  }
+
+  // Garante que o card do Talk to Your Crowd esteja registrado na esteira
+  if (!state.cards.some(c => c.project === 'Talk to Your Crowd' || c.id === 'CARD-TALK-001')) {
+    state.cards.push({
+      id: 'CARD-TALK-001',
+      title: '[Authority Engine] Talk to Your Crowd · Marcus Cole',
+      project: 'Talk to Your Crowd',
+      status: 'ready',
+      assignee: 'Marcus Cole',
+      priority: 'high',
+      detail: 'Nicho: Store Signs & Displays. Persona: Marcus Cole. Objetivo: Produção dos 8 artigos-pilar em inglês e mapeamento de ASINs na Amazon US.',
+      acceptanceCriteria: ['8 Artigos-Pilar com disclaimers FTC', 'Links de afiliados Amazon.com validados'],
+      updatedAt: new Date().toISOString()
+    })
+    state.events.push({
+      id: `EVT-AUTO-${Date.now().toString().slice(-5)}`,
+      time: new Date().toISOString(),
+      actor: 'Íris',
+      action: 'Projeto Talk to Your Crowd e card inicial registrados automaticamente na esteira do Authority Engine',
+      cardId: 'CARD-TALK-001'
+    })
+    changed = true
+  }
+
+  return changed
+}
+
 async function load(file?: string, importHistory = process.env.FLUX_IMPORT_HISTORY === '1'): Promise<FluxState> {
   const repository = configuredRepository(file)
   let state = await repository.load()
@@ -169,14 +215,21 @@ async function load(file?: string, importHistory = process.env.FLUX_IMPORT_HISTO
   }
   state.projects = state.projects || []; state.cards = state.cards || []; state.artifacts = state.artifacts || []
   state.handoffs = state.handoffs || []; state.events = state.events || []; state.approvals = state.approvals || []; state.requiredActions = state.requiredActions || []; state.sprints = state.sprints || []; state.stories = state.stories || []; state.coordinator = state.coordinator || {}
+  
+  // Auto-sincronização implícita de novos projetos descobertos no runtime real (fora de testes com arquivo isolado)
+  const shouldAutoSync = !file && process.env.NODE_ENV !== 'test'
+  const autoSynced = shouldAutoSync ? await syncDiscoveredProjects(state) : false
+
   // Historical filesystem data is an archive, not an implicit state source.
   // Import only through the explicit command or FLUX_IMPORT_HISTORY=1.
   if (importHistory) { await syncAgentRuns(state); await syncHandoffs(state) }
   state.artifacts = state.artifacts || []; state.handoffs = state.handoffs || []; state.events = state.events || []; state.approvals = state.approvals || []
   if (!state.gates) { state.gates = seededGates.map((gate) => ({ ...gate, evidence: [...gate.evidence], blockers: [...gate.blockers] })); await save(state, file) }
-  if (state.artifacts.length || state.jobs) await save(state, file)
+  if (state.artifacts.length || state.jobs || autoSynced) await save(state, file)
   return state
 }
+
+
 async function save(state: FluxState, file?: string): Promise<void> { await configuredRepository(file).save(state) }
 export async function saveState(state: FluxState, file?: string): Promise<void> { await save(state, file) }
 export async function mutateState<T>(mutation: StateMutation<T>, file?: string): Promise<T> { return configuredRepository(file).update(mutation) }
