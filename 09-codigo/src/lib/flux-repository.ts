@@ -260,8 +260,8 @@ async function load(file?: string, importHistory = process.env.FLUX_IMPORT_HISTO
   state.projects = state.projects || []; state.cards = state.cards || []; state.artifacts = state.artifacts || []
   state.handoffs = state.handoffs || []; state.events = state.events || []; state.approvals = state.approvals || []; state.requiredActions = state.requiredActions || []; state.sprints = state.sprints || []; state.stories = state.stories || []; state.coordinator = state.coordinator || {}
   
-  // Auto-sincronização implícita de novos projetos descobertos no runtime real (fora de testes com arquivo isolado)
-  const shouldAutoSync = !file && process.env.NODE_ENV !== 'test'
+  // Auto-sincronização implícita de novos projetos descobertos no runtime real (fora de testes)
+  const shouldAutoSync = !file && process.env.NODE_ENV !== 'test' && !process.env.VITEST
   const autoSynced = shouldAutoSync ? await syncDiscoveredProjects(state) : false
 
   // Historical filesystem data is an archive, not an implicit state source.
@@ -269,7 +269,7 @@ async function load(file?: string, importHistory = process.env.FLUX_IMPORT_HISTO
   if (importHistory) { await syncAgentRuns(state); await syncHandoffs(state) }
   state.artifacts = state.artifacts || []; state.handoffs = state.handoffs || []; state.events = state.events || []; state.approvals = state.approvals || []
   if (!state.gates) { state.gates = seededGates.map((gate) => ({ ...gate, evidence: [...gate.evidence], blockers: [...gate.blockers] })); await save(state, file) }
-  if (state.artifacts.length || state.jobs || autoSynced) await save(state, file)
+  if (state.artifacts.length || state.jobs || (autoSynced && shouldAutoSync)) await save(state, file)
   return state
 }
 

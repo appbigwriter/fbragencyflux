@@ -37,7 +37,9 @@ export function resolveRelationalConfig(env: NodeJS.ProcessEnv = process.env): R
   }
   const supabaseUrl = clean(env.FLUX_SUPABASE_URL) || clean(env.SUPABASE_URL)
   const serviceRoleKey = clean(env.FLUX_SUPABASE_SERVICE_ROLE_KEY) || clean(env.SUPABASE_SERVICE_ROLE_KEY)
-  if (supabaseUrl && serviceRoleKey) return { kind: 'postgrest', origin: httpsOrigin(supabaseUrl, 'SUPABASE_URL'), serviceRoleKey }
+  if (supabaseUrl && serviceRoleKey && !serviceRoleKey.startsWith('<secret-manager') && !supabaseUrl.includes('supabase-control-tower-api.fbr.news')) {
+    return { kind: 'postgrest', origin: httpsOrigin(supabaseUrl, 'SUPABASE_URL'), serviceRoleKey }
+  }
   return null
 }
 
