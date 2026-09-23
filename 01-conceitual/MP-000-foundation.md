@@ -6,7 +6,7 @@
 ## Resumo
 O FBR Agency Flux é a camada transversal de governança e orquestração dos projetos da FBR Agency. Registra projetos, agents, cards, dependências, Gates de aprovação, eventos, artefatos, handoffs, jobs, blockers e readbacks, permitindo acompanhamento auditável sem substituir o Control Tower ou os sistemas especialistas.
 
-O Flux é o orquestrador durável do fluxo Authority Engine → Blogs → Control Tower. Ele não é a fonte canônica da Persona; sua responsabilidade é coordenar estados, eventos, aprovações, provisionamento, retries e publicação.
+O Flux é o orquestrador durável do fluxo Authority Engine (https://sistemas-authority.pojxaz.easypanel.host/about) → Audience ("F:\Projetos\_FBR\FBR Audience\02-prd\PROJETO-CONCEITUAL-AUDIENCE-BUILDER.md" ) → Sales Enine ("F:\Projetos\_FBR\Sales Engine\README.md" ) → Control Tower que é onde o banco de dados é provisionado . Ele não é a fonte canônica da Persona; sua responsabilidade é coordenar estados, eventos, aprovações, provisionamento, retries e publicação.
 
 ## Decisões de arquitetura
 

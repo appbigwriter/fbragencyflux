@@ -1,0 +1,105 @@
+{
+  "name": "04 - FBR Flux: Sincronização e Disparo da Esteira Externa",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "flux-pipeline-sync",
+        "options": {}
+      },
+      "name": "Trigger da Esteira",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.body.stage }}",
+              "operation": "equal",
+              "value2": "authority_engine"
+            },
+            {
+              "value1": "={{ $json.body.stage }}",
+              "operation": "equal",
+              "value2": "audience"
+            },
+            {
+              "value1": "={{ $json.body.stage }}",
+              "operation": "equal",
+              "value2": "sales_engine"
+            },
+            {
+              "value1": "={{ $json.body.stage }}",
+              "operation": "equal",
+              "value2": "control_tower"
+            }
+          ]
+        }
+      },
+      "name": "Roteador de Estágios",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 1,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "https://sistemas-authority.pojxaz.easypanel.host/api/persona/sync",
+        "options": {}
+      },
+      "name": "Sync Authority Engine",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [720, 160]
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "={{ $env.CONTROL_TOWER_BASE_URL || 'https://control-tower.fbr.news' }}/api/projects/provision",
+        "options": {}
+      },
+      "name": "Provision Control Tower",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [720, 440]
+    }
+  ],
+  "connections": {
+    "Trigger da Esteira": {
+      "main": [
+        [
+          {
+            "node": "Roteador de Estágios",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Roteador de Estágios": {
+      "main": [
+        [
+          {
+            "node": "Sync Authority Engine",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [],
+        [],
+        [
+          {
+            "node": "Provision Control Tower",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {}
+}

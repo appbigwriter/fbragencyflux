@@ -1,0 +1,72 @@
+{
+  "name": "03 - FBR Flux: Notificação de Gate Pendente para Sergio",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "flux-gate-alert",
+        "options": {}
+      },
+      "name": "Webhook de Gate",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "messageText",
+              "value": "=🚨 *Novo Gate de Decisão Pendente no Agency Flux*\n\n*Projeto:* {{ $json.body.project || 'FBR Agency' }}\n*Gate ID:* {{ $json.body.gateId || $json.body.id }}\n*Decisão Solicitada:* {{ $json.body.data.title || $json.body.title }}\n*Impacto:* {{ $json.body.data.impact || 'Avanço da esteira' }}\n\nAcesse o Dashboard para Aprovar, Reprovar ou Devolver com justificativa."
+            }
+          ]
+        }
+      },
+      "name": "Formatar Alerta",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $env.TELEGRAM_CHAT_ID || '@sergio_fbr' }}",
+        "text": "={{ $json.messageText }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "name": "Enviar Alerta Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [680, 300]
+    }
+  ],
+  "connections": {
+    "Webhook de Gate": {
+      "main": [
+        [
+          {
+            "node": "Formatar Alerta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Formatar Alerta": {
+      "main": [
+        [
+          {
+            "node": "Enviar Alerta Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {}
+}

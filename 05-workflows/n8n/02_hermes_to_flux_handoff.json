@@ -1,0 +1,118 @@
+{
+  "name": "02 - FBR Flux: Retorno de Artefato do Hermes para o Flux (Handoff)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "hermes-completion-callback",
+        "options": {}
+      },
+      "name": "Callback do Hermes",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "source",
+              "value": "hermes_completion"
+            },
+            {
+              "name": "cardId",
+              "value": "={{ $json.body.context_id || $json.body.cardId }}"
+            },
+            {
+              "name": "agent",
+              "value": "={{ $json.body.agent_name }}"
+            },
+            {
+              "name": "status",
+              "value": "completed"
+            },
+            {
+              "name": "evidence",
+              "value": "={{ $json.body.output || $json.body.artifact_content }}"
+            },
+            {
+              "name": "notes",
+              "value": "=Entrega executada pelo agente {{ $json.body.agent_name }}"
+            }
+          ]
+        }
+      },
+      "name": "Formatar Payload Inbox",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "={{ $env.FLUX_API_BASE_URL || 'http://localhost:3000' }}/api/flux/inbox",
+        "options": {},
+        "bodyParametersUi": {
+          "parameter": [
+            {
+              "name": "source",
+              "value": "={{ $json.source }}"
+            },
+            {
+              "name": "cardId",
+              "value": "={{ $json.cardId }}"
+            },
+            {
+              "name": "agent",
+              "value": "={{ $json.agent }}"
+            },
+            {
+              "name": "status",
+              "value": "={{ $json.status }}"
+            },
+            {
+              "name": "evidence",
+              "value": "={{ $json.evidence }}"
+            },
+            {
+              "name": "notes",
+              "value": "={{ $json.notes }}"
+            }
+          ]
+        }
+      },
+      "name": "POST Inbox do Flux",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [680, 300]
+    }
+  ],
+  "connections": {
+    "Callback do Hermes": {
+      "main": [
+        [
+          {
+            "node": "Formatar Payload Inbox",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Formatar Payload Inbox": {
+      "main": [
+        [
+          {
+            "node": "POST Inbox do Flux",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {}
+}

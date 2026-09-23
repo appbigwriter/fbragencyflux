@@ -1,0 +1,126 @@
+{
+  "name": "01 - FBR Flux: Disparar Agente Hermes por Card/Job",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "flux-event-receiver",
+        "options": {}
+      },
+      "name": "Webhook do Flux",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.body.event }}",
+              "operation": "equal",
+              "value2": "card_created"
+            }
+          ]
+        }
+      },
+      "name": "Verificar Tipo de Evento",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "agent",
+              "value": "={{ $json.body.agent || 'Bia' }}"
+            },
+            {
+              "name": "cardId",
+              "value": "={{ $json.body.cardId }}"
+            },
+            {
+              "name": "title",
+              "value": "={{ $json.body.data.title }}"
+            },
+            {
+              "name": "prompt",
+              "value": "=Você é o agente {{ $json.body.agent }} da FBR Agency. Sua tarefa atual no card {{ $json.body.cardId }} é: {{ $json.body.data.title }}. Detalhes: {{ $json.body.data.detail }}. Retorne seu artefato e critérios de aceite no padrão do Flux."
+            }
+          ]
+        }
+      },
+      "name": "Montar Prompt Hermes",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [680, 200]
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "={{ $env.HERMES_API_BASE_URL || 'http://localhost:8000/api/agent/run' }}",
+        "options": {},
+        "bodyParametersUi": {
+          "parameter": [
+            {
+              "name": "agent_name",
+              "value": "={{ $json.agent }}"
+            },
+            {
+              "name": "prompt",
+              "value": "={{ $json.prompt }}"
+            },
+            {
+              "name": "context_id",
+              "value": "={{ $json.cardId }}"
+            }
+          ]
+        }
+      },
+      "name": "Chamar Agente Hermes",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [900, 200]
+    }
+  ],
+  "connections": {
+    "Webhook do Flux": {
+      "main": [
+        [
+          {
+            "node": "Verificar Tipo de Evento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verificar Tipo de Evento": {
+      "main": [
+        [
+          {
+            "node": "Montar Prompt Hermes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Montar Prompt Hermes": {
+      "main": [
+        [
+          {
+            "node": "Chamar Agente Hermes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {}
+}
