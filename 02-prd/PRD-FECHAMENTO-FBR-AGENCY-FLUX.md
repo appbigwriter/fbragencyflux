@@ -182,7 +182,7 @@ A fonte de verdade de produção será o banco externo persistente. JSON será p
 Um projeto novo deve ser criado a partir de briefing/MD, com owner, tenant/projeto, idioma, mercado, objetivo, ativos, Design System, restrições e inputs versionados.
 
 ### RF-CL-02 — Decomposição autônoma controlada
-A Íris deve gerar cards, jobs, owners, dependências, critérios, Gates e próximos checks sem depender de intervenção humana para atividade rotineira.
+A Íris ( agente hermes 2.0 ) deve gerar cards, jobs, owners, dependências, critérios, Gates e próximos checks sem depender de intervenção humana para atividade rotineira.
 
 ### RF-CL-03 — Contrato de agent
 Todo job deve conter contexto versionado, objetivo, escopo, entrada, skills, workflow, owner, aceite, evidência, correlation ID e próximo responsável.
