@@ -1,6 +1,9 @@
 # Workflows N8N: Glue Code do FBR Agency Flux
 
+> 📖 **Consulte o Guia Canônico:** Para instruções detalhadas de implantação, arquitetura completa, diagramas e smoke tests, acesse o documento [**GUIA-OPERACIONAL-N8N-FBR-AGENCY.md**](file:///f:/Projetos/_FBR/FBR%20Agency%20Flux/05-workflows/n8n/GUIA-OPERACIONAL-N8N-FBR-AGENCY.md).
+
 Esta pasta contém os templates JSON dos workflows do **N8N** para conectar o **FBR Agency Flux** com os **Agentes Hermes** e as **APIs Externas** (Authority Engine, Audience Builder, Sales Engine e Control Tower).
+
 
 ---
 
