@@ -8,8 +8,8 @@ export type RequiredAction = { what: string; why: string; who: string; from: str
 export type IrisTriageResult = { decision: IrisDecision; correlationId: string; trigger: TriageTrigger; owner?: string; dependencies: string[]; blockers: string[]; reason: string; evidence: string[]; planningBasis: string[]; ownerReason: string; instruction?: IrisInstruction; requiredActions?: RequiredAction[]; handoff?: Handoff; job?: Job; event?: Event; readback: { blockerStatus?: string; persisted: boolean } }
 
 const roleMatrix = [
-  // Gestão Editorial por Projeto (Papel genérico: Gestor Editorial | Instância no After Forty: Heidi Braun)
-  { owner: 'Gestor Editorial', keys: ['produto-pauta', 'produto pauta', 'pauta', 'editorial', 'heidi', 'after forty', 'afterforty'], basis: 'Matriz After Forty: produto-pauta → Gestor Editorial', deps: ['Rick / Amazon Research'] },
+  // Gestão Editorial por Projeto (Papel genérico: Gestor Editorial | Instâncias: Heidi Braun / Marcus Cole)
+  { owner: 'Gestor Editorial', keys: ['produto-pauta', 'produto pauta', 'pauta', 'editorial', 'heidi', 'after forty', 'afterforty', 'marcus', 'talk to your crowd', 'fale com seu publico', 'storefront'], basis: 'Matriz Editorial: produto-pauta → Gestor Editorial', deps: ['Rick / Amazon Research'] },
 
   // Inteligência & Pesquisa
   { owner: 'Bia', keys: ['pesquisa de mercado', 'concorrencia', 'keywords', 'asin', 'amazon us', 'demanda'], basis: 'Matriz Inteligência: Pesquisa de mercado e Amazon US → Bia', deps: [] },
@@ -93,10 +93,12 @@ const decisionScopes: Record<string, string[]> = {
   'Rick / Amazon Research': ['pesquisa Amazon Associates', 'ClickBank', 'fontes de preço', 'opções de monetização'],
   'Gestor Editorial': ['pauta editorial', 'draft em inglês', 'SEO', 'sources e disclosure', 'associação pauta-produto'],
   'Heidi Braun': ['gestão editorial After Forty', 'curadoria de longevidade/vitalidade', 'pautas After Forty', 'SEO e disclosure'],
+  'Marcus Cole': ['gestão editorial Talk to Your Crowd', 'estratégias de PDV e fachadas', 'pautas de retail display', 'Amazon Store Signs'],
   'Email Guardian': ['triagem de e-mails autorizados', 'classificação de threads', 'rascunhos de resposta'],
   'Second Brain Guardian': ['memória operacional', 'indexação de fontes', 'relatórios de rastreabilidade'],
   'Sergio': ['escopo', 'prioridade', 'gate', 'gasto', 'produção', 'publicação', 'irreversível']
 }
+
 
 export function assessAgentDecision(agent: string, input: { gap: string; context: string; proposedResolution: string; evidence?: string[]; nextCheck: string; requires?: DecisionBoundary | 'internal' | 'specialist' | 'sergio'; specialist?: string; planBasis?: string; response?: string }): AgentDecisionAssessment {
   const scope = decisionScopes[agent] || decisionScopes[agent.split(' ')[0]] || []
