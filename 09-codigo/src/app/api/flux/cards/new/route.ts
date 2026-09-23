@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { jsonError } from '@/lib/api'
-import { getRepository } from '@/lib/persistence'
+import { configuredRepository } from '@/lib/persistence'
 import { dispatchWebhook } from '@/lib/webhook-dispatcher'
 
 export async function POST(request: Request) {
@@ -33,9 +33,18 @@ export async function POST(request: Request) {
 
     // Tenta gravar no repositório persistido se disponível
     try {
-      const repo = await getRepository()
-      if (repo && 'createCard' in repo) {
-        await (repo as any).createCard?.(newCard)
+      const repo = configuredRepository()
+      if (repo && 'update' in repo) {
+        await repo.update((state) => {
+          state.cards.push(newCard as any)
+          state.events.push({
+            id: `EVT-${Date.now().toString().slice(-6)}`,
+            time: new Date().toISOString(),
+            actor: body.assignee || 'Íris',
+            action: `Card criado na esteira (${body.stage || 'authority_engine'}): ${body.title}`,
+            cardId,
+          })
+        })
       }
     } catch (repoErr) {
       console.warn('[CREATE CARD] Aviso ao persistir via driver:', repoErr)

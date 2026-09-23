@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { jsonError } from '@/lib/api'
-import { getRepository } from '@/lib/persistence'
+import { configuredRepository } from '@/lib/persistence'
 
 export async function POST(request: Request) {
   try {
@@ -23,13 +23,26 @@ export async function POST(request: Request) {
     }
 
     // Registra o evento no repositório persistido se configurado
-    const repo = await getRepository().catch(() => null)
-    if (repo && body.cardId && body.status) {
-      try {
-        await repo.transitionCard(body.cardId, body.status as any, 'local', body.agent || 'HermesAgent')
-      } catch (err) {
-        console.warn('[INBOX] Não foi possível transicionar card automaticamente:', err)
+    try {
+      const repo = configuredRepository()
+      if (repo && 'update' in repo && body.cardId) {
+        await repo.update((state) => {
+          const card = state.cards.find(c => c.id === body.cardId)
+          if (card && body.status) {
+            card.status = body.status as any
+            card.updatedAt = new Date().toISOString()
+          }
+          state.events.push({
+            id: `EVT-${Date.now().toString().slice(-6)}`,
+            time: new Date().toISOString(),
+            actor: body.agent || 'HermesAgent',
+            action: `Inbox: Entrega recebida para ${body.cardId}. ${body.notes || ''}`,
+            cardId: body.cardId,
+          })
+        })
       }
+    } catch (err) {
+      console.warn('[INBOX] Aviso ao persistir evento no repositório:', err)
     }
 
     return NextResponse.json({

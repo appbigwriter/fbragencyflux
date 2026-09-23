@@ -13,6 +13,9 @@ const SESSION_TTL_MS = 8 * 60 * 60 * 1000
 
 function getLocalConfig(key: 'FLUX_LOCAL_LOGIN_ACTOR' | 'FLUX_LOCAL_LOGIN_SECRET'): string | undefined {
   if (process.env[key]) return process.env[key]
+  if (process.env.NODE_ENV === 'production' && process.env.FLUX_LOCAL_MODE !== '1') {
+    return undefined
+  }
   const paths = [
     join(process.cwd(), '.env.local'),
     join(process.cwd(), '.env'),
@@ -21,8 +24,8 @@ function getLocalConfig(key: 'FLUX_LOCAL_LOGIN_ACTOR' | 'FLUX_LOCAL_LOGIN_SECRET
   ]
   for (const p of paths) {
     try {
-      if (existsSync(p)) {
-        const text = readFileSync(p, 'utf8')
+      if (existsSync(/* turbopackIgnore: true */ p)) {
+        const text = readFileSync(/* turbopackIgnore: true */ p, 'utf8')
         const m = text.match(new RegExp(`^${key}=(.*)$`, 'm'))
         if (m) {
           const val = m[1].trim().replace(/^["']|["']$/g, '')
