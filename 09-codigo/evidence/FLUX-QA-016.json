@@ -18,11 +18,11 @@
     "F:/Projetos/_FBR/AuthorityEngine/05-workflows/authority-engine-to-fbr-flux.md",
     "F:\\Projetos\\_FBR\\FBR Agency Flux\\09-codigo\\tests\\fixtures\\flux-qa-016-authority-input.json",
     "event:created project from briefing:F:/Projetos/_FBR/AuthorityEngine/05-workflows/authority-engine-to-fbr-flux.md",
-    "artifact:F:\\Projetos\\_FBR\\FBR Agency Flux\\09-codigo\\flux-qa-016-R4Lc8P\\persona-package.json",
-    "approval:approval-1790192535422:approved-by-Sergio",
-    "inbox:event:event-1790192535436",
+    "artifact:F:\\Projetos\\_FBR\\FBR Agency Flux\\09-codigo\\flux-qa-016-Xu693g\\persona-package.json",
+    "approval:approval-1790194112637:approved-by-Sergio",
+    "inbox:event:event-1790194112649",
     "job:job-qa-016-control-tower:started",
-    "readback:F:\\Projetos\\_FBR\\FBR Agency Flux\\09-codigo\\flux-qa-016-R4Lc8P\\control-tower-readback.json",
+    "readback:F:\\Projetos\\_FBR\\FBR Agency Flux\\09-codigo\\flux-qa-016-Xu693g\\control-tower-readback.json",
     "blocked:PUBLICATION_GATE_REQUIRED",
     "gate:FLUX-QA-016-GATE-PUBLICATION:approved-by-Sergio"
   ],
@@ -39,7 +39,7 @@
     "externalActionAuthorized": false,
     "adapter": "local-control-tower-fake",
     "readbackVersion": "1.0.0",
-    "artifactPath": "F:\\Projetos\\_FBR\\FBR Agency Flux\\09-codigo\\flux-qa-016-R4Lc8P\\control-tower-readback.json"
+    "artifactPath": "F:\\Projetos\\_FBR\\FBR Agency Flux\\09-codigo\\flux-qa-016-Xu693g\\control-tower-readback.json"
   },
   "readback": {
     "persisted": true,

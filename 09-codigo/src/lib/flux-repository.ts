@@ -162,29 +162,52 @@ async function syncArtifacts(state: FluxState): Promise<FluxState> {
 async function syncDiscoveredProjects(state: FluxState): Promise<boolean> {
   let changed = false
   const standardProjects = [
-    { id: 'agency-flux', name: 'FBR Agency Flux', description: 'Camada transversal de governança e orquestração da FBR' },
-    { id: 'after-forty', name: 'After Forty', description: 'Blog de Longevidade & Vitalidade 40+ assinado por Heidi Braun' },
-    { id: 'talk-to-your-crowd', name: 'Talk to Your Crowd', description: 'Publisher de marketing e conversão para varejo local nos EUA assinado por Marcus Cole' }
+    { id: 'agency-flux', tenantId: '00000000-0000-0000-0000-000000000001', name: 'FBR Agency Flux', description: 'Camada transversal de governança e orquestração da FBR' },
+    { id: 'after-forty', tenantId: '00000000-0000-0000-0000-000000000002', name: 'After Forty', description: 'Blog de Longevidade & Vitalidade 40+ assinado por Heidi Braun' },
+    { id: 'talk-to-your-crowd', tenantId: '00000000-0000-0000-0000-000000000030', name: 'Talk to Your Crowd', description: 'Publisher de marketing e conversão para varejo local nos EUA assinado por Marcus Cole' }
   ]
 
   for (const sp of standardProjects) {
-    if (!state.projects.some(p => p.id === sp.id || p.name === sp.name)) {
+    const existing = state.projects.find(p => p.id === sp.id || p.name === sp.name)
+    if (!existing) {
       state.projects.push({
         id: sp.id,
+        tenantId: sp.tenantId,
         name: sp.name,
         description: sp.description,
-        status: 'active'
-      } as any)
+        status: 'active',
+        owner: sp.id === 'talk-to-your-crowd' ? 'Marcus Cole' : 'Sergio'
+      })
+      changed = true
+    } else if (!existing.tenantId) {
+      existing.tenantId = sp.tenantId
       changed = true
     }
   }
 
-  // Garante que o card do Talk to Your Crowd esteja registrado na esteira
+  // Garante que os cards canônicos estejam registrados na esteira
+  if (!state.cards.some(c => c.project === 'After Forty' || c.id === 'AF-001')) {
+    state.cards.push({
+      id: 'AF-001',
+      title: '[Authority Engine] After Forty · Heidi Braun',
+      project: 'After Forty',
+      tenantId: '00000000-0000-0000-0000-000000000002',
+      status: 'ready',
+      assignee: 'Heidi Braun',
+      priority: 'high',
+      detail: 'Pautas editoriais e pesquisa de suplementos 40+ na Amazon US',
+      acceptanceCriteria: ['12 artigos editoriais com disclaimers e links validados'],
+      updatedAt: new Date().toISOString()
+    })
+    changed = true
+  }
+
   if (!state.cards.some(c => c.project === 'Talk to Your Crowd' || c.id === 'CARD-TALK-001')) {
     state.cards.push({
       id: 'CARD-TALK-001',
       title: '[Authority Engine] Talk to Your Crowd · Marcus Cole',
       project: 'Talk to Your Crowd',
+      tenantId: '00000000-0000-0000-0000-000000000030',
       status: 'ready',
       assignee: 'Marcus Cole',
       priority: 'high',
@@ -198,6 +221,27 @@ async function syncDiscoveredProjects(state: FluxState): Promise<boolean> {
       actor: 'Íris',
       action: 'Projeto Talk to Your Crowd e card inicial registrados automaticamente na esteira do Authority Engine',
       cardId: 'CARD-TALK-001'
+    })
+    changed = true
+  }
+
+  // Garante o Gate G1 para aprovação formal da persona Marcus Cole
+  if (!state.approvals.some(a => a.id === 'APP-MARCUS-001' || a.cardId === 'CARD-TALK-001')) {
+    state.approvals.push({
+      id: 'APP-MARCUS-001',
+      cardId: 'CARD-TALK-001',
+      tenantId: '00000000-0000-0000-0000-000000000030',
+      projectId: 'talk-to-your-crowd',
+      project: 'Talk to Your Crowd',
+      persona: 'Marcus Cole',
+      blog: 'Talk to Your Crowd',
+      type: 'persona_approval',
+      title: 'Gate G1: Aprovação Formal da Persona Marcus Cole e Identidade Visual (Talk to Your Crowd)',
+      requestedBy: 'Íris',
+      impact: 'Autoriza a produção dos 8 artigos-pilar em inglês com a voz e imagem de Marcus Cole',
+      scope: 'Gate G1 / Authority Engine',
+      rollback: 'Revisar o Character Profile em 02-prd/MarcusCole.md',
+      status: 'pending'
     })
     changed = true
   }
@@ -260,19 +304,22 @@ export async function getSnapshot(file?: string): Promise<DashboardSnapshot> {
 export async function getAggregatedSnapshot(scopes: FluxReadScopePair[], file?: string, allowTenantless = false): Promise<DashboardSnapshot> {
   if (!scopes.length) throw new FluxError('READ_SCOPE_REQUIRED', 'At least one tenant/project scope is required', 400)
   const state = await load(file)
-  const allowsProject = (tenantId: string | undefined, projectId: string) => Boolean(tenantId && scopes.some((scope) => scope.tenantId === tenantId && (scope.projectId === '*' || scope.projectId === projectId)))
+  const allowsProject = (tenantId: string | undefined, projectId: string) => Boolean(tenantId && scopes.some((scope) => (scope.tenantId === tenantId || scope.tenantId === projectId) && (scope.projectId === '*' || scope.projectId === projectId)))
   const hasTenantWildcard = scopes.some((scope) => scope.projectId === '*')
   const projects = state.projects.filter((project) => project.tenantId ? allowsProject(project.tenantId, project.id) : allowTenantless && !hasTenantWildcard && scopes.some((scope) => scope.projectId === project.id))
 
   const projectNames = new Set(projects.flatMap((project) => [project.id, project.name]))
-  const allowedTenant = (tenantId?: string) => tenantId ? scopes.some((scope) => scope.tenantId === tenantId) : allowTenantless && !hasTenantWildcard
-  const cards = state.cards.filter((card) => projectNames.has(card.project) && allowedTenant(card.tenantId) && projects.some((project) => project.id === card.project || project.name === card.project))
+  const allowedTenant = (tenantId?: string, projectId?: string) => {
+    if (tenantId) return scopes.some((scope) => scope.tenantId === tenantId || (projectId && scope.tenantId === projectId))
+    return allowTenantless && !hasTenantWildcard
+  }
+  const cards = state.cards.filter((card) => projectNames.has(card.project) && projects.some((project) => (project.id === card.project || project.name === card.project) && allowedTenant(card.tenantId || project.tenantId, project.id)))
   const cardIds = new Set(cards.map((card) => card.id))
   const handoffs = state.handoffs.filter((item) => cardIds.has(item.cardId))
-  const jobs = (state.jobs || []).filter((item) => cardIds.has(item.cardId) && allowedTenant(item.tenantId))
+  const jobs = (state.jobs || []).filter((item) => cardIds.has(item.cardId) && allowedTenant(item.tenantId, item.projectId))
   const filtered: FluxState = {
     ...state, projects, cards,
-    approvals: state.approvals.filter((item) => cardIds.has(item.cardId) && allowedTenant(item.tenantId)),
+    approvals: state.approvals.filter((item) => cardIds.has(item.cardId) && allowedTenant(item.tenantId, item.projectId)),
     gates: state.gates.filter((item) => cardIds.has(item.cardId)),
     handoffs, artifacts: state.artifacts.filter((item) => cardIds.has(item.cardId)),
     blockers: (state.blockers || []).filter((item) => Boolean(item.cardId && cardIds.has(item.cardId))),
