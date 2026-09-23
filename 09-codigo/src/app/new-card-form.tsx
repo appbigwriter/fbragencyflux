@@ -311,6 +311,7 @@ export default function NewCardForm({ onCreated }: { onCreated?: () => void }) {
               </optgroup>
               <optgroup label="Operação Editorial & Projetos">
                 <option value="Heidi Braun">Heidi Braun (Gestora Editorial — After Forty)</option>
+                <option value="Marcus Cole">Marcus Cole (Gestor Editorial — Talk to Your Crowd)</option>
                 <option value="Gestor Editorial">Gestor Editorial (Novo Projeto / Custom)</option>
                 <option value="Rita">Rita (Listings Amazon & Oferta)</option>
               </optgroup>

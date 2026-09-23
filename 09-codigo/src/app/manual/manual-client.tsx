@@ -260,7 +260,13 @@ export default function ManualClient() {
                   <td style={{ padding: '8px' }}><strong>Heidi Braun</strong></td>
                   <td><code>afterfortyheidi</code></td>
                   <td>Gestão Editorial (After Forty)</td>
-                  <td>Artigos em inglês, curadoria de longevidade, SEO, disclosure e fontes.</td>
+                  <td>Artigos em inglês, curadoria de longevidade 40+, SEO, disclosure FTC e fontes.</td>
+                </tr>
+                <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                  <td style={{ padding: '8px' }}><strong>Marcus Cole</strong></td>
+                  <td><code>talktoyourcrowd</code></td>
+                  <td>Gestão Editorial (Talk to Your Crowd)</td>
+                  <td>Estratégias de varejo e PDV nos EUA, artigos em inglês, Store Signs & Displays na Amazon.com.</td>
                 </tr>
                 <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
                   <td style={{ padding: '8px' }}><strong>Duda</strong></td>

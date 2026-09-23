@@ -21,7 +21,8 @@ decisões/suposições:
   - "Fato: meta informada por Sergio: 10.000 views e 1.000 seguidores nos primeiros 90 dias."
   - "Fato: canais informados: Site/Blog, Instagram, TikTok e YouTube."
   - "Fato: orçamento de teste informado: US$100, 100% reservado para tráfego pago; divisão entre canais ainda deve ser proposta por Rafa e aprovada antes de gasto."
-  - "Fato: assets serão produzidos do zero; cadência será definida pelo Gestor Editorial com base nos planos."
+  - "Fato: cadência editorial mínima informada por Sergio: 2 artigos de blog por dia; 1 Story no Instagram por dia; 1 Short no TikTok por semana; 1 vídeo curto no YouTube por semana."
+  - "Fato: assets serão produzidos do zero."
   - "Hipótese operacional: o orçamento deve ser tratado como experimento de aquisição, não como garantia de alcance ou seguidores."
   - "Decisão de governança: nenhuma publicação, gasto de mídia, alteração comercial ou mutação irreversível sem Gate aplicável e aprovação explícita de Sergio."
   - "Regra de compliance da fonte: disclosure FTC obrigatório, disclaimer oficial, nenhum testemunho falso, distinção entre característica e resultado e ASINs Amazon.com verificados."
@@ -76,7 +77,30 @@ Small business owners em:
 - **Funil:** awareness → interesse/engajamento → visita ao blog/lead magnet → seguidores → futura conversão afiliada.
 - **AARRR inicial:** Acquisition = views; Activation = visita/engajamento com conteúdo ou auditoria; Retention = seguidores/retorno; Revenue = etapa posterior, não assumida como meta atual; Referral = compartilhamentos, a medir se houver tracking.
 
-## Mapa de jobs atômicos
+### Cadência editorial aprovada
+
+- **Blog:** pelo menos 2 artigos por dia.
+- **Instagram:** 1 Story por dia.
+- **TikTok:** 1 Short por semana.
+- **YouTube:** 1 vídeo curto por semana.
+- **Responsável pela coordenação:** Gestor Editorial/Marcus Cole.
+- **Observação:** esta é a cadência mínima informada no briefing; a qualidade, a produção e a distribuição continuam sujeitas aos critérios de aceite e Gates aplicáveis.
+- **Dependência de escopo:** os 8 artigos-pilar não cobrem sozinhos a cadência diária; o calendário deverá separar artigos-pilar, artigos derivados/de apoio e eventuais atualizações, sem tratar conteúdo planejado como produzido.
+
+
+Os US$100 não devem ser classificados automaticamente como insuficientes. Eles podem ser suficientes para um **piloto de aprendizado**: comparar criativos, públicos, formatos e sinais de engajamento. Porém, são agressivos como verba para garantir simultaneamente 10.000 views e 1.000 seguidores em quatro canais.
+
+A matemática do objetivo mostra a pressão do teste:
+
+- US$100 / 10.000 views = custo máximo implícito de US$0,01 por view.
+- US$100 / 1.000 seguidores = custo máximo implícito de US$0,10 por seguidor.
+- 1.000 seguidores sobre 10.000 views exige conversão agregada de 10% de view para seguidor.
+- Uma divisão igual entre quatro canais deixaria US$25 por canal.
+
+Esses números são **limites matemáticos do objetivo**, não benchmarks nem promessa de desempenho. Rafa deve propor se o piloto concentra verba em um canal principal, testa poucos canais em sequência ou distribui uma parcela mínima entre canais. A decisão deve considerar o objetivo do teste e o período da verba.
+
+**Decisão pendente:** confirmar se os US$100 são verba total do piloto ou verba mensal. Sem essa distinção, o plano pode medir aprendizado, mas não deve projetar escala nem declarar suficiência.
+
 
 ### JOB-01 — Fechar plano de mensuração do piloto
 - **Owner:** Íris, com Rafa
@@ -87,8 +111,8 @@ Small business owners em:
 
 ### JOB-02 — Propor calendário editorial de lançamento
 - **Owner:** Gestor Editorial / Marcus Cole
-- **Entrada:** oito pilares, lead magnet, público e lançamento em 30/10
-- **Saída:** calendário versionado e cadência proposta para artigos, lead magnet e derivados
+- **Entrada:** oito pilares, lead magnet, público, lançamento em 30/10 e cadência mínima aprovada
+- **Saída:** calendário versionado e execução editorial organizada para no mínimo 2 artigos de blog/dia, 1 Story de Instagram/dia, 1 Short de TikTok/semana e 1 vídeo curto de YouTube/semana
 - **Dependências:** JOB-01; plano de canais
 - **Aceite:** cada entrega tem tema, objetivo de estágio, CTA, canal, owner, prazo e dependência; calendário não declara produção concluída; aceite do Gestor Editorial registrado.
 
@@ -158,7 +182,7 @@ Small business owners em:
 |---|---|---|
 | US$100 insuficiente para quatro canais | Tratar como experimento; Rafa propõe priorização e limites antes de Sergio aprovar | Rafa/Sergio |
 | Views sem definição uniforme | JOB-01 fixa fonte, janela e regra por plataforma | Íris/Rafa |
-| Conteúdo publicado sem cadência definida | Gestor Editorial aprova calendário antes do dispatch editorial | Gestor Editorial |
+| Calendário operacional não definido | Gestor Editorial define e registra a cadência antes de iniciar a produção/distribuição; publicação continua sujeita aos Gates aplicáveis | Gestor Editorial/Sergio |
 | Claims ou produtos não verificáveis | Bia/Gabe conferem fontes, ASINs e disclosure | Bia/Gabe |
 | Confusão entre plano e execução | Status do card e handoffs separam proposta, aprovado, executado e verificado | Kora/Íris |
 | Meta tratada como promessa | Linguagem de hipótese/teste e relatório de resultado real | Íris/Rafa |
