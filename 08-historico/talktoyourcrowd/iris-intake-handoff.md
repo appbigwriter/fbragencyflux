@@ -25,12 +25,14 @@ decisões/suposições:
   - "Fato: Gabe concluiu QA independente e devolveu o draft para correção em `08-historico/talktoyourcrowd/gabe-qa-pillar-01-v0.1.md`."
   - "Fato: Rick entregou `rick-affiliate-link-table-v0.2.md`; readback confirmou 0/4 VERIFIED para os ASINs usados no TTC-P1 e todos permanecem BLOCKED."
   - "Decisão: remover referências de produto/links do TTC-P1 v0.2 em vez de substituir por inferência; manter a pauta como guia editorial de diagnóstico."
-  - "Fato: Marcus foi reacionado para produzir v0.2 com CTA canônico do PRD e sem placeholders de produto."
+  - "Fato: Marcus entregou `marcus-pillar-01-storefront-mistakes-v0.2.md`; readback verificou 7 seções, zero ASINs/placeholders e CTA canônico."
+  - "Fato: Gabe foi reacionado para novo QA em `gabe-qa-pillar-01-v0.2.md`; a v0.2 não está aprovada nem publicada."
   - "Hipótese: dados de preço, rating e disponibilidade são voláteis; registrar data, URL e limitações, sem tratar como permanentes."
   - "Decisão de governança: não comprar, publicar, ativar mídia, alterar o site ou inserir secrets/tags privadas sem Gate aplicável."
 pendências/blockers:
   - "Rick v0.2: 0/4 ASINs verificáveis para publicação; B08K1RZWCF redireciona para outro ASIN, B00IGZCEIM está Page Not Found e B08HYJ14RD/B01HDDD0RQ estão indisponíveis sem preço atual."
-  - "Marcus deve entregar v0.2 sem referências de produto, com CTA `The 10-Minute Storefront & Counter Audit Checklist` e novo handoff para QA."
+  - "Gabe: novo QA da v0.2 em andamento; validar disclaimer, estrutura, claims, CTA canônico e ausência de marketplace/placeholders."
+  - "Marcus: v0.2 entregue sem referências de produto; não aprovado para publicação até o novo QA."
   - "Card Kanban operacional ainda não verificado; owner: Kora; nextAction: criar/verificar card e registrar ID."
   - "Bia concluiu com limitações: Firecrawl 403, campos faltantes em alguns listings, rechecagem manual necessária antes de publicação."
   - "Rick concluiu estrutura; ASINs, URLs e tags reais continuam pendentes de preenchimento/QA seguro."
@@ -75,7 +77,8 @@ critérios de aceite/evidência:
 - Marcus: **draft v0.1 entregue**; aguarda QA independente.
 - Gabe: **QA concluído — devolvido para correção**; quatro blockers registrados.
 - Rick: **follow-up concluído — 0/4 ASINs publicáveis**; tabela v0.2 registrada.
-- Marcus: **correção v0.2 em execução**; novo QA pendente.
+- Marcus: **v0.2 corrigida entregue**; zero marketplace/placeholders; aguarda novo QA.
+- Gabe: **novo QA despachado**; publicação permanece fechada.
 - Kora: card operacional ainda não verificado.
 - Publicação, compra de mídia, alteração de site e mutações externas: **não executadas**.
 
