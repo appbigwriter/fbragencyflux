@@ -22,6 +22,11 @@ Esta pasta contém os templates JSON dos workflows do **N8N** para conectar o **
    - **Objetivo:** Sincroniza e aciona endpoints do **Authority Engine** e **Control Tower** conforme a fase da esteira.
    - **Trigger:** Webhook de Esteira (`POST /webhook/flux-pipeline-sync`).
 
+5. **`05_paper_boy_courier.json`**
+   - **Objetivo:** Roteador leve de Handoffs ("Paper Boy"). Recebe a conclusão de tarefas dos agentes, normaliza os dados do contrato e entrega no Flux e no próximo agente no Hermes sem custo operacional.
+   - **Trigger:** Webhook do Paper Boy (`POST /webhook/paper-boy-courier`).
+
+
 ---
 
 ## ⚙️ Variáveis de Ambiente no N8N

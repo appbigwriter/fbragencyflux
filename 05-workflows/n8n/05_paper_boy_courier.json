@@ -1,0 +1,128 @@
+{
+  "name": "05 - FBR Flux: Paper Boy Courier (Roteador Leve de Handoff)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "paper-boy-courier",
+        "options": {}
+      },
+      "name": "Webhook: Chegada de Tarefa (Paper Boy)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [180, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Normalizador determinístico do Paper Boy\n// Extrai metadados do agente anterior e prepara o contrato de Handoff para o próximo\nconst body = $json.body || $json;\n\nconst de = body.de || body.from || body.agent || 'Agente';\nconst para = body.para || body.to || body.next_agent || 'Kora';\nconst cardId = body.cardId || body.card_id || 'CARD-AUTO';\nconst entregavel = body.entregavel || body.output || body.deliverable || 'Entrega de etapa concluída.';\nconst evidencias = body.evidencias || body.evidence || body.artifactRefs || [];\nconst status = body.status || 'completed';\n\nreturn {\n  json: {\n    source: 'paper_boy_courier',\n    cardId,\n    agent: de,\n    nextAgent: para,\n    status,\n    entregavel,\n    evidence: Array.isArray(evidencias) ? evidencias.join(', ') : String(evidencias),\n    notes: `[Paper Boy] Handoff transportado de ${de} para ${para}`\n  }\n};"
+      },
+      "name": "Paper Boy: Normalizar Contrato",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [400, 300]
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "={{ $env.FLUX_API_BASE_URL || 'http://localhost:3000' }}/api/flux/inbox",
+        "options": {},
+        "bodyParametersUi": {
+          "parameter": [
+            {
+              "name": "source",
+              "value": "={{ $json.source }}"
+            },
+            {
+              "name": "cardId",
+              "value": "={{ $json.cardId }}"
+            },
+            {
+              "name": "agent",
+              "value": "={{ $json.agent }}"
+            },
+            {
+              "name": "status",
+              "value": "={{ $json.status }}"
+            },
+            {
+              "name": "evidence",
+              "value": "={{ $json.evidence }}"
+            },
+            {
+              "name": "notes",
+              "value": "={{ $json.notes }}"
+            }
+          ]
+        }
+      },
+      "name": "Entregar no Flux (Inbox)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [620, 300]
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "={{ $env.HERMES_WEBHOOK_URL || 'http://localhost:8080/hooks/agent-dispatch' }}",
+        "options": {},
+        "bodyParametersUi": {
+          "parameter": [
+            {
+              "name": "agent_name",
+              "value": "={{ $json.nextAgent }}"
+            },
+            {
+              "name": "card_id",
+              "value": "={{ $json.cardId }}"
+            },
+            {
+              "name": "instruction",
+              "value": "=Você recebeu a entrega de {{ $json.agent }}. Prossiga com sua etapa na esteira."
+            }
+          ]
+        }
+      },
+      "name": "Acionar Próximo Agente no Hermes",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [840, 300]
+    }
+  ],
+  "connections": {
+    "Webhook: Chegada de Tarefa (Paper Boy)": {
+      "main": [
+        [
+          {
+            "node": "Paper Boy: Normalizar Contrato",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Paper Boy: Normalizar Contrato": {
+      "main": [
+        [
+          {
+            "node": "Entregar no Flux (Inbox)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Entregar no Flux (Inbox)": {
+      "main": [
+        [
+          {
+            "node": "Acionar Próximo Agente no Hermes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {}
+}
