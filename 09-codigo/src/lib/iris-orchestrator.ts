@@ -8,11 +8,34 @@ export type RequiredAction = { what: string; why: string; who: string; from: str
 export type IrisTriageResult = { decision: IrisDecision; correlationId: string; trigger: TriageTrigger; owner?: string; dependencies: string[]; blockers: string[]; reason: string; evidence: string[]; planningBasis: string[]; ownerReason: string; instruction?: IrisInstruction; requiredActions?: RequiredAction[]; handoff?: Handoff; job?: Job; event?: Event; readback: { blockerStatus?: string; persisted: boolean } }
 
 const roleMatrix = [
-  { owner: 'Gestor Editorial', keys: ['produto-pauta', 'produto pauta', 'pauta', 'editorial'], basis: 'Matriz After Forty: produto-pauta → Gestor Editorial', deps: ['Rick / Amazon Research'] },
-  { owner: 'Théo', keys: ['provisionamento', 'migration', 'banco', 'infraestrutura', 'endpoint'], basis: 'Matriz FBR: provisionamento/infraestrutura → Théo', deps: [] },
-  { owner: 'Sergio', keys: ['gate', 'aprovação', 'aprovacao', 'publicação', 'publicacao', 'deploy', 'dns', 'gasto'], basis: 'Matriz FBR: Gate e ação de risco → Sergio', deps: [] },
-  { owner: 'Kora', keys: ['kanban', 'card', 'intake', 'estado'], basis: 'Matriz FBR: Kanban/estado → Kora', deps: [] },
+  // Gestão Editorial por Projeto (Papel genérico: Gestor Editorial | Instância no After Forty: Heidi Braun)
+  { owner: 'Gestor Editorial', keys: ['produto-pauta', 'produto pauta', 'pauta', 'editorial', 'heidi', 'after forty', 'afterforty'], basis: 'Matriz After Forty: produto-pauta → Gestor Editorial', deps: ['Rick / Amazon Research'] },
+
+  // Inteligência & Pesquisa
+  { owner: 'Bia', keys: ['pesquisa de mercado', 'concorrencia', 'keywords', 'asin', 'amazon us', 'demanda'], basis: 'Matriz Inteligência: Pesquisa de mercado e Amazon US → Bia', deps: [] },
+  { owner: 'Rick', keys: ['afiliados', 'radar de afiliados', 'amazon associates', 'clickbank', 'monetizacao', 'comissao'], basis: 'Matriz Monetização: Radar de afiliados e ofertas → Rick', deps: [] },
+
+  // Criação & Mensagem
+  { owner: 'Caio', keys: ['copy', 'carta de vendas', 'conversao', 'landing page', 'anuncio', 'aida', 'voc', 'headline'], basis: 'Matriz Copy: Mensagens comerciais e conversão → Caio', deps: ['Bia'] },
+  { owner: 'Lia', keys: ['design', 'direcao visual', 'layout', 'motion', 'acessibilidade', 'wireframe', 'identidade'], basis: 'Matriz Visual: Direção visual, UI e assets → Lia', deps: ['Caio'] },
+  { owner: 'Vito', keys: ['social', 'audiovisual', 'reels', 'shorts', 'storyboard', 'video', 'youtube', 'instagram'], basis: 'Matriz Audiovisual: Vídeos, Reels e redes sociais → Vito', deps: ['Caio', 'Lia'] },
+  { owner: 'Rita', keys: ['listing', 'bullets', 'backend keywords', 'atributos listing', 'prelisting'], basis: 'Matriz Amazon: Criação de listings e oferta → Rita', deps: ['Bia'] },
+
+  // Mídia & Tráfego
+  { owner: 'Rafa', keys: ['trafego', 'meta ads', 'google ads', 'amazon ppc', 'pixel', 'capi', 'roas', 'campanha'], basis: 'Matriz Mídia: Planejamento de tráfego e métricas → Rafa', deps: ['Caio', 'Lia'] },
+
+  // Engenharia, QA & Governança
+  { owner: 'Théo', keys: ['provisionamento', 'migration', 'banco', 'infraestrutura', 'endpoint', 'supabase', 'deploy', 'api'], basis: 'Matriz FBR: Provisionamento, banco e código → Théo', deps: [] },
+  { owner: 'Gabe', keys: ['qa', 'auditoria', 'compliance', 'checklist', 'conformidade', 'seo check', 'prontidao'], basis: 'Matriz Qualidade: QA independente e verificação fail-closed → Gabe', deps: [] },
+  { owner: 'Kora', keys: ['kanban', 'card', 'intake', 'estado', 'sprint', 'capacidade', 'backlog'], basis: 'Matriz FBR: Kanban e controle de estado → Kora', deps: [] },
+  { owner: 'Sergio', keys: ['gate', 'aprovação', 'aprovacao', 'publicação', 'publicacao', 'deploy producao', 'dns', 'gasto', 'verba'], basis: 'Matriz FBR: Gate humano e decisão de risco → Sergio', deps: [] },
+
+  // Operações & Suporte
+  { owner: 'Duda', keys: ['sdr', 'qualificacao', 'spin selling', 'crm', 'reuniao', 'lead'], basis: 'Matriz Comercial: SDR consultivo e pré-vendas → Duda', deps: [] },
+  { owner: 'Email Guardian', keys: ['email', 'inbox seguro', 'thread', 'comunicacao'], basis: 'Matriz Suporte: Triagem segura de e-mails → Email Guardian', deps: [] },
+  { owner: 'Second Brain Guardian', keys: ['second brain', 'memoria', 'indexacao', 'rastreabilidade', 'base conhecimento'], basis: 'Matriz Conhecimento: Memória e indexação → Second Brain', deps: [] },
 ] as const
+
 const textOf = (input: IrisTriageInput) => [input.handoff?.summary, input.handoff?.nextStep, input.blocker?.cause, input.plan, input.handoff?.plan, input.handoff?.owner, input.handoff?.to].filter(Boolean).join(' ').toLowerCase()
 const nonempty = (value: unknown): value is string => typeof value === 'string' && value.trim().length > 0
 
@@ -38,6 +61,7 @@ export function triageHandoff(input: IrisTriageInput): IrisTriageResult {
 
 export function triageOnIntake(input: IrisTriageInput) { return triageHandoff({ ...input, trigger: 'intake' }) }
 export function triageOnHandoff(input: IrisTriageInput) { return triageHandoff({ ...input, trigger: 'handoff' }) }
+
 export function buildDependencyGraph(snapshot: FluxState) {
   const jobs = snapshot.jobs || []; const product = jobs.find((job) => /Rick|Amazon Research|produto.?pauta|pauta/i.test(`${job.agent} ${job.objective}`))
   return jobs.map((job) => {
@@ -53,9 +77,29 @@ export function triageOnEvent(input: IrisTriageInput) { return triageHandoff({ .
 
 export type DecisionBoundary = 'covered_by_plan' | 'specialist_needed' | 'outside_plan'
 export type AgentDecisionAssessment = { agent: string; decisionScope: string[]; classification: DecisionBoundary; status: 'ready' | 'collaboration_required' | 'awaiting_sergio_decision'; gapAssessment: string; proposedResolution: string; planBasis?: string; collaborationRequest?: { to: string; objective: string; deliverable: string; acceptanceCriteria: string }; sergioQuestion?: { problem: string; context: string; impact: string; alternatives: string[]; recommendation: string; question: string; decisionRequired: string }; evidence: string[]; nextCheck: string }
-const decisionScopes: Record<string, string[]> = { 'Kora': ['Kanban', 'card', 'estado', 'dependências'], 'Théo': ['código', 'arquitetura', 'infraestrutura em plano', 'integração'], 'Gabe': ['QA', 'evidência', 'qualidade', 'conformidade'], 'Rick / Amazon Research': ['pesquisa Amazon', 'fontes', 'opções'], 'Gestor Editorial': ['pauta editorial', 'draft', 'calendário'], 'Sergio': ['escopo', 'prioridade', 'gate', 'gasto', 'produção', 'publicação', 'irreversível'] }
+
+const decisionScopes: Record<string, string[]> = {
+  'Íris': ['intake', 'decomposição de briefing', 'roteamento', 'grafo de dependências', 'coordenação'],
+  'Kora': ['Kanban', 'card', 'estado', 'dependências', 'sprints', 'capacidade'],
+  'Bia': ['pesquisa de mercado', 'concorrência', 'keywords', 'ASINs', 'demanda Amazon US'],
+  'Rita': ['draft de listing', 'título', 'bullets', 'atributos', 'backend keywords'],
+  'Caio': ['copy comercial', 'páginas', 'anúncios', 'resposta direta', 'claims rastreáveis'],
+  'Lia': ['direção visual', 'layout', 'motion', 'acessibilidade', 'especificações UI'],
+  'Vito': ['redes sociais', 'audiovisual', 'storyboard', 'manifesto de licenças', 'vídeos'],
+  'Rafa': ['plano de mídia paga', 'estrutura de campanha', 'Amazon PPC', 'requisitos de tracking'],
+  'Théo': ['código', 'arquitetura', 'infraestrutura em plano', 'integração', 'deploy staging'],
+  'Gabe': ['QA independente', 'evidência', 'qualidade', 'conformidade', 'checklist fail-closed'],
+  'Duda': ['SDR consultivo', 'SPIN Selling', 'qualificação de leads', 'agendamento CRM'],
+  'Rick / Amazon Research': ['pesquisa Amazon Associates', 'ClickBank', 'fontes de preço', 'opções de monetização'],
+  'Gestor Editorial': ['pauta editorial', 'draft em inglês', 'SEO', 'sources e disclosure', 'associação pauta-produto'],
+  'Heidi Braun': ['gestão editorial After Forty', 'curadoria de longevidade/vitalidade', 'pautas After Forty', 'SEO e disclosure'],
+  'Email Guardian': ['triagem de e-mails autorizados', 'classificação de threads', 'rascunhos de resposta'],
+  'Second Brain Guardian': ['memória operacional', 'indexação de fontes', 'relatórios de rastreabilidade'],
+  'Sergio': ['escopo', 'prioridade', 'gate', 'gasto', 'produção', 'publicação', 'irreversível']
+}
+
 export function assessAgentDecision(agent: string, input: { gap: string; context: string; proposedResolution: string; evidence?: string[]; nextCheck: string; requires?: DecisionBoundary | 'internal' | 'specialist' | 'sergio'; specialist?: string; planBasis?: string; response?: string }): AgentDecisionAssessment {
-  const scope = decisionScopes[agent] || []
+  const scope = decisionScopes[agent] || decisionScopes[agent.split(' ')[0]] || []
   const classification: DecisionBoundary = input.requires === 'internal' ? 'covered_by_plan' : input.requires === 'specialist' ? 'specialist_needed' : input.requires === 'sergio' ? 'outside_plan' : input.requires || (input.planBasis ? 'covered_by_plan' : /produto-pauta|provisionamento|gate|pauta|Amazon Research/i.test(`${input.gap} ${input.context}`) ? (input.specialist ? 'specialist_needed' : 'covered_by_plan') : 'outside_plan')
   if (classification === 'outside_plan' && !input.response?.trim()) return { agent, decisionScope: scope, classification, status: 'awaiting_sergio_decision', gapAssessment: input.gap, proposedResolution: input.proposedResolution, sergioQuestion: { problem: input.gap, context: input.context, impact: 'Avanço depende de decisão humana explícita.', alternatives: ['prosseguir com escopo atual', 'revisar escopo antes de avançar'], recommendation: input.proposedResolution, question: 'Sergio, qual alternativa deve ser autorizada?', decisionRequired: 'Decisão explícita registrada no Gate/evento.' }, evidence: input.evidence || [], nextCheck: input.nextCheck }
   if (classification === 'specialist_needed') return { agent, decisionScope: scope, classification, status: 'collaboration_required', gapAssessment: input.gap, proposedResolution: input.proposedResolution, collaborationRequest: { to: input.specialist || 'especialista declarado no plano', objective: input.proposedResolution, deliverable: 'Resultado verificável e rastreável', acceptanceCriteria: 'Entregável atende ao card e anexa evidência.' }, evidence: input.evidence || [], nextCheck: input.nextCheck }

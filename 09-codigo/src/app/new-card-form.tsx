@@ -102,7 +102,7 @@ export default function NewCardForm({ onCreated }: { onCreated?: () => void }) {
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="Ex: Pesquisa de Persona para Nicho X"
+            placeholder="Ex: Pesquisa de Persona para Nicho X ou Pauta Editorial"
             style={{ width: '100%', padding: '8px 12px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '6px', color: '#fff' }}
           />
         </div>
@@ -122,30 +122,53 @@ export default function NewCardForm({ onCreated }: { onCreated?: () => void }) {
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: '0.85rem', color: '#9ca3af', marginBottom: '4px' }}>Projeto</label>
+            <label style={{ display: 'block', fontSize: '0.85rem', color: '#9ca3af', marginBottom: '4px' }}>Projeto / Marca</label>
             <input
               type="text"
               value={project}
               onChange={(e) => setProject(e.target.value)}
+              placeholder="Ex: After Forty ou Novo Projeto"
               style={{ width: '100%', padding: '8px 12px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '6px', color: '#fff' }}
             />
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: '0.85rem', color: '#9ca3af', marginBottom: '4px' }}>Agente Responsável</label>
+            <label style={{ display: 'block', fontSize: '0.85rem', color: '#9ca3af', marginBottom: '4px' }}>Agente Responsável (15 Profiles)</label>
             <select
               value={assignee}
               onChange={(e) => setAssignee(e.target.value)}
               style={{ width: '100%', padding: '8px 12px', background: '#1e293b', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '6px', color: '#fff' }}
             >
-              <option value="Íris">Íris (Coordenação)</option>
-              <option value="Bia">Bia (Pesquisa / Persona)</option>
-              <option value="Théo">Théo (Arquitetura / Deploy)</option>
-              <option value="Caio">Caio (Copywriter / Oferta)</option>
-              <option value="Lia">Lia (Design Visual)</option>
-              <option value="Rick">Rick (Afiliados / Produtos)</option>
-              <option value="Rafa">Rafa (Tráfego / Mídia)</option>
-              <option value="Gabe">Gabe (QA / Auditoria)</option>
+              <optgroup label="Orquestração & Controle">
+                <option value="Íris">Íris (Intake, Decomposição & Direção)</option>
+                <option value="Kora">Kora (Kanban, Sprints & Estado)</option>
+              </optgroup>
+              <optgroup label="Pesquisa & Inteligência">
+                <option value="Bia">Bia (Pesquisa de Mercado & Amazon US)</option>
+                <option value="Rick">Rick (Radar de Afiliados & ClickBank)</option>
+              </optgroup>
+              <optgroup label="Operação Editorial & Projetos">
+                <option value="Heidi Braun">Heidi Braun (Gestora Editorial — After Forty)</option>
+                <option value="Gestor Editorial">Gestor Editorial (Novo Projeto / Custom)</option>
+                <option value="Rita">Rita (Listings Amazon & Oferta)</option>
+              </optgroup>
+              <optgroup label="Criação, Mensagem & Visual">
+                <option value="Caio">Caio (Copywriting Comercial & Conversão)</option>
+                <option value="Lia">Lia (Direção Visual & Motion)</option>
+                <option value="Vito">Vito (Audiovisual & Redes Sociais)</option>
+              </optgroup>
+              <optgroup label="Mídia & Crescimento">
+                <option value="Rafa">Rafa (Mídia Paga, Meta Ads & PPC)</option>
+              </optgroup>
+              <optgroup label="Engenharia, QA & Auditoria">
+                <option value="Théo">Théo (Arquitetura, Banco & Deploy)</option>
+                <option value="Gabe">Gabe (QA, Compliance & Gatekeeper)</option>
+              </optgroup>
+              <optgroup label="Relacionamento & Suporte">
+                <option value="Duda">Duda (SDR Consultivo, CRM & SPIN)</option>
+                <option value="Email Guardian">Email Guardian (Triagem Segura de E-mails)</option>
+                <option value="Second Brain">Second Brain (Memória & Conhecimento)</option>
+              </optgroup>
             </select>
           </div>
         </div>
@@ -156,7 +179,7 @@ export default function NewCardForm({ onCreated }: { onCreated?: () => void }) {
             value={detail}
             onChange={(e) => setDetail(e.target.value)}
             rows={4}
-            placeholder="Descreva o escopo, fontes, critérios de aceite e o que o agente deve entregar..."
+            placeholder="Descreva o escopo, persona/gestor editorial, nicho, fontes, critérios de aceite e o que o agente deve entregar..."
             style={{ width: '100%', padding: '8px 12px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '6px', color: '#fff' }}
           />
         </div>
