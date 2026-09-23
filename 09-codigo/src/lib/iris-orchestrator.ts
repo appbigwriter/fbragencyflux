@@ -105,3 +105,84 @@ export function assessAgentDecision(agent: string, input: { gap: string; context
   if (classification === 'specialist_needed') return { agent, decisionScope: scope, classification, status: 'collaboration_required', gapAssessment: input.gap, proposedResolution: input.proposedResolution, collaborationRequest: { to: input.specialist || 'especialista declarado no plano', objective: input.proposedResolution, deliverable: 'Resultado verificável e rastreável', acceptanceCriteria: 'Entregável atende ao card e anexa evidência.' }, evidence: input.evidence || [], nextCheck: input.nextCheck }
   return { agent, decisionScope: scope, classification, status: 'ready', gapAssessment: input.gap, proposedResolution: input.proposedResolution, planBasis: input.planBasis || 'Regra já estabelecida no plano/card/Handoff.', evidence: input.evidence || [], nextCheck: input.nextCheck }
 }
+
+export type ProjectBriefing = {
+  projectName: string
+  niche?: string
+  subniche?: string
+  problemToSolve?: string
+  targetAudience?: string
+  personaDefined?: boolean
+  personaDetails?: string
+  editorialManagerName?: string
+}
+
+export type AuthorityEngineIntakeResult = {
+  status: 'missing_pillars' | 'needs_persona_development' | 'ready_for_authority_engine'
+  assignedManager: string
+  missingPillars: string[]
+  irisClarificationQuestions: string[]
+  nextStep: string
+  suggestedCardTitle: string
+  suggestedCardDetail: string
+}
+
+export function validateAuthorityEngineBriefing(briefing: ProjectBriefing): AuthorityEngineIntakeResult {
+  const missing: string[] = []
+  const questions: string[] = []
+
+  if (!briefing.niche || !briefing.niche.trim()) {
+    missing.push('Nicho')
+    questions.push('Qual é o Nicho macro do projeto (ex: Longevidade & Bem-Estar, Finanças, Home Fitness)?')
+  }
+  if (!briefing.subniche || !briefing.subniche.trim()) {
+    missing.push('Subnicho')
+    questions.push('Qual é o Subnicho específico de atuação (ex: Microcorrente facial e biohacking para 45+)?')
+  }
+  if (!briefing.problemToSolve || !briefing.problemToSolve.trim()) {
+    missing.push('Problema a Resolver')
+    questions.push('Qual é a dor ou problema central que este projeto se propõe a resolver para o leitor?')
+  }
+  if (!briefing.targetAudience || !briefing.targetAudience.trim()) {
+    missing.push('Audiência Alvo')
+    questions.push('Qual é a audiência que precisa (ou ainda nem sabe que precisa) resolver esse problema?')
+  }
+
+  if (missing.length > 0) {
+    return {
+      status: 'missing_pillars',
+      assignedManager: 'Íris',
+      missingPillars: missing,
+      irisClarificationQuestions: questions,
+      nextStep: 'Íris interage com o usuário para obter os 4 pilares obrigatórios antes de iniciar a esteira.',
+      suggestedCardTitle: `[Intake Pendente] ${briefing.projectName || 'Novo Projeto'} · Completar Briefing`,
+      suggestedCardDetail: `Aguardando preenchimento dos pilares fundamentais: ${missing.join(', ')}.`
+    }
+  }
+
+  const manager = briefing.editorialManagerName?.trim() || (briefing.projectName.toLowerCase().includes('after forty') ? 'Heidi Braun' : 'Gestor Editorial')
+  const hasPersona = Boolean(briefing.personaDefined && (briefing.personaDetails?.trim() || manager !== 'Gestor Editorial'))
+
+  if (!hasPersona) {
+    return {
+      status: 'needs_persona_development',
+      assignedManager: 'Íris',
+      missingPillars: [],
+      irisClarificationQuestions: [],
+      nextStep: 'Authority Engine Etapa 1: Iniciar criação da Persona Ideal / Perfil do Gestor Editorial baseado nos 4 pilares.',
+      suggestedCardTitle: `[Authority Engine · Persona] Desenvolver Perfil Editorial para ${briefing.projectName}`,
+      suggestedCardDetail: `Nicho: ${briefing.niche}\nSubnicho: ${briefing.subniche}\nProblema: ${briefing.problemToSolve}\nAudiência: ${briefing.targetAudience}\n\nObjetivo: Criar Core Identity, Visual Signature e Regras de Compliance para o novo Gestor Editorial.`
+    }
+  }
+
+  return {
+    status: 'ready_for_authority_engine',
+    assignedManager: manager,
+    missingPillars: [],
+    irisClarificationQuestions: [],
+    nextStep: `Persona aprovada (${manager}). Iniciar Authority Engine com pesquisa de mercado (Bia/Rick) e pautas editoriais.`,
+    suggestedCardTitle: `[Authority Engine · Pautas] Iniciar Esteira de Conteúdo para ${briefing.projectName}`,
+    suggestedCardDetail: `Projeto: ${briefing.projectName}\nGestor(a) Editorial: ${manager}\nNicho: ${briefing.niche} / ${briefing.subniche}\nProblema: ${briefing.problemToSolve}\nAudiência: ${briefing.targetAudience}`
+  }
+}
+

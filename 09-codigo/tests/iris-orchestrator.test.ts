@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { assessAgentDecision, buildDependencyGraph, triageHandoff } from '../src/lib/iris-orchestrator'
+import { assessAgentDecision, buildDependencyGraph, triageHandoff, validateAuthorityEngineBriefing } from '../src/lib/iris-orchestrator'
 import type { FluxState, Job } from '../src/lib/flux-repository'
 
 const state = { version: 1, projects: [], cards: [{ id: 'AF-001', title: 'Produto-pauta', project: 'After Forty', status: 'ready', assignee: 'Kora', priority: 'high', detail: 'Plano After Forty: pauta, provisionamento e Gates.', acceptanceCriteria: ['matriz rastreável'], updatedAt: '' }], approvals: [], gates: [], events: [], handoffs: [], artifacts: [] } as FluxState
@@ -22,4 +22,48 @@ describe('Iris orchestrator', () => {
     const jobs = [{ ...base, jobId: 'research', agent: 'Rick / Amazon Research', objective: 'pesquisar produto-pauta', status: 'ready' }, { ...base, jobId: 'theo', agent: 'Théo', objective: 'preparar provisionamento do banco', status: 'ready' }, { ...base, jobId: 'commercial', agent: 'Gestor Editorial', objective: 'conteúdo comercial específico', status: 'planned' }] as Job[]
     const graph = buildDependencyGraph({ ...state, jobs }); expect(graph.find((item) => item.jobId === 'research')?.canStart).toBe(true); expect(graph.find((item) => item.jobId === 'theo')?.canStart).toBe(true); expect(graph.find((item) => item.jobId === 'commercial')?.canStart).toBe(false); expect(graph.find((item) => item.jobId === 'theo')?.parallelGroup).toBeTruthy()
   })
+
+  it('validates the 4 pillars of Authority Engine and prompts user for missing info', () => {
+    const incomplete = { projectName: 'Novo Blog Finanças', niche: 'Finanças' }
+    const result = validateAuthorityEngineBriefing(incomplete)
+    expect(result.status).toBe('missing_pillars')
+    expect(result.missingPillars).toContain('Subnicho')
+    expect(result.missingPillars).toContain('Problema a Resolver')
+    expect(result.missingPillars).toContain('Audiência Alvo')
+    expect(result.irisClarificationQuestions.length).toBe(3)
+  })
+
+  it('triggers persona development when 4 pillars are present but no persona is defined', () => {
+    const fullNoPersona = {
+      projectName: 'Biohack Brasil',
+      niche: 'Saúde & Longevidade',
+      subnicho: 'Biohacking para Homens 40+',
+      subniche: 'Biohacking para Homens 40+',
+      problemToSolve: 'Queda de energia e foco após os 40 anos',
+      targetAudience: 'Executivos e empreendedores 40-55 anos',
+      personaDefined: false
+    }
+    const result = validateAuthorityEngineBriefing(fullNoPersona)
+    expect(result.status).toBe('needs_persona_development')
+    expect(result.assignedManager).toBe('Íris')
+    expect(result.suggestedCardTitle).toContain('Desenvolver Perfil Editorial')
+  })
+
+  it('approves Authority Engine start when 4 pillars and persona are ready', () => {
+    const fullWithPersona = {
+      projectName: 'After Forty',
+      niche: 'Saúde & Longevidade',
+      subniche: 'Skin & Beauty 40+',
+      problemToSolve: 'Perda de colágeno e vitalidade',
+      targetAudience: 'Mulheres 40-55 anos',
+      personaDefined: true,
+      personaDetails: 'Heidi Braun, 50 anos, German-American',
+      editorialManagerName: 'Heidi Braun'
+    }
+    const result = validateAuthorityEngineBriefing(fullWithPersona)
+    expect(result.status).toBe('ready_for_authority_engine')
+    expect(result.assignedManager).toBe('Heidi Braun')
+    expect(result.suggestedCardTitle).toContain('Iniciar Esteira de Conteúdo')
+  })
 })
+
