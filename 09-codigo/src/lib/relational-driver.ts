@@ -30,19 +30,14 @@ function httpsOrigin(value: string, label: string): string {
 
 /** Resolve the relational runtime configuration; null when nothing is configured. */
 export function resolveRelationalConfig(env: NodeJS.ProcessEnv = process.env): RelationalDatabaseConfig | null {
-  const direct = clean(env.FLUX_DATABASE_URL)
+  const direct = clean(env.FLUX_DATABASE_URL) || clean(env.DATABASE_URL)
   if (direct) {
-    if (!/^postgres(ql)?:\/\//.test(direct)) throw new FluxError('PERSISTENCE_URL_INVALID', 'FLUX_DATABASE_URL must use the postgres:// scheme', 503)
+    if (!/^postgres(ql)?:\/\//.test(direct)) throw new FluxError('PERSISTENCE_URL_INVALID', 'DATABASE_URL must use the postgres:// scheme', 503)
     return { kind: 'postgres', url: direct }
   }
   const supabaseUrl = clean(env.FLUX_SUPABASE_URL) || clean(env.SUPABASE_URL)
   const serviceRoleKey = clean(env.FLUX_SUPABASE_SERVICE_ROLE_KEY) || clean(env.SUPABASE_SERVICE_ROLE_KEY)
   if (supabaseUrl && serviceRoleKey) return { kind: 'postgrest', origin: httpsOrigin(supabaseUrl, 'SUPABASE_URL'), serviceRoleKey }
-  const fallback = clean(env.DATABASE_URL)
-  if (fallback) {
-    if (!/^postgres(ql)?:\/\//.test(fallback)) throw new FluxError('PERSISTENCE_URL_INVALID', 'DATABASE_URL must use the postgres:// scheme', 503)
-    return { kind: 'postgres', url: fallback }
-  }
   return null
 }
 
