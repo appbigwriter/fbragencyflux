@@ -2,10 +2,10 @@
 
 - **Projeto:** Talk to Your Crowd by Marcus Cole / FBR News
 - **Task:** `FBR-AGENCY-INTAKE-001`
-- **Versão:** v0.7
+- **Versão:** v0.8
 - **Data:** 2026-09-23
 - **Gate:** G0 autorizado formalmente por Sergio Castro
-- **Estado:** Marcus entregou v0.2 corrigida; readback estrutural passou; Gabe em novo QA; publicação fechada
+- **Estado:** Gabe aprovou v0.2 para revisão editorial; publicação não aprovada; card Kanban pendente
 
 ## Handoff
 
@@ -26,13 +26,14 @@ decisões/suposições:
   - "Fato: Rick entregou `rick-affiliate-link-table-v0.2.md`; readback confirmou 0/4 VERIFIED para os ASINs usados no TTC-P1 e todos permanecem BLOCKED."
   - "Decisão: remover referências de produto/links do TTC-P1 v0.2 em vez de substituir por inferência; manter a pauta como guia editorial de diagnóstico."
   - "Fato: Marcus entregou `marcus-pillar-01-storefront-mistakes-v0.2.md`; readback verificou 7 seções, zero ASINs/placeholders e CTA canônico."
-  - "Fato: Gabe foi reacionado para novo QA em `gabe-qa-pillar-01-v0.2.md`; a v0.2 não está aprovada nem publicada."
+  - "Fato: Gabe concluiu novo QA em `gabe-qa-pillar-01-v0.2.md` e aprovou a v0.2 para avanço à revisão editorial, sem aprovação de publicação."
+  - "Fato: SHA-256 do artigo auditado: `65df82ad9d0271204a1e5e550296fe70370fa7cd7e644ae684b952a8c985ef72`."
   - "Hipótese: dados de preço, rating e disponibilidade são voláteis; registrar data, URL e limitações, sem tratar como permanentes."
   - "Decisão de governança: não comprar, publicar, ativar mídia, alterar o site ou inserir secrets/tags privadas sem Gate aplicável."
 pendências/blockers:
   - "Rick v0.2: 0/4 ASINs verificáveis para publicação; B08K1RZWCF redireciona para outro ASIN, B00IGZCEIM está Page Not Found e B08HYJ14RD/B01HDDD0RQ estão indisponíveis sem preço atual."
-  - "Gabe: novo QA da v0.2 em andamento; validar disclaimer, estrutura, claims, CTA canônico e ausência de marketplace/placeholders."
-  - "Marcus: v0.2 entregue sem referências de produto; não aprovado para publicação até o novo QA."
+  - "Gate editorial pendente: revisar estilo nativo EN-US e confirmar o disclaimer no preview/render, sem alterar compliance aprovado."
+  - "Gate de publicação não passado; Sergio não aprovou publicação neste artefato."
   - "Card Kanban operacional ainda não verificado; owner: Kora; nextAction: criar/verificar card e registrar ID."
   - "Bia concluiu com limitações: Firecrawl 403, campos faltantes em alguns listings, rechecagem manual necessária antes de publicação."
   - "Rick concluiu estrutura; ASINs, URLs e tags reais continuam pendentes de preenchimento/QA seguro."
@@ -77,8 +78,8 @@ critérios de aceite/evidência:
 - Marcus: **draft v0.1 entregue**; aguarda QA independente.
 - Gabe: **QA concluído — devolvido para correção**; quatro blockers registrados.
 - Rick: **follow-up concluído — 0/4 ASINs publicáveis**; tabela v0.2 registrada.
-- Marcus: **v0.2 corrigida entregue**; zero marketplace/placeholders; aguarda novo QA.
-- Gabe: **novo QA despachado**; publicação permanece fechada.
+- Marcus: **v0.2 corrigida entregue**; zero marketplace/placeholders.
+- Gabe: **novo QA PASS para revisão editorial**; publicação não aprovada.
 - Kora: card operacional ainda não verificado.
 - Publicação, compra de mídia, alteração de site e mutações externas: **não executadas**.
 
