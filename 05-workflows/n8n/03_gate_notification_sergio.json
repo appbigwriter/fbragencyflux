@@ -31,15 +31,29 @@
     },
     {
       "parameters": {
-        "chatId": "={{ $env.TELEGRAM_CHAT_ID || '@sergio_fbr' }}",
-        "text": "={{ $json.messageText }}",
-        "additionalFields": {
-          "parse_mode": "Markdown"
+        "requestMethod": "POST",
+        "url": "https://control-tower.fbr.news/api/flux/notifications",
+        "options": {},
+        "bodyParametersUi": {
+          "parameter": [
+            {
+              "name": "channel",
+              "value": "sergio-gatekeeper"
+            },
+            {
+              "name": "message",
+              "value": "={{ $json.messageText }}"
+            },
+            {
+              "name": "gateId",
+              "value": "={{ $json.body?.gateId || $json.body?.id || 'G1' }}"
+            }
+          ]
         }
       },
-      "name": "Enviar Alerta Telegram",
-      "type": "n8n-nodes-base.telegram",
-      "typeVersion": 1,
+      "name": "Disparar Notificação para Sergio",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
       "position": [680, 300]
     }
   ],
@@ -59,7 +73,7 @@
       "main": [
         [
           {
-            "node": "Enviar Alerta Telegram",
+            "node": "Disparar Notificação para Sergio",
             "type": "main",
             "index": 0
           }

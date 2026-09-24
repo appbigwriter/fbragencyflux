@@ -39,7 +39,7 @@
       "acceptanceCriteria": [
         "12 artigos editoriais com disclaimers e links validados"
       ],
-      "updatedAt": "2026-09-23T23:20:39.251Z"
+      "updatedAt": "2026-09-24T00:13:33.614Z"
     },
     {
       "id": "CARD-TALK-001",
@@ -54,7 +54,7 @@
         "8 Artigos-Pilar com disclaimers FTC",
         "Links de afiliados Amazon.com validados"
       ],
-      "updatedAt": "2026-09-23T23:20:39.251Z"
+      "updatedAt": "2026-09-24T00:13:33.615Z"
     }
   ],
   "approvals": [
@@ -78,8 +78,8 @@
   "gates": [],
   "events": [
     {
-      "id": "EVT-AUTO-39251",
-      "time": "2026-09-23T23:20:39.251Z",
+      "id": "EVT-AUTO-13615",
+      "time": "2026-09-24T00:13:33.615Z",
       "actor": "Íris",
       "action": "Projeto Talk to Your Crowd e card inicial registrados automaticamente na esteira do Authority Engine",
       "cardId": "CARD-TALK-001"

@@ -58,7 +58,7 @@
     {
       "parameters": {
         "requestMethod": "POST",
-        "url": "={{ $env.CONTROL_TOWER_BASE_URL || 'https://control-tower.fbr.news' }}/api/projects/provision",
+        "url": "https://control-tower.fbr.news/api/projects/provision",
         "options": {}
       },
       "name": "Provision Control Tower",

@@ -61,7 +61,7 @@
     {
       "parameters": {
         "requestMethod": "POST",
-        "url": "={{ $env.HERMES_API_BASE_URL || 'http://localhost:8000/api/agent/run' }}",
+        "url": "http://localhost:8000/api/agent/run",
         "options": {},
         "bodyParametersUi": {
           "parameter": [
