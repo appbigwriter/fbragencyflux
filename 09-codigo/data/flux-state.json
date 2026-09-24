@@ -1,90 +1,10 @@
 {
   "version": 1,
-  "projects": [
-    {
-      "id": "agency-flux",
-      "tenantId": "00000000-0000-0000-0000-000000000001",
-      "name": "FBR Agency Flux",
-      "description": "Camada transversal de governança e orquestração da FBR",
-      "status": "active",
-      "owner": "Sergio"
-    },
-    {
-      "id": "after-forty",
-      "tenantId": "00000000-0000-0000-0000-000000000002",
-      "name": "After Forty",
-      "description": "Blog de Longevidade & Vitalidade 40+ assinado por Heidi Braun",
-      "status": "active",
-      "owner": "Sergio"
-    },
-    {
-      "id": "talk-to-your-crowd",
-      "tenantId": "00000000-0000-0000-0000-000000000030",
-      "name": "Talk to Your Crowd",
-      "description": "Publisher de marketing e conversão para varejo local nos EUA assinado por Marcus Cole",
-      "status": "active",
-      "owner": "Marcus Cole"
-    }
-  ],
-  "cards": [
-    {
-      "id": "AF-001",
-      "title": "[Authority Engine] After Forty · Heidi Braun",
-      "project": "After Forty",
-      "tenantId": "00000000-0000-0000-0000-000000000002",
-      "status": "ready",
-      "assignee": "Heidi Braun",
-      "priority": "high",
-      "detail": "Pautas editoriais e pesquisa de suplementos 40+ na Amazon US",
-      "acceptanceCriteria": [
-        "12 artigos editoriais com disclaimers e links validados"
-      ],
-      "updatedAt": "2026-09-24T00:13:33.614Z"
-    },
-    {
-      "id": "CARD-TALK-001",
-      "title": "[Authority Engine] Talk to Your Crowd · Marcus Cole",
-      "project": "Talk to Your Crowd",
-      "tenantId": "00000000-0000-0000-0000-000000000030",
-      "status": "ready",
-      "assignee": "Marcus Cole",
-      "priority": "high",
-      "detail": "Nicho: Store Signs & Displays. Persona: Marcus Cole. Objetivo: Produção dos 8 artigos-pilar em inglês e mapeamento de ASINs na Amazon US.",
-      "acceptanceCriteria": [
-        "8 Artigos-Pilar com disclaimers FTC",
-        "Links de afiliados Amazon.com validados"
-      ],
-      "updatedAt": "2026-09-24T00:13:33.615Z"
-    }
-  ],
-  "approvals": [
-    {
-      "id": "APP-MARCUS-001",
-      "cardId": "CARD-TALK-001",
-      "tenantId": "00000000-0000-0000-0000-000000000030",
-      "projectId": "talk-to-your-crowd",
-      "project": "Talk to Your Crowd",
-      "persona": "Marcus Cole",
-      "blog": "Talk to Your Crowd",
-      "type": "persona_approval",
-      "title": "Gate G1: Aprovação Formal da Persona Marcus Cole e Identidade Visual (Talk to Your Crowd)",
-      "requestedBy": "Íris",
-      "impact": "Autoriza a produção dos 8 artigos-pilar em inglês com a voz e imagem de Marcus Cole",
-      "scope": "Gate G1 / Authority Engine",
-      "rollback": "Revisar o Character Profile em 02-prd/MarcusCole.md",
-      "status": "pending"
-    }
-  ],
+  "projects": [],
+  "cards": [],
+  "approvals": [],
   "gates": [],
-  "events": [
-    {
-      "id": "EVT-AUTO-13615",
-      "time": "2026-09-24T00:13:33.615Z",
-      "actor": "Íris",
-      "action": "Projeto Talk to Your Crowd e card inicial registrados automaticamente na esteira do Authority Engine",
-      "cardId": "CARD-TALK-001"
-    }
-  ],
+  "events": [],
   "handoffs": [
     {
       "id": "handoff-068834d0a5a61ffb4af2",

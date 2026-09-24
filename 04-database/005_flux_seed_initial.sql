@@ -18,11 +18,11 @@ on conflict (id) do update set
   name = excluded.name, 
   external_id = excluded.external_id;
 
--- 2. Inserir catálogo de projetos
+-- 2. Inserir catálogo de projetos pertencentes à organização FBR Agency
 insert into custom_agencyflux.flux_projects (id, name, slug, project_type, status, owner_name, description, external_id, tenant_id) values
   ('00000000-0000-0000-0000-000000000010', 'FBR Agency Flux', 'agency-flux', 'custom', 'active', 'Sergio', 'Camada transversal de coordenação e observabilidade operacional', 'agency-flux', '00000000-0000-0000-0000-000000000001'),
-  ('00000000-0000-0000-0000-000000000020', 'After Forty', 'after-forty', 'blog', 'active', 'Sergio', 'Piloto operacional de publisher FBR News para público 40+', 'after-forty', '00000000-0000-0000-0000-000000000002'),
-  ('00000000-0000-0000-0000-000000000030', 'Talk to Your Crowd', 'talk-to-your-crowd', 'blog', 'active', 'Marcus Cole', 'Publisher FBR News de marketing e conversão para varejo local nos EUA', 'talk-to-your-crowd', '00000000-0000-0000-0000-000000000030')
+  ('00000000-0000-0000-0000-000000000020', 'After Forty', 'after-forty', 'blog', 'active', 'Sergio', 'Piloto operacional de publisher FBR News para público 40+', 'after-forty', '00000000-0000-0000-0000-000000000001'),
+  ('00000000-0000-0000-0000-000000000030', 'Talk to Your Crowd', 'talk-to-your-crowd', 'blog', 'active', 'Marcus Cole', 'Publisher FBR News de marketing e conversão para varejo local nos EUA', 'talk-to-your-crowd', '00000000-0000-0000-0000-000000000001')
 on conflict (id) do update set 
   name = excluded.name,
   slug = excluded.slug,

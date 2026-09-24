@@ -269,8 +269,7 @@ async function load(file?: string, importHistory = process.env.FLUX_IMPORT_HISTO
   // Import only through the explicit command or FLUX_IMPORT_HISTORY=1.
   if (importHistory) { await syncAgentRuns(state); await syncHandoffs(state) }
   state.artifacts = state.artifacts || []; state.handoffs = state.handoffs || []; state.events = state.events || []; state.approvals = state.approvals || []
-  if (!state.gates) { state.gates = seededGates.map((gate) => ({ ...gate, evidence: [...gate.evidence], blockers: [...gate.blockers] })); await save(state, file) }
-  if (state.artifacts.length || state.jobs) await save(state, file)
+  if (!state.gates) { state.gates = seededGates.map((gate) => ({ ...gate, evidence: [...gate.evidence], blockers: [...gate.blockers] })) }
   return state
 }
 
@@ -305,12 +304,14 @@ export async function getSnapshot(file?: string): Promise<DashboardSnapshot> {
 export async function getAggregatedSnapshot(scopes: FluxReadScopePair[], file?: string, allowTenantless = false): Promise<DashboardSnapshot> {
   if (!scopes.length) throw new FluxError('READ_SCOPE_REQUIRED', 'At least one tenant/project scope is required', 400)
   const state = await load(file)
-  const allowsProject = (tenantId: string | undefined, projectId: string) => Boolean(tenantId && scopes.some((scope) => (scope.tenantId === tenantId || scope.tenantId === projectId) && (scope.projectId === '*' || scope.projectId === projectId)))
+  const isAgencyScope = scopes.some((scope) => (scope.tenantId === 'fbr' || scope.tenantId === 'agency' || scope.tenantId === 'agency-flux' || scope.tenantId === '00000000-0000-0000-0000-000000000001') && scope.projectId === '*')
+  const allowsProject = (tenantId: string | undefined, projectId: string) => Boolean(isAgencyScope || (tenantId && scopes.some((scope) => (scope.tenantId === tenantId || scope.tenantId === projectId) && (scope.projectId === '*' || scope.projectId === projectId))))
   const hasTenantWildcard = scopes.some((scope) => scope.projectId === '*')
-  const projects = state.projects.filter((project) => project.tenantId ? allowsProject(project.tenantId, project.id) : allowTenantless && !hasTenantWildcard && scopes.some((scope) => scope.projectId === project.id))
+  const projects = state.projects.filter((project) => project.tenantId ? allowsProject(project.tenantId, project.id) : (isAgencyScope || (allowTenantless && !hasTenantWildcard && scopes.some((scope) => scope.projectId === project.id))))
 
   const projectNames = new Set(projects.flatMap((project) => [project.id, project.name]))
   const allowedTenant = (tenantId?: string, projectId?: string) => {
+    if (isAgencyScope) return true
     if (tenantId) return scopes.some((scope) => scope.tenantId === tenantId || (projectId && scope.tenantId === projectId))
     return allowTenantless && !hasTenantWildcard
   }
