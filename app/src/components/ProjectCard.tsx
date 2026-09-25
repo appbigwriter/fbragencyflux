@@ -48,16 +48,31 @@ export function ProjectCard({ project, onSelect, onViewPrompt, onEdit }: Project
               <p className="text-xs font-semibold text-slate-200">{project.gestorName}</p>
             </div>
           </div>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onViewPrompt(project.slug);
-            }}
-            className="text-[11px] text-indigo-300 hover:text-indigo-100 bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/30 px-2.5 py-1 rounded-lg transition-colors flex items-center gap-1 cursor-pointer"
-          >
-            <Sparkles className="w-3 h-3" />
-            <span>Prompt</span>
-          </button>
+          <div className="flex items-center gap-1.5">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                const url = `${window.location.origin}/p/${project.slug}`;
+                navigator.clipboard.writeText(url);
+                alert(`URL copiada para o Hermes:\n${url}`);
+              }}
+              title="Copiar URL Web para passar ao Hermes"
+              className="text-[11px] text-emerald-300 hover:text-emerald-100 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 px-2 py-1 rounded-lg transition-colors flex items-center gap-1 cursor-pointer"
+            >
+              <span>🔗 URL</span>
+            </button>
+
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onViewPrompt(project.slug);
+              }}
+              className="text-[11px] text-indigo-300 hover:text-indigo-100 bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/30 px-2 py-1 rounded-lg transition-colors flex items-center gap-1 cursor-pointer"
+            >
+              <Sparkles className="w-3 h-3" />
+              <span>Prompt</span>
+            </button>
+          </div>
         </div>
 
         {/* Progress & Artifacts */}
