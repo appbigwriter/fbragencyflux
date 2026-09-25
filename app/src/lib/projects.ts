@@ -218,7 +218,14 @@ export async function getProjectDetail(slug: string) {
     if (toneMatch) personaTone = toneMatch[1].trim();
 
     const briefTextMatch = brief.match(/## 📖 Briefing Global & Visão Detalhada\s*([\s\S]*?)(?=\n---\n|$)/i);
-    if (briefTextMatch) briefingText = briefTextMatch[1].trim();
+    if (briefTextMatch) {
+      briefingText = briefTextMatch[1].trim();
+    } else {
+      const genericBriefMatch = brief.match(/## 📌 Identidade & Visão Geral\s*([\s\S]*?)(?=\n---\n|$)/i);
+      if (genericBriefMatch) {
+        briefingText = genericBriefMatch[1].trim();
+      }
+    }
   }
 
   if (prompt) {

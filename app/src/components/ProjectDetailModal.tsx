@@ -15,8 +15,12 @@ export function ProjectDetailModal({ slug, onClose, onProjectUpdated, onOpenEdit
   const [projectData, setProjectData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [copiedBrief, setCopiedBrief] = useState(false);
   const [editingBacklog, setEditingBacklog] = useState(false);
   const [backlogDraft, setBacklogDraft] = useState('');
+  const [editingBrief, setEditingBrief] = useState(false);
+  const [briefDraft, setBriefDraft] = useState('');
+  const [savingBrief, setSavingBrief] = useState(false);
 
   const fetchProject = async () => {
     if (!slug) return;
@@ -27,6 +31,7 @@ export function ProjectDetailModal({ slug, onClose, onProjectUpdated, onOpenEdit
       if (data.success) {
         setProjectData(data.project);
         setBacklogDraft(data.project.backlog || '');
+        setBriefDraft(data.project.brief || '');
       }
     } catch (err) {
       console.error('Erro ao carregar detalhes:', err);
@@ -49,6 +54,36 @@ export function ProjectDetailModal({ slug, onClose, onProjectUpdated, onOpenEdit
       navigator.clipboard.writeText(projectData.prompt);
       setCopied(true);
       setTimeout(() => setCopied(false), 2500);
+    }
+  };
+
+  const copyBrief = () => {
+    if (projectData?.brief) {
+      navigator.clipboard.writeText(projectData.brief);
+      setCopiedBrief(true);
+      setTimeout(() => setCopiedBrief(false), 2500);
+    }
+  };
+
+  const handleSaveBrief = async () => {
+    setSavingBrief(true);
+    try {
+      const res = await fetch(`/api/projects/${slug}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fileName: 'brief.md', content: briefDraft })
+      });
+      if (res.ok) {
+        setProjectData({ ...projectData, brief: briefDraft });
+        setEditingBrief(false);
+        onProjectUpdated();
+      } else {
+        alert('Erro ao salvar briefing');
+      }
+    } catch (err) {
+      alert('Erro na requisição ao salvar briefing');
+    } finally {
+      setSavingBrief(false);
     }
   };
 
@@ -348,9 +383,79 @@ export function ProjectDetailModal({ slug, onClose, onProjectUpdated, onOpenEdit
               {/* Tab: Brief */}
               {tab === 'brief' && (
                 <div className="space-y-4">
-                  <pre className="p-4 rounded-xl bg-slate-950 border border-white/10 text-xs text-slate-300 font-mono overflow-x-auto max-h-[50vh] whitespace-pre-wrap leading-relaxed">
-                    {projectData?.brief || 'Nenhum brief.md encontrado.'}
-                  </pre>
+                  {/* Briefing Header Actions */}
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-xl bg-slate-950/60 border border-white/10">
+                    <div>
+                      <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                        <FileText className="w-4 h-4 text-emerald-400" />
+                        <span>Briefing & Diretrizes Estratégicas ({slug}/brief.md)</span>
+                      </h3>
+                      <p className="text-xs text-slate-400 mt-0.5">
+                        Este documento é lido pelos agentes Hermes para entender a proposta e diretrizes do projeto.
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-2 self-start sm:self-center shrink-0">
+                      <button
+                        onClick={copyBrief}
+                        className="px-3 py-1.5 text-xs font-semibold text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-lg flex items-center gap-1.5 transition-colors border border-white/10 cursor-pointer"
+                      >
+                        {copiedBrief ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                        <span>{copiedBrief ? 'Copiado!' : 'Copiar'}</span>
+                      </button>
+
+                      <button
+                        onClick={() => setEditingBrief(!editingBrief)}
+                        className="text-xs font-semibold text-emerald-400 hover:text-emerald-300 px-3 py-1.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20 transition-colors cursor-pointer"
+                      >
+                        {editingBrief ? 'Ver Visualização' : '✏️ Editar Briefing'}
+                      </button>
+                    </div>
+                  </div>
+
+                  {editingBrief ? (
+                    <div className="space-y-3">
+                      <div className="relative">
+                        <textarea
+                          rows={15}
+                          value={briefDraft}
+                          onChange={(e) => setBriefDraft(e.target.value)}
+                          placeholder="Escreva ou cole o briefing do projeto em Markdown..."
+                          className="w-full p-4 rounded-xl bg-slate-950 border border-white/15 text-xs font-mono text-slate-200 focus:outline-none focus:border-emerald-500 leading-relaxed"
+                        />
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <p className="text-[11px] text-slate-400">
+                          💡 Dica: Ao salvar, as alterações ficam disponíveis imediatamente para os agentes via URL do projeto.
+                        </p>
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setBriefDraft(projectData?.brief || '');
+                              setEditingBrief(false);
+                            }}
+                            className="px-3 py-2 text-xs text-slate-400 hover:text-white rounded-lg transition-colors cursor-pointer"
+                          >
+                            Cancelar
+                          </button>
+                          <button
+                            onClick={handleSaveBrief}
+                            disabled={savingBrief}
+                            className="px-4 py-2 text-xs font-semibold bg-emerald-400 hover:bg-emerald-300 disabled:opacity-50 text-slate-950 rounded-lg transition-colors cursor-pointer shadow-md"
+                          >
+                            {savingBrief ? 'Salvando...' : 'Salvar Briefing'}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="relative">
+                      <pre className="p-4 rounded-xl bg-slate-950 border border-white/10 text-xs text-slate-300 font-mono overflow-x-auto max-h-[50vh] whitespace-pre-wrap leading-relaxed">
+                        {projectData?.brief || 'Nenhum brief.md encontrado.'}
+                      </pre>
+                    </div>
+                  )}
                 </div>
               )}
 
