@@ -1,0 +1,6 @@
+_legacy
+**/node_modules
+**/.next
+**/.git
+.env.local
+app/.env.local
