@@ -6,7 +6,7 @@ Acompanhamento direto e transparente dos entregáveis do projeto.
 
 ## 🏁 Fase 1: Fundação & Identidade
 - [x] **Briefing e Definição de Escopo** (`brief.md`)
-- [ ] **Mapeamento de Nicho & Palavras-Chave** (`01-pesquisa/keywords-e-concorrencia.md`)
+- [x] **Mapeamento de Nicho & Palavras-Chave** (`01-pesquisa/analise-nicho-e-persona.md`)
 - [ ] **Styleguide & Design Tokens** (`03-design-ui/tokens.css` / `styleguide.md`)
 - [ ] **Character Bible & Assets da Heidi Braun** (`03-design-ui/assets/`)
 

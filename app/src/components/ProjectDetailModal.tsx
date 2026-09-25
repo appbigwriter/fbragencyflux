@@ -7,9 +7,10 @@ interface ProjectDetailModalProps {
   slug: string | null;
   onClose: () => void;
   onProjectUpdated: () => void;
+  onOpenEdit?: (projectData: any) => void;
 }
 
-export function ProjectDetailModal({ slug, onClose, onProjectUpdated }: ProjectDetailModalProps) {
+export function ProjectDetailModal({ slug, onClose, onProjectUpdated, onOpenEdit }: ProjectDetailModalProps) {
   const [tab, setTab] = useState<'prompt' | 'brief' | 'backlog' | 'files'>('prompt');
   const [projectData, setProjectData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
@@ -134,6 +135,14 @@ export function ProjectDetailModal({ slug, onClose, onProjectUpdated }: ProjectD
           </div>
 
           <div className="flex items-center gap-2">
+            {onOpenEdit && (
+              <button
+                onClick={() => onOpenEdit(projectData)}
+                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-200 hover:text-white bg-slate-800 hover:bg-slate-700 border border-white/10 rounded-lg transition-colors cursor-pointer"
+              >
+                <span>Editar Projeto</span>
+              </button>
+            )}
             <button
               onClick={fetchProject}
               title="Recarregar dados"

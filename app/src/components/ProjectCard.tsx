@@ -8,9 +8,10 @@ interface ProjectCardProps {
   project: ProjectSummary;
   onSelect: (slug: string) => void;
   onViewPrompt: (slug: string) => void;
+  onEdit?: (slug: string) => void;
 }
 
-export function ProjectCard({ project, onSelect, onViewPrompt }: ProjectCardProps) {
+export function ProjectCard({ project, onSelect, onViewPrompt, onEdit }: ProjectCardProps) {
   const percentComplete = project.totalTasks > 0
     ? Math.round((project.completedTasks / project.totalTasks) * 100)
     : 0;
@@ -82,9 +83,18 @@ export function ProjectCard({ project, onSelect, onViewPrompt }: ProjectCardProp
 
       {/* Footer */}
       <div className="pt-3 border-t border-white/5 flex items-center justify-between">
-        <div className="flex items-center gap-2 text-[11px] text-slate-400">
-          <FileText className="w-3.5 h-3.5 text-slate-500" />
-          <span>Brief & Backlog ativos</span>
+        <div className="flex items-center gap-2">
+          {onEdit && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onEdit(project.slug);
+              }}
+              className="text-xs text-slate-400 hover:text-indigo-300 px-2 py-1 rounded hover:bg-slate-800/80 transition-colors cursor-pointer"
+            >
+              Editar
+            </button>
+          )}
         </div>
 
         <button

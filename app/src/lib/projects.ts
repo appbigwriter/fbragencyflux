@@ -1,6 +1,9 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { ProjectCreationData, generateHermesGestorPrompt, generateInitialBrief, generateInitialBacklog } from './generator';
+import { syncProjectToDatabase } from './integrations/supabase';
+import { registerProjectInControlTower } from './integrations/control-tower';
+import { triggerN8nWorkflow } from './integrations/n8n';
 
 // Caminho para a raiz do repositório
 const WORKSPACE_ROOT = path.resolve(process.cwd(), '..');
@@ -182,12 +185,68 @@ export async function getProjectDetail(slug: string) {
 
   await scanFiles(projectDir);
 
+  let projectName = slug;
+  let niche = '';
+  let targetAudience = '';
+  let language = 'EN-US (Global)';
+  let gestorName = 'Gestor Hermes';
+  let personaTone = 'Editorial sofisticado, transparente, baseado em evidências científicas e sem falsas promessas.';
+  let domain = '';
+  const selectedSkills: string[] = [];
+
+  if (brief) {
+    const nameMatch = brief.match(/#\s*(?:Briefing do Projeto:\s*)?(.+)/i);
+    if (nameMatch) projectName = nameMatch[1].replace(/⚡|🌿/g, '').trim();
+
+    const nicheMatch = brief.match(/Nicho Principal\*\*:\s*(.+)/i) || brief.match(/Nicho & Mercado\*\*:\s*(.+)/i);
+    if (nicheMatch) niche = nicheMatch[1].trim();
+
+    const audMatch = brief.match(/Público-Alvo\*\*:\s*(.+)/i);
+    if (audMatch) targetAudience = audMatch[1].trim();
+
+    const langMatch = brief.match(/Idioma \/ Mercado\*\*:\s*(.+)/i) || brief.match(/Idioma Principal\*\*:\s*(.+)/i);
+    if (langMatch) language = langMatch[1].trim();
+
+    const domMatch = brief.match(/Domínio Previsto\*\*:\s*(.+)/i);
+    if (domMatch) domain = domMatch[1].replace(/`|https?:\/\//g, '').trim();
+
+    const gestorMatch = brief.match(/Gestor Hermes Responsável\*\*:\s*(.+)/i);
+    if (gestorMatch) gestorName = gestorMatch[1].trim();
+
+    const toneMatch = brief.match(/Posicionamento\*\*:\s*(.+)/i);
+    if (toneMatch) personaTone = toneMatch[1].trim();
+  }
+
+  if (prompt) {
+    const gestorMatch = prompt.match(/Você é o \*\*([^*]+)\*\*/i);
+    if (gestorMatch) gestorName = gestorMatch[1].trim();
+
+    const skillMatches = prompt.matchAll(/Skill:\s*`([^`]+)`/g);
+    for (const sm of skillMatches) {
+      if (sm[1] && !selectedSkills.includes(sm[1])) {
+        selectedSkills.push(sm[1]);
+      }
+    }
+  }
+
   return {
     slug,
     brief,
     backlog,
     prompt,
-    files
+    files,
+    metadata: {
+      name: projectName,
+      slug,
+      niche,
+      targetAudience,
+      language,
+      domain,
+      gestorName,
+      personaTone,
+      selectedSkills: selectedSkills.length > 0 ? selectedSkills : ['pesquisa-mercado', 'copy-posicionamento', 'design-identidade', 'engenharia-fullstack', 'trafego-growth', 'qa-auditoria'],
+      monetization: ['Amazon Associates', 'Afiliados Especializados', 'FBR Ads']
+    }
   };
 }
 
@@ -213,8 +272,41 @@ export async function createProject(data: ProjectCreationData) {
   const hermesPrompt = generateHermesGestorPrompt(data, WORKSPACE_ROOT.replace(/\\/g, '/'));
   await fs.writeFile(path.join(projectDir, 'GESTOR-HERMES-PROMPT.md'), hermesPrompt, 'utf-8');
 
+  // 4. Integrações Assíncronas (Supabase/Postgres VPS, Control Tower, n8n)
+  try {
+    syncProjectToDatabase(data).catch(() => {});
+    registerProjectInControlTower(data).catch(() => {});
+    triggerN8nWorkflow('project_created', { slug: data.slug, name: data.name, gestor: data.gestorName }).catch(() => {});
+  } catch {}
+
   return {
     slug: data.slug,
+    success: true,
+    prompt: hermesPrompt
+  };
+}
+
+export async function updateProjectMetadata(slug: string, data: ProjectCreationData) {
+  const projectDir = path.join(PROJECTS_DIR, slug);
+  await fs.mkdir(projectDir, { recursive: true });
+
+  // 1. Atualizar brief.md
+  const briefContent = generateInitialBrief(data);
+  await fs.writeFile(path.join(projectDir, 'brief.md'), briefContent, 'utf-8');
+
+  // 2. Regenerar GESTOR-HERMES-PROMPT.md com as novas skills e diretrizes
+  const hermesPrompt = generateHermesGestorPrompt(data, WORKSPACE_ROOT.replace(/\\/g, '/'));
+  await fs.writeFile(path.join(projectDir, 'GESTOR-HERMES-PROMPT.md'), hermesPrompt, 'utf-8');
+
+  // 3. Integrações Assíncronas (Supabase/Postgres VPS, Control Tower, n8n)
+  try {
+    syncProjectToDatabase(data).catch(() => {});
+    registerProjectInControlTower(data).catch(() => {});
+    triggerN8nWorkflow('project_updated', { slug: data.slug, name: data.name, gestor: data.gestorName }).catch(() => {});
+  } catch {}
+
+  return {
+    slug,
     success: true,
     prompt: hermesPrompt
   };
@@ -223,5 +315,13 @@ export async function createProject(data: ProjectCreationData) {
 export async function updateProjectFile(slug: string, fileName: string, content: string) {
   const filePath = path.join(PROJECTS_DIR, slug, fileName);
   await fs.writeFile(filePath, content, 'utf-8');
+
+  // Notificar n8n sobre alteração de arquivo
+  try {
+    triggerN8nWorkflow('project_file_updated', { slug, fileName, timestamp: new Date().toISOString() }).catch(() => {});
+  } catch {}
+
   return { success: true };
 }
+
+

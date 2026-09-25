@@ -7,10 +7,11 @@ interface NavbarProps {
   onOpenCreate: () => void;
   onOpenSkills: () => void;
   onOpenManifesto: () => void;
+  onOpenIntegrations: () => void;
   totalProjects: number;
 }
 
-export function Navbar({ onOpenCreate, onOpenSkills, onOpenManifesto, totalProjects }: NavbarProps) {
+export function Navbar({ onOpenCreate, onOpenSkills, onOpenManifesto, onOpenIntegrations, totalProjects }: NavbarProps) {
   return (
     <header className="sticky top-0 z-40 w-full glass-panel border-b border-white/10 bg-slate-950/80 backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
@@ -36,10 +37,18 @@ export function Navbar({ onOpenCreate, onOpenSkills, onOpenManifesto, totalProje
         </div>
 
         {/* Actions */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5">
+          <button
+            onClick={onOpenIntegrations}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-300 hover:text-white bg-slate-900/60 hover:bg-slate-800/80 border border-white/5 hover:border-white/15 rounded-lg transition-all cursor-pointer"
+          >
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span>Integrações</span>
+          </button>
+
           <button
             onClick={onOpenManifesto}
-            className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-slate-300 hover:text-white bg-slate-900/60 hover:bg-slate-800/80 border border-white/5 hover:border-white/15 rounded-lg transition-all"
+            className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-slate-300 hover:text-white bg-slate-900/60 hover:bg-slate-800/80 border border-white/5 hover:border-white/15 rounded-lg transition-all cursor-pointer"
           >
             <BookOpen className="w-4 h-4 text-indigo-400" />
             <span>Manifesto</span>
@@ -47,7 +56,7 @@ export function Navbar({ onOpenCreate, onOpenSkills, onOpenManifesto, totalProje
 
           <button
             onClick={onOpenSkills}
-            className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-slate-300 hover:text-white bg-slate-900/60 hover:bg-slate-800/80 border border-white/5 hover:border-white/15 rounded-lg transition-all"
+            className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-slate-300 hover:text-white bg-slate-900/60 hover:bg-slate-800/80 border border-white/5 hover:border-white/15 rounded-lg transition-all cursor-pointer"
           >
             <Layers className="w-4 h-4 text-emerald-400" />
             <span>Skills Hub</span>

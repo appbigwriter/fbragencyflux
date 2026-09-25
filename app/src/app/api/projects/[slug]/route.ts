@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getProjectDetail, updateProjectFile } from '@/lib/projects';
+import { getProjectDetail, updateProjectFile, updateProjectMetadata } from '@/lib/projects';
 
 export async function GET(req: Request, { params }: { params: Promise<{ slug: string }> }) {
   try {
@@ -14,8 +14,14 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
 export async function PUT(req: Request, { params }: { params: Promise<{ slug: string }> }) {
   try {
     const { slug } = await params;
-    const { fileName, content } = await req.json();
+    const body = await req.json();
 
+    if (body.updateMetadata && body.data) {
+      const result = await updateProjectMetadata(slug, body.data);
+      return NextResponse.json({ success: true, result });
+    }
+
+    const { fileName, content } = body;
     if (!fileName || content === undefined) {
       return NextResponse.json({ success: false, error: 'Nome do arquivo e conteúdo são obrigatórios' }, { status: 400 });
     }

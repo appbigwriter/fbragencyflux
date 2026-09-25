@@ -4,9 +4,11 @@ import React, { useState, useEffect } from 'react';
 import { Navbar } from '@/components/Navbar';
 import { ProjectCard } from '@/components/ProjectCard';
 import { CreateProjectModal } from '@/components/CreateProjectModal';
+import { EditProjectModal } from '@/components/EditProjectModal';
 import { ProjectDetailModal } from '@/components/ProjectDetailModal';
 import { SkillsDrawer } from '@/components/SkillsDrawer';
 import { ManifestoModal } from '@/components/ManifestoModal';
+import { IntegrationsModal } from '@/components/IntegrationsModal';
 import { ProjectSummary, SkillItem } from '@/lib/projects';
 import { Plus, FolderPlus, Sparkles, Bot, Layers, ArrowUpRight, ShieldCheck, RefreshCw } from 'lucide-react';
 
@@ -18,7 +20,11 @@ export default function Home() {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isSkillsOpen, setIsSkillsOpen] = useState(false);
   const [isManifestoOpen, setIsManifestoOpen] = useState(false);
+  const [isIntegrationsOpen, setIsIntegrationsOpen] = useState(false);
   const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
+
+  const [editingSlug, setEditingSlug] = useState<string | null>(null);
+  const [editingProjectData, setEditingProjectData] = useState<any>(null);
 
   const fetchData = async () => {
     setLoading(true);
@@ -46,9 +52,32 @@ export default function Home() {
     setSelectedSlug(slug);
   };
 
+  const handleOpenEditFromCard = async (slug: string) => {
+    try {
+      const res = await fetch(`/api/projects/${slug}`);
+      const data = await res.json();
+      if (data.success) {
+        setEditingProjectData(data.project);
+        setEditingSlug(slug);
+      }
+    } catch (err) {
+      console.error('Erro ao carregar projeto para edição:', err);
+    }
+  };
+
+  const handleOpenEditFromDetail = (projectData: any) => {
+    setEditingProjectData(projectData);
+    setEditingSlug(projectData.slug);
+    setSelectedSlug(null);
+  };
+
   const handleCreatedSuccess = (newSlug: string) => {
     fetchData();
     setSelectedSlug(newSlug);
+  };
+
+  const handleEditSuccess = () => {
+    fetchData();
   };
 
   return (
@@ -58,6 +87,7 @@ export default function Home() {
         onOpenCreate={() => setIsCreateOpen(true)}
         onOpenSkills={() => setIsSkillsOpen(true)}
         onOpenManifesto={() => setIsManifestoOpen(true)}
+        onOpenIntegrations={() => setIsIntegrationsOpen(true)}
         totalProjects={projects.length}
       />
 
@@ -80,7 +110,7 @@ export default function Home() {
             </h1>
 
             <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
-              Crie um novo projeto com 1 clique: o sistema gera toda a árvore de arquivos, brief, backlog de entregas reais e o <strong>System Prompt customizado</strong> para você colar no Hermes e interagir diretamente.
+              Crie e edite projetos com 1 clique: o sistema atualiza toda a árvore de arquivos, brief, backlog de entregas reais e o <strong>System Prompt customizado</strong> para você colar no Hermes e interagir diretamente.
             </p>
 
             <div className="flex flex-wrap items-center gap-3 pt-2">
@@ -153,6 +183,7 @@ export default function Home() {
                   project={project}
                   onSelect={handleOpenDetail}
                   onViewPrompt={handleOpenDetail}
+                  onEdit={handleOpenEditFromCard}
                 />
               ))}
             </div>
@@ -169,10 +200,23 @@ export default function Home() {
         availableSkills={skills}
       />
 
+      <EditProjectModal
+        isOpen={!!editingSlug}
+        slug={editingSlug}
+        initialData={editingProjectData}
+        onClose={() => {
+          setEditingSlug(null);
+          setEditingProjectData(null);
+        }}
+        onSuccess={handleEditSuccess}
+        availableSkills={skills}
+      />
+
       <ProjectDetailModal
         slug={selectedSlug}
         onClose={() => setSelectedSlug(null)}
         onProjectUpdated={fetchData}
+        onOpenEdit={handleOpenEditFromDetail}
       />
 
       <SkillsDrawer
@@ -184,6 +228,11 @@ export default function Home() {
       <ManifestoModal
         isOpen={isManifestoOpen}
         onClose={() => setIsManifestoOpen(false)}
+      />
+
+      <IntegrationsModal
+        isOpen={isIntegrationsOpen}
+        onClose={() => setIsIntegrationsOpen(false)}
       />
 
       {/* Footer */}
