@@ -9,6 +9,7 @@ export interface ProjectCreationData {
   monetization: string[];
   gestorName: string;
   personaTone: string;
+  briefingText?: string;
   keyDeliverables?: string[];
   selectedSkills: string[];
 }
@@ -25,6 +26,10 @@ export function generateHermesGestorPrompt(data: ProjectCreationData, workspaceR
     ? data.monetization.join(', ') 
     : 'Afiliados, Tráfego Direto e Produtos Próprios';
 
+  const globalBriefingSection = data.briefingText?.trim() 
+    ? `\n---\n\n## 📖 Contexto & Briefing Global do Projeto\n${data.briefingText.trim()}\n`
+    : '';
+
   return `# SYSTEM PROMPT — Agente Gestor Hermes: ${data.gestorName} (${data.name}) ⚡
 
 Você é o **${data.gestorName}**, Agente Gestor de IA da **FBR Agency** encarregado da liderança técnica, editorial e de execução do projeto **${data.name}**.
@@ -40,8 +45,7 @@ Seu interlocutor direto é o **Sergio Castro** (Publisher/Fundador da FBR Agency
 - **Idioma Principal**: ${data.language}
 - **Domínio Previsto**: ${data.domain || 'A definir'}
 - **Modelo de Monetização**: ${monetizationText}
-- **Tom de Voz & Postura**: ${data.personaTone || 'Editorial premium, baseado em evidências, acolhedor e direto'}
-
+- **Tom de Voz & Postura**: ${data.personaTone || 'Editorial premium, baseado em evidências, acolhedor e direto'}${globalBriefingSection}
 ---
 
 ## 🧠 2. Skills Obrigatórias do Projeto
@@ -89,6 +93,10 @@ Ao iniciar uma sessão com o Sergio:
 }
 
 export function generateInitialBrief(data: ProjectCreationData): string {
+  const briefingSection = data.briefingText?.trim()
+    ? `\n---\n\n## 📖 Briefing Global & Visão Detalhada\n${data.briefingText.trim()}\n`
+    : '';
+
   return `# Briefing do Projeto: ${data.name} ⚡
 
 ## 📌 Identidade & Visão Geral
@@ -98,8 +106,7 @@ export function generateInitialBrief(data: ProjectCreationData): string {
 - **Idioma / Mercado**: ${data.language}
 - **Público-Alvo**: ${data.targetAudience}
 - **Nicho Principal**: ${data.niche}
-- **Gestor Hermes Responsável**: ${data.gestorName}
-
+- **Gestor Hermes Responsável**: ${data.gestorName}${briefingSection}
 ---
 
 ## 🎯 Pilares & Proposta de Valor

@@ -194,6 +194,21 @@ export function EditProjectModal({
                 </div>
               </div>
 
+              {/* Global Briefing Text Area */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center justify-between">
+                  <span>Briefing / Visão Global do Projeto</span>
+                  <span className="text-[11px] text-slate-400 font-normal">Texto com requisitos, modelo de operação e contexto global</span>
+                </label>
+                <textarea
+                  rows={4}
+                  placeholder="Cole aqui o briefing completo, modelo de operação, contexto de mercado, requisitos editoriais ou notas estratégicas do projeto..."
+                  value={formData.briefingText || ''}
+                  onChange={e => setFormData({ ...formData, briefingText: e.target.value })}
+                  className="w-full bg-slate-950/70 border border-white/10 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-emerald-500 transition-colors leading-relaxed font-sans"
+                />
+              </div>
+
               {/* Gestor Hermes Configuration */}
               <div className="p-4 rounded-xl bg-slate-950/60 border border-indigo-500/20 space-y-3">
                 <div className="flex items-center gap-2">

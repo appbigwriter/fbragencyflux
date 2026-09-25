@@ -192,6 +192,7 @@ export async function getProjectDetail(slug: string) {
   let gestorName = 'Gestor Hermes';
   let personaTone = 'Editorial sofisticado, transparente, baseado em evidências científicas e sem falsas promessas.';
   let domain = '';
+  let briefingText = '';
   const selectedSkills: string[] = [];
 
   if (brief) {
@@ -215,6 +216,9 @@ export async function getProjectDetail(slug: string) {
 
     const toneMatch = brief.match(/Posicionamento\*\*:\s*(.+)/i);
     if (toneMatch) personaTone = toneMatch[1].trim();
+
+    const briefTextMatch = brief.match(/## 📖 Briefing Global & Visão Detalhada\s*([\s\S]*?)(?=\n---\n|$)/i);
+    if (briefTextMatch) briefingText = briefTextMatch[1].trim();
   }
 
   if (prompt) {
@@ -226,6 +230,11 @@ export async function getProjectDetail(slug: string) {
       if (sm[1] && !selectedSkills.includes(sm[1])) {
         selectedSkills.push(sm[1]);
       }
+    }
+
+    if (!briefingText) {
+      const promptBriefMatch = prompt.match(/## 📖 Contexto & Briefing Global do Projeto\s*([\s\S]*?)(?=\n---\n|$)/i);
+      if (promptBriefMatch) briefingText = promptBriefMatch[1].trim();
     }
   }
 
@@ -244,6 +253,7 @@ export async function getProjectDetail(slug: string) {
       domain,
       gestorName,
       personaTone,
+      briefingText,
       selectedSkills: selectedSkills.length > 0 ? selectedSkills : ['pesquisa-mercado', 'copy-posicionamento', 'design-identidade', 'engenharia-fullstack', 'trafego-growth', 'qa-auditoria'],
       monetization: ['Amazon Associates', 'Afiliados Especializados', 'FBR Ads']
     }

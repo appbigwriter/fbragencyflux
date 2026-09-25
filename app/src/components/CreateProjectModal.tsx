@@ -22,6 +22,7 @@ export function CreateProjectModal({ isOpen, onClose, onSuccess, availableSkills
     monetization: ['Amazon Associates', 'Afiliados Especializados', 'FBR Ads'],
     gestorName: '',
     personaTone: 'Editorial sofisticado, transparente, baseado em evidências científicas e sem falsas promessas.',
+    briefingText: '',
     selectedSkills: ['pesquisa-mercado', 'copy-posicionamento', 'design-identidade', 'engenharia-fullstack', 'trafego-growth', 'qa-auditoria']
   });
 
@@ -186,6 +187,21 @@ export function CreateProjectModal({ isOpen, onClose, onSuccess, availableSkills
                     />
                   </div>
                 </div>
+              </div>
+
+              {/* Global Briefing Text Area */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center justify-between">
+                  <span>Briefing / Visão Global do Projeto (Opcional)</span>
+                  <span className="text-[11px] text-slate-400 font-normal">Texto livre com a ideia global, requisitos e diretrizes</span>
+                </label>
+                <textarea
+                  rows={4}
+                  placeholder="Cole aqui o briefing completo, modelo de operação, contexto de mercado, requisitos editoriais ou notas estratégicas do projeto..."
+                  value={formData.briefingText || ''}
+                  onChange={e => setFormData({ ...formData, briefingText: e.target.value })}
+                  className="w-full bg-slate-950/70 border border-white/10 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-emerald-500 transition-colors leading-relaxed font-sans"
+                />
               </div>
 
               {/* Gestor Hermes Configuration */}
