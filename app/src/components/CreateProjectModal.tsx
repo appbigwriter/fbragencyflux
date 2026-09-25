@@ -275,30 +275,45 @@ export function CreateProjectModal({ isOpen, onClose, onSuccess, availableSkills
           ) : (
             /* Success & Hermes Prompt View */
             <div className="space-y-4 animate-in fade-in duration-300">
-              <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-between">
+              <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 font-bold text-sm">
                     ✓
                   </div>
                   <div>
                     <h3 className="text-sm font-bold text-emerald-300">Projeto & Gestor Criados com Sucesso!</h3>
-                    <p className="text-xs text-slate-300">A pasta <code className="text-emerald-400">03-projetos/{formData.slug}</code> e todos os arquivos foram gerados no disco.</p>
+                    <p className="text-xs text-slate-300 font-mono mt-0.5">
+                      URL Web: <code className="text-emerald-300">{typeof window !== 'undefined' ? `${window.location.origin}/p/${formData.slug}` : `/p/${formData.slug}`}</code>
+                    </p>
                   </div>
                 </div>
 
-                <button
-                  onClick={copyToClipboard}
-                  className="px-3.5 py-2 text-xs font-semibold text-slate-950 bg-emerald-400 hover:bg-emerald-300 rounded-lg flex items-center gap-1.5 transition-all shadow-md cursor-pointer"
-                >
-                  {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                  <span>{copied ? 'Copiado!' : 'Copiar Prompt do Hermes'}</span>
-                </button>
+                <div className="flex items-center gap-2 self-start sm:self-center">
+                  <button
+                    onClick={() => {
+                      const url = `${window.location.origin}/p/${formData.slug}`;
+                      navigator.clipboard.writeText(url);
+                      alert(`URL copiada para o Hermes:\n${url}`);
+                    }}
+                    className="px-3.5 py-2 text-xs font-bold text-slate-950 bg-emerald-400 hover:bg-emerald-300 rounded-lg flex items-center gap-1.5 transition-all shadow-md cursor-pointer"
+                  >
+                    <span>🔗 Copiar URL Hermes</span>
+                  </button>
+
+                  <button
+                    onClick={copyToClipboard}
+                    className="px-3.5 py-2 text-xs font-semibold text-slate-200 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-lg flex items-center gap-1.5 transition-all cursor-pointer border border-white/10"
+                  >
+                    {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+                    <span>{copied ? 'Copiado!' : 'Copiar Texto'}</span>
+                  </button>
+                </div>
               </div>
 
               <div>
                 <label className="block text-xs font-bold text-slate-300 mb-2 flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-indigo-400" />
-                  <span>Prompt do Agente Hermes Gerado (Pronto para colar no Hermes):</span>
+                  <span>Prompt do Agente Hermes Gerado (Ou passe a URL acima para o Hermes):</span>
                 </label>
                 <div className="relative">
                   <pre className="p-4 rounded-xl bg-slate-950 border border-white/10 text-xs text-slate-300 font-mono overflow-x-auto max-h-72 whitespace-pre-wrap leading-relaxed">

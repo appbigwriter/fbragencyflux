@@ -219,17 +219,44 @@ export function ProjectDetailModal({ slug, onClose, onProjectUpdated, onOpenEdit
             </div>
           ) : (
             <>
-              {/* Tab: Hermes Prompt */}
+              {/* Tab: Hermes Prompt & Web URL */}
               {tab === 'prompt' && (
                 <div className="space-y-4">
+                  {/* Web URL Banner */}
+                  <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                      <span className="text-[10px] uppercase tracking-wider font-bold text-emerald-400 bg-emerald-500/20 px-2 py-0.5 rounded">
+                        🌐 Acesso Direto via Web URL para Agentes Hermes
+                      </span>
+                      <p className="text-xs text-slate-200 mt-1 font-mono break-all">
+                        {typeof window !== 'undefined' ? `${window.location.origin}/p/${slug}` : `/p/${slug}`}
+                      </p>
+                      <p className="text-[11px] text-slate-400 mt-0.5">
+                        Apenas diga ao Hermes: <code className="text-emerald-300">"Hermes, leia esta URL e assuma o projeto."</code>
+                      </p>
+                    </div>
+
+                    <button
+                      onClick={() => {
+                        const url = `${window.location.origin}/p/${slug}`;
+                        navigator.clipboard.writeText(url);
+                        alert(`URL copiada para o Hermes:\n${url}`);
+                      }}
+                      className="px-4 py-2 text-xs font-bold text-slate-950 bg-emerald-400 hover:bg-emerald-300 rounded-lg flex items-center gap-1.5 transition-all shadow-md shrink-0 cursor-pointer self-start sm:self-center"
+                    >
+                      <Copy className="w-3.5 h-3.5" />
+                      <span>Copiar URL do Hermes</span>
+                    </button>
+                  </div>
+
                   <div className="p-4 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-between">
                     <div>
                       <h3 className="text-sm font-bold text-indigo-300 flex items-center gap-2">
                         <Sparkles className="w-4 h-4" />
-                        <span>Prompt Completo do Agente Gestor Hermes</span>
+                        <span>Prompt do Agente Gestor (Para Cópia Manual se preferir)</span>
                       </h3>
                       <p className="text-xs text-slate-300 mt-0.5">
-                        Copie este prompt e cole no Hermes para iniciar o trabalho diretamente com o agente responsável.
+                        Prompt completo com missão, regras de ouro e diretrizes das skills selecionadas.
                       </p>
                     </div>
 
@@ -238,12 +265,12 @@ export function ProjectDetailModal({ slug, onClose, onProjectUpdated, onOpenEdit
                       className="px-4 py-2 text-xs font-semibold text-slate-950 bg-indigo-300 hover:bg-indigo-200 rounded-lg flex items-center gap-1.5 transition-all shadow-md cursor-pointer"
                     >
                       {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                      <span>{copied ? 'Copiado para Área de Transferência!' : 'Copiar Prompt'}</span>
+                      <span>{copied ? 'Copiado!' : 'Copiar Texto'}</span>
                     </button>
                   </div>
 
                   <div className="relative">
-                    <pre className="p-4 rounded-xl bg-slate-950 border border-white/10 text-xs text-slate-300 font-mono overflow-x-auto max-h-[50vh] whitespace-pre-wrap leading-relaxed">
+                    <pre className="p-4 rounded-xl bg-slate-950 border border-white/10 text-xs text-slate-300 font-mono overflow-x-auto max-h-[45vh] whitespace-pre-wrap leading-relaxed">
                       {projectData?.prompt || 'Nenhum prompt encontrado para este projeto.'}
                     </pre>
                   </div>
