@@ -5,10 +5,10 @@ import { syncProjectToDatabase } from './integrations/supabase';
 import { registerProjectInControlTower } from './integrations/control-tower';
 import { triggerN8nWorkflow } from './integrations/n8n';
 
-// Caminho para a raiz do repositório
-const WORKSPACE_ROOT = path.resolve(process.cwd(), '..');
-const PROJECTS_DIR = path.join(WORKSPACE_ROOT, '03-projetos');
-const SKILLS_DIR = path.join(WORKSPACE_ROOT, '02-skills');
+// Caminho para a raiz do repositório (com suporte a variáveis de ambiente no Easypanel/Docker)
+const WORKSPACE_ROOT = process.env.WORKSPACE_ROOT || process.env.FLUX_ROOT || path.resolve(process.cwd(), '..');
+const PROJECTS_DIR = process.env.PROJECTS_DIR || path.join(WORKSPACE_ROOT, '03-projetos');
+const SKILLS_DIR = process.env.SKILLS_DIR || path.join(WORKSPACE_ROOT, '02-skills');
 
 export interface ProjectSummary {
   slug: string;
