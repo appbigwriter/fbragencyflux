@@ -25,6 +25,8 @@ export interface ProjectSummary {
   lastModified: string;
 }
 
+import { ensureDefaultProjectsSeeded } from './seed-data';
+
 export interface SkillItem {
   id: string;
   name: string;
@@ -34,6 +36,7 @@ export interface SkillItem {
 
 export async function listSkills(): Promise<SkillItem[]> {
   try {
+    await ensureDefaultProjectsSeeded(PROJECTS_DIR, SKILLS_DIR, WORKSPACE_ROOT);
     const entries = await fs.readdir(SKILLS_DIR, { withFileTypes: true });
     const skills: SkillItem[] = [];
 
@@ -72,7 +75,7 @@ export async function listSkills(): Promise<SkillItem[]> {
 
 export async function listProjects(): Promise<ProjectSummary[]> {
   try {
-    await fs.mkdir(PROJECTS_DIR, { recursive: true });
+    await ensureDefaultProjectsSeeded(PROJECTS_DIR, SKILLS_DIR, WORKSPACE_ROOT);
     const entries = await fs.readdir(PROJECTS_DIR, { withFileTypes: true });
     const projects: ProjectSummary[] = [];
 
