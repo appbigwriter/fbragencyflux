@@ -1,9 +1,10 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { ProjectCreationData, generateHermesGestorPrompt, generateInitialBrief, generateInitialBacklog, generateInitialUpdates } from './generator';
-import { syncProjectToDatabase } from './integrations/supabase';
+import { syncProjectToDatabase, fetchProjectsFromDatabase } from './integrations/supabase';
 import { registerProjectInControlTower } from './integrations/control-tower';
 import { triggerN8nWorkflow } from './integrations/n8n';
+import { ensureDefaultProjectsSeeded } from './seed-data';
 
 // Caminho para a raiz do repositório (com suporte a variáveis de ambiente no Easypanel/Docker)
 const WORKSPACE_ROOT = process.env.WORKSPACE_ROOT || process.env.FLUX_ROOT || path.resolve(process.cwd(), '..');
@@ -24,8 +25,6 @@ export interface ProjectSummary {
   completedTasks: number;
   lastModified: string;
 }
-
-import { ensureDefaultProjectsSeeded } from './seed-data';
 
 export interface SkillItem {
   id: string;
@@ -75,6 +74,82 @@ export async function listSkills(): Promise<SkillItem[]> {
 
 export async function listProjects(): Promise<ProjectSummary[]> {
   try {
+    // 1. Tenta carregar do banco PostgreSQL VPS primeiro
+    const dbProjects = await fetchProjectsFromDatabase();
+    for (const dbp of dbProjects) {
+      const pDir = path.join(PROJECTS_DIR, dbp.slug);
+      try {
+        await fs.mkdir(pDir, { recursive: true });
+        const briefPath = path.join(pDir, 'brief.md');
+        const backlogPath = path.join(pDir, 'backlog.md');
+        const promptPath = path.join(pDir, 'GESTOR-HERMES-PROMPT.md');
+        const updatesPath = path.join(pDir, 'updates.md');
+
+        try { await fs.access(briefPath); } catch {
+          await fs.writeFile(briefPath, generateInitialBrief({
+            name: dbp.name,
+            slug: dbp.slug,
+            niche: dbp.niche,
+            targetAudience: dbp.target_audience,
+            language: dbp.language,
+            domain: dbp.domain,
+            gestorName: dbp.gestor_name,
+            personaTone: dbp.metadata?.personaTone || 'Editorial sofisticado',
+            briefingText: dbp.metadata?.briefingText || '',
+            monetization: dbp.metadata?.monetization || ['Amazon Associates', 'Afiliados Especializados', 'FBR Ads'],
+            selectedSkills: dbp.metadata?.selectedSkills || ['pesquisa-mercado', 'copy-posicionamento']
+          }), 'utf-8');
+        }
+
+        try { await fs.access(backlogPath); } catch {
+          await fs.writeFile(backlogPath, generateInitialBacklog({
+            name: dbp.name,
+            slug: dbp.slug,
+            niche: dbp.niche,
+            targetAudience: dbp.target_audience,
+            language: dbp.language,
+            domain: dbp.domain,
+            gestorName: dbp.gestor_name,
+            personaTone: dbp.metadata?.personaTone || '',
+            monetization: dbp.metadata?.monetization || [],
+            selectedSkills: dbp.metadata?.selectedSkills || []
+          }), 'utf-8');
+        }
+
+        try { await fs.access(promptPath); } catch {
+          await fs.writeFile(promptPath, generateHermesGestorPrompt({
+            name: dbp.name,
+            slug: dbp.slug,
+            niche: dbp.niche,
+            targetAudience: dbp.target_audience,
+            language: dbp.language,
+            domain: dbp.domain,
+            gestorName: dbp.gestor_name,
+            personaTone: dbp.metadata?.personaTone || '',
+            briefingText: dbp.metadata?.briefingText || '',
+            monetization: dbp.metadata?.monetization || [],
+            selectedSkills: dbp.metadata?.selectedSkills || []
+          }, WORKSPACE_ROOT.replace(/\\/g, '/')), 'utf-8');
+        }
+
+        try { await fs.access(updatesPath); } catch {
+          await fs.writeFile(updatesPath, generateInitialUpdates({
+            name: dbp.name,
+            slug: dbp.slug,
+            niche: dbp.niche,
+            targetAudience: dbp.target_audience,
+            language: dbp.language,
+            domain: dbp.domain,
+            gestorName: dbp.gestor_name,
+            personaTone: dbp.metadata?.personaTone || '',
+            monetization: dbp.metadata?.monetization || [],
+            selectedSkills: dbp.metadata?.selectedSkills || []
+          }), 'utf-8');
+        }
+      } catch {}
+    }
+
+    // 2. Garante o seed padrão para os que não estiverem no banco
     await ensureDefaultProjectsSeeded(PROJECTS_DIR, SKILLS_DIR, WORKSPACE_ROOT);
     const entries = await fs.readdir(PROJECTS_DIR, { withFileTypes: true });
     const projects: ProjectSummary[] = [];

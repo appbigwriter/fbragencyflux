@@ -77,7 +77,7 @@ export async function syncProjectToDatabase(projectData: any) {
   if (pgPool) {
     try {
       const client = await pgPool.connect();
-      const schemaName = process.env.CONTROL_TOWER_SCHEMA_NAME || 'public';
+      const schemaName = process.env.CONTROL_TOWER_SCHEMA_NAME || 'custom_agency';
       
       // Cria a tabela se não existir
       await client.query(`
@@ -127,3 +127,39 @@ export async function syncProjectToDatabase(projectData: any) {
 
   return { success: true, syncedTo: 'File-First Local' };
 }
+
+export async function fetchProjectsFromDatabase(): Promise<any[]> {
+  if (!pgPool) return [];
+
+  try {
+    const client = await pgPool.connect();
+    const schemaName = process.env.CONTROL_TOWER_SCHEMA_NAME || 'custom_agency';
+
+    let rows: any[] = [];
+    try {
+      const res = await client.query(`
+        SELECT slug, name, niche, gestor_name, target_audience, language, domain, metadata, updated_at 
+        FROM ${schemaName}.agency_projects 
+        ORDER BY updated_at DESC
+      `);
+      rows = res.rows;
+    } catch {
+      // Fallback tentativa custom_agency
+      try {
+        const res = await client.query(`
+          SELECT slug, name, niche, gestor_name, target_audience, language, domain, metadata, updated_at 
+          FROM custom_agency.agency_projects 
+          ORDER BY updated_at DESC
+        `);
+        rows = res.rows;
+      } catch {}
+    }
+
+    client.release();
+    return rows;
+  } catch (err: any) {
+    console.warn('Falha ao buscar projetos do PostgreSQL VPS:', err.message);
+    return [];
+  }
+}
+
