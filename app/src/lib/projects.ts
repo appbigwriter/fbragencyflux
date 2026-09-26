@@ -107,11 +107,30 @@ export async function listProjects(): Promise<ProjectSummary[]> {
         selectedSkills: dbp.metadata?.selectedSkills || ['pesquisa-mercado', 'copy-posicionamento']
       }) : '');
 
-      const backlogContent = dbp.backlog_content || '';
-      const promptContent = dbp.prompt_content || '';
-      const updatesContent = dbp.updates_content || '';
+      let backlogContent = dbp.backlog_content || '';
+      let promptContent = dbp.prompt_content || '';
+      let updatesContent = dbp.updates_content || '';
 
-      // Sincroniza em disco para navegação local se necessário
+      // Auto-sincronização: se houver arquivo local no disco com mais tarefas/alterações, sincroniza com o banco VPS
+      try {
+        const blp = path.join(pDir, 'backlog.md');
+        const localBacklog = await fs.readFile(blp, 'utf-8');
+        if (localBacklog && localBacklog !== backlogContent) {
+          backlogContent = localBacklog;
+          await updateProjectFieldInDatabase(dbp.slug, 'backlog_content', localBacklog);
+        }
+      } catch {}
+
+      try {
+        const up = path.join(pDir, 'updates.md');
+        const localUpdates = await fs.readFile(up, 'utf-8');
+        if (localUpdates && localUpdates !== updatesContent) {
+          updatesContent = localUpdates;
+          await updateProjectFieldInDatabase(dbp.slug, 'updates_content', localUpdates);
+        }
+      } catch {}
+
+      // Sincroniza em disco caso o arquivo ainda não exista localmente
       try {
         await fs.mkdir(pDir, { recursive: true });
         if (briefContent) {
