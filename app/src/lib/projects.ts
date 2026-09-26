@@ -6,8 +6,9 @@ import { registerProjectInControlTower } from './integrations/control-tower';
 import { triggerN8nWorkflow } from './integrations/n8n';
 import { ensureDefaultProjectsSeeded } from './seed-data';
 
-// Caminho para a raiz do repositório (com suporte a variáveis de ambiente no Easypanel/Docker)
-const WORKSPACE_ROOT = process.env.WORKSPACE_ROOT || process.env.FLUX_ROOT || path.resolve(process.cwd(), '..');
+// Caminho para a raiz do repositório (com suporte seguro a ambiente Docker/Easypanel e local)
+const isInsideApp = process.cwd().replace(/\\/g, '/').endsWith('/app') || process.cwd().replace(/\\/g, '/').endsWith('app');
+const WORKSPACE_ROOT = process.env.WORKSPACE_ROOT || process.env.FLUX_ROOT || (process.env.NODE_ENV === 'production' && !process.env.WORKSPACE_ROOT ? process.cwd() : (isInsideApp ? path.resolve(process.cwd(), '..') : process.cwd()));
 const PROJECTS_DIR = process.env.PROJECTS_DIR || path.join(WORKSPACE_ROOT, '03-projetos');
 const SKILLS_DIR = process.env.SKILLS_DIR || path.join(WORKSPACE_ROOT, '02-skills');
 
@@ -33,42 +34,53 @@ export interface SkillItem {
   content: string;
 }
 
+const DEFAULT_SKILLS: SkillItem[] = [
+  { id: 'pesquisa-mercado', name: 'Pesquisa de Mercado & Concorrência', description: 'Análise de concorrentes, dores, personas e palavras-chave', content: '' },
+  { id: 'copy-posicionamento', name: 'Copywriting & Posicionamento', description: 'Linha editorial, artigos de conversão e pautas', content: '' },
+  { id: 'design-identidade', name: 'Design & Identidade Visual', description: 'Design tokens, paleta de cores e identidade', content: '' },
+  { id: 'engenharia-fullstack', name: 'Engenharia Fullstack Next.js', description: 'Estruturação de componentes, templates e banco', content: '' },
+  { id: 'trafego-growth', name: 'Tráfego & Growth', description: 'SEO técnico, indexação e distribuição', content: '' },
+  { id: 'qa-auditoria', name: 'QA & Compliance Editorial', description: 'Auditoria de claims, segurança e compliance', content: '' }
+];
+
 export async function listSkills(): Promise<SkillItem[]> {
   try {
-    await ensureDefaultProjectsSeeded(PROJECTS_DIR, SKILLS_DIR, WORKSPACE_ROOT);
-    const entries = await fs.readdir(SKILLS_DIR, { withFileTypes: true });
+    try {
+      await ensureDefaultProjectsSeeded(PROJECTS_DIR, SKILLS_DIR, WORKSPACE_ROOT);
+    } catch {}
+
     const skills: SkillItem[] = [];
+    try {
+      const entries = await fs.readdir(SKILLS_DIR, { withFileTypes: true });
+      for (const entry of entries) {
+        if (entry.isDirectory()) {
+          const skillPath = path.join(SKILLS_DIR, entry.name, 'SKILL.md');
+          try {
+            const content = await fs.readFile(skillPath, 'utf-8');
+            let name = entry.name;
+            let description = 'Habilidade modular da FBR Agency';
+            
+            const nameMatch = content.match(/name:\s*(.+)/);
+            if (nameMatch) name = nameMatch[1].trim();
 
-    for (const entry of entries) {
-      if (entry.isDirectory()) {
-        const skillPath = path.join(SKILLS_DIR, entry.name, 'SKILL.md');
-        try {
-          const content = await fs.readFile(skillPath, 'utf-8');
-          // Parse name and description from frontmatter or content
-          let name = entry.name;
-          let description = 'Habilidade modular da FBR Agency';
-          
-          const nameMatch = content.match(/name:\s*(.+)/);
-          if (nameMatch) name = nameMatch[1].trim();
+            const descMatch = content.match(/description:\s*(.+)/);
+            if (descMatch) description = descMatch[1].trim();
 
-          const descMatch = content.match(/description:\s*(.+)/);
-          if (descMatch) description = descMatch[1].trim();
-
-          skills.push({
-            id: entry.name,
-            name,
-            description,
-            content
-          });
-        } catch {
-          // Skip if no SKILL.md
+            skills.push({
+              id: entry.name,
+              name,
+              description,
+              content
+            });
+          } catch {}
         }
       }
-    }
-    return skills;
+    } catch {}
+
+    return skills.length > 0 ? skills : DEFAULT_SKILLS;
   } catch (err) {
     console.error('Erro ao listar skills:', err);
-    return [];
+    return DEFAULT_SKILLS;
   }
 }
 
