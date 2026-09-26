@@ -29,6 +29,11 @@ ${detail.brief || 'Nenhum brief.md cadastrado.'}
 
 # ANEXO II: BACKLOG DE ENTREGÁVEIS ATUALIZADO
 ${detail.backlog || 'Nenhum backlog.md cadastrado.'}
+
+---
+
+# ANEXO III: 📢 OBSERVAÇÕES, FEEDBACKS E COBRANÇAS ATIVAS (UPDATES)
+${detail.updates || 'Nenhum updates.md cadastrado.'}
 `.trim();
 
     return new NextResponse(consolidatedContext, {

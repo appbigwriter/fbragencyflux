@@ -1,7 +1,11 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { X, Bot, FileText, CheckSquare, FolderTree, Copy, Check, ExternalLink, Sparkles, RefreshCw } from 'lucide-react';
+import { 
+  X, Bot, FileText, CheckSquare, FolderTree, Copy, Check, ExternalLink, 
+  Sparkles, RefreshCw, MessageSquarePlus, Radio, Send, AlertCircle, 
+  Clock, Zap, ShieldCheck, CheckCircle2, MessageSquare
+} from 'lucide-react';
 
 interface ProjectDetailModalProps {
   slug: string | null;
@@ -11,16 +15,31 @@ interface ProjectDetailModalProps {
 }
 
 export function ProjectDetailModal({ slug, onClose, onProjectUpdated, onOpenEdit }: ProjectDetailModalProps) {
-  const [tab, setTab] = useState<'prompt' | 'brief' | 'backlog' | 'files'>('prompt');
+  const [tab, setTab] = useState<'prompt' | 'updates' | 'backlog' | 'brief' | 'files'>('prompt');
   const [projectData, setProjectData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
   const [copiedBrief, setCopiedBrief] = useState(false);
+  const [copiedUpdates, setCopiedUpdates] = useState(false);
+  
+  // Backlog state
   const [editingBacklog, setEditingBacklog] = useState(false);
   const [backlogDraft, setBacklogDraft] = useState('');
+  
+  // Brief state
   const [editingBrief, setEditingBrief] = useState(false);
   const [briefDraft, setBriefDraft] = useState('');
   const [savingBrief, setSavingBrief] = useState(false);
+
+  // Updates & Cobranças state
+  const [updatesDraft, setUpdatesDraft] = useState('');
+  const [editingUpdates, setEditingUpdates] = useState(false);
+  const [savingUpdatesDraft, setSavingUpdatesDraft] = useState(false);
+  const [newInstruction, setNewInstruction] = useState('');
+  const [newType, setNewType] = useState('⚡ Cobrança de Entrega');
+  const [newPriority, setNewPriority] = useState('Alta');
+  const [newDeliverable, setNewDeliverable] = useState('');
+  const [sendingUpdate, setSendingUpdate] = useState(false);
 
   const fetchProject = async () => {
     if (!slug) return;
@@ -32,6 +51,7 @@ export function ProjectDetailModal({ slug, onClose, onProjectUpdated, onOpenEdit
         setProjectData(data.project);
         setBacklogDraft(data.project.backlog || '');
         setBriefDraft(data.project.brief || '');
+        setUpdatesDraft(data.project.updates || '');
       }
     } catch (err) {
       console.error('Erro ao carregar detalhes:', err);
@@ -129,7 +149,7 @@ export function ProjectDetailModal({ slug, onClose, onProjectUpdated, onOpenEdit
   };
 
   const parseBacklogTasks = (markdown: string) => {
-    const lines = markdown.split('\n');
+    const lines = (markdown || '').split('\n');
     const tasks: { line: string; checked: boolean; section?: string }[] = [];
     let currentSection = '';
 
@@ -151,6 +171,138 @@ export function ProjectDetailModal({ slug, onClose, onProjectUpdated, onOpenEdit
       }
     }
     return tasks;
+  };
+
+  const copyUpdates = () => {
+    if (projectData?.updates) {
+      navigator.clipboard.writeText(projectData.updates);
+      setCopiedUpdates(true);
+      setTimeout(() => setCopiedUpdates(false), 2500);
+    }
+  };
+
+  const handleSendUpdate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newInstruction.trim()) return;
+
+    setSendingUpdate(true);
+    try {
+      const res = await fetch(`/api/projects/${slug}/updates`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          instruction: newInstruction,
+          type: newType,
+          priority: newPriority,
+          deliverable: newDeliverable
+        })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setProjectData({ ...projectData, updates: data.updates });
+        setUpdatesDraft(data.updates);
+        setNewInstruction('');
+        setNewDeliverable('');
+        onProjectUpdated();
+      } else {
+        alert('Erro ao enviar cobrança: ' + data.error);
+      }
+    } catch (err) {
+      alert('Falha de rede ao enviar cobrança ao Hermes');
+    } finally {
+      setSendingUpdate(false);
+    }
+  };
+
+  const handleToggleUpdate = async (updateLine: string, currentlyChecked: boolean) => {
+    if (!projectData?.updates) return;
+
+    try {
+      const res = await fetch(`/api/projects/${slug}/updates`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ updateLine, currentlyChecked })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setProjectData({ ...projectData, updates: data.updates });
+        setUpdatesDraft(data.updates);
+        onProjectUpdated();
+      }
+    } catch (err) {
+      alert('Erro ao atualizar status da cobrança');
+    }
+  };
+
+  const handleSaveUpdatesDraft = async () => {
+    setSavingUpdatesDraft(true);
+    try {
+      const res = await fetch(`/api/projects/${slug}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fileName: 'updates.md', content: updatesDraft })
+      });
+      if (res.ok) {
+        setProjectData({ ...projectData, updates: updatesDraft });
+        setEditingUpdates(false);
+        onProjectUpdated();
+      } else {
+        alert('Erro ao salvar updates.md');
+      }
+    } catch (err) {
+      alert('Erro na requisição ao salvar updates');
+    } finally {
+      setSavingUpdatesDraft(false);
+    }
+  };
+
+  const parseUpdates = (markdown: string) => {
+    const lines = (markdown || '').split('\n');
+    const pendingUpdates: { raw: string; checked: boolean; title: string; instruction: string; priority?: string; deliverable?: string; author?: string }[] = [];
+    
+    let isPendingSection = false;
+    let currentItem: any = null;
+
+    for (const line of lines) {
+      if (line.includes('## 📥 Observações e Cobranças Ativas')) {
+        isPendingSection = true;
+      } else if (line.includes('## ✅ Histórico')) {
+        if (currentItem) {
+          pendingUpdates.push(currentItem);
+          currentItem = null;
+        }
+        isPendingSection = false;
+      } else if (isPendingSection) {
+        if (line.trim().startsWith('- [ ]') || line.trim().startsWith('- [x]')) {
+          if (currentItem) pendingUpdates.push(currentItem);
+          const checked = line.trim().startsWith('- [x]');
+          const rawMatch = line.replace(/^- \[[ x]\]\s*/, '').trim();
+          currentItem = {
+            raw: rawMatch,
+            checked,
+            title: rawMatch.replace(/\*\*/g, ''),
+            instruction: '',
+            priority: 'Alta',
+            deliverable: '',
+            author: 'Sergio Castro'
+          };
+        } else if (currentItem) {
+          if (line.includes('**Autor**:')) {
+            currentItem.author = line.replace(/.*?\*\*Autor\*\*:\s*/, '').trim();
+          } else if (line.includes('**Instrução**:')) {
+            currentItem.instruction = line.replace(/.*?\*\*Instrução\*\*:\s*/, '').trim();
+          } else if (line.includes('**Prioridade**:')) {
+            currentItem.priority = line.replace(/.*?\*\*Prioridade\*\*:\s*/, '').trim();
+          } else if (line.includes('**Entregável**:') || line.includes('**Entregável Relacionado**:')) {
+            currentItem.deliverable = line.replace(/.*?\*\*Entregável.*?\*\*:\s*/, '').trim();
+          }
+        }
+      }
+    }
+    if (currentItem) {
+      pendingUpdates.push(currentItem);
+    }
+    return pendingUpdates;
   };
 
   return (
@@ -195,10 +347,10 @@ export function ProjectDetailModal({ slug, onClose, onProjectUpdated, onOpenEdit
         </div>
 
         {/* Tabs */}
-        <div className="px-5 border-b border-white/10 flex gap-2 bg-slate-950/30">
+        <div className="px-5 border-b border-white/10 flex gap-2 bg-slate-950/30 overflow-x-auto">
           <button
             onClick={() => setTab('prompt')}
-            className={`flex items-center gap-2 px-4 py-3 text-xs font-semibold border-b-2 transition-all cursor-pointer ${
+            className={`flex items-center gap-2 px-4 py-3 text-xs font-semibold border-b-2 transition-all cursor-pointer shrink-0 ${
               tab === 'prompt'
                 ? 'border-indigo-400 text-indigo-300'
                 : 'border-transparent text-slate-400 hover:text-slate-200'
@@ -209,8 +361,25 @@ export function ProjectDetailModal({ slug, onClose, onProjectUpdated, onOpenEdit
           </button>
 
           <button
+            onClick={() => setTab('updates')}
+            className={`flex items-center gap-2 px-4 py-3 text-xs font-semibold border-b-2 transition-all cursor-pointer shrink-0 ${
+              tab === 'updates'
+                ? 'border-amber-400 text-amber-300'
+                : 'border-transparent text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <Radio className="w-4 h-4 text-amber-400 animate-pulse" />
+            <span>Sincronização & Cobranças Hermes</span>
+            {projectData?.pendingUpdatesCount > 0 && (
+              <span className="bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[10px] font-bold px-1.5 py-0.5 rounded-full">
+                {projectData.pendingUpdatesCount}
+              </span>
+            )}
+          </button>
+
+          <button
             onClick={() => setTab('backlog')}
-            className={`flex items-center gap-2 px-4 py-3 text-xs font-semibold border-b-2 transition-all cursor-pointer ${
+            className={`flex items-center gap-2 px-4 py-3 text-xs font-semibold border-b-2 transition-all cursor-pointer shrink-0 ${
               tab === 'backlog'
                 ? 'border-emerald-400 text-emerald-300'
                 : 'border-transparent text-slate-400 hover:text-slate-200'
@@ -222,7 +391,7 @@ export function ProjectDetailModal({ slug, onClose, onProjectUpdated, onOpenEdit
 
           <button
             onClick={() => setTab('brief')}
-            className={`flex items-center gap-2 px-4 py-3 text-xs font-semibold border-b-2 transition-all cursor-pointer ${
+            className={`flex items-center gap-2 px-4 py-3 text-xs font-semibold border-b-2 transition-all cursor-pointer shrink-0 ${
               tab === 'brief'
                 ? 'border-emerald-400 text-emerald-300'
                 : 'border-transparent text-slate-400 hover:text-slate-200'
@@ -234,7 +403,7 @@ export function ProjectDetailModal({ slug, onClose, onProjectUpdated, onOpenEdit
 
           <button
             onClick={() => setTab('files')}
-            className={`flex items-center gap-2 px-4 py-3 text-xs font-semibold border-b-2 transition-all cursor-pointer ${
+            className={`flex items-center gap-2 px-4 py-3 text-xs font-semibold border-b-2 transition-all cursor-pointer shrink-0 ${
               tab === 'files'
                 ? 'border-emerald-400 text-emerald-300'
                 : 'border-transparent text-slate-400 hover:text-slate-200'
@@ -291,7 +460,7 @@ export function ProjectDetailModal({ slug, onClose, onProjectUpdated, onOpenEdit
                         <span>Prompt do Agente Gestor (Para Cópia Manual se preferir)</span>
                       </h3>
                       <p className="text-xs text-slate-300 mt-0.5">
-                        Prompt completo com missão, regras de ouro e diretrizes das skills selecionadas.
+                        Prompt completo com missão, regras de ouro, protocolo de sincronização e diretrizes das skills selecionadas.
                       </p>
                     </div>
 
@@ -309,6 +478,238 @@ export function ProjectDetailModal({ slug, onClose, onProjectUpdated, onOpenEdit
                       {projectData?.prompt || 'Nenhum prompt encontrado para este projeto.'}
                     </pre>
                   </div>
+                </div>
+              )}
+
+              {/* Tab: Updates & Sincronização Hermes */}
+              {tab === 'updates' && (
+                <div className="space-y-5">
+                  {/* Status Banner */}
+                  <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] uppercase tracking-wider font-bold text-amber-400 bg-amber-500/20 px-2 py-0.5 rounded flex items-center gap-1">
+                          <Radio className="w-3 h-3 animate-pulse" /> Canal de Sincronização Contínua Ativo
+                        </span>
+                        <span className="text-xs font-mono text-slate-400">({slug}/updates.md)</span>
+                      </div>
+                      <p className="text-xs text-slate-200 mt-1">
+                        Poste cobranças, observações e diretrizes de tarefas. O Hermes consome isso automaticamente como <strong>Updates Prioritários</strong>.
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-2 shrink-0">
+                      <button
+                        onClick={copyUpdates}
+                        className="px-3 py-1.5 text-xs font-semibold text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-lg flex items-center gap-1.5 transition-colors border border-white/10 cursor-pointer"
+                      >
+                        {copiedUpdates ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                        <span>{copiedUpdates ? 'Copiado!' : 'Copiar updates.md'}</span>
+                      </button>
+
+                      <button
+                        onClick={() => setEditingUpdates(!editingUpdates)}
+                        className="text-xs font-semibold text-amber-400 hover:text-amber-300 px-3 py-1.5 rounded-lg border border-amber-500/30 bg-amber-500/10 hover:bg-amber-500/20 transition-colors cursor-pointer"
+                      >
+                        {editingUpdates ? 'Ver Modo Lista' : '✏️ Editar Markdown'}
+                      </button>
+                    </div>
+                  </div>
+
+                  {editingUpdates ? (
+                    <div className="space-y-3">
+                      <textarea
+                        rows={14}
+                        value={updatesDraft}
+                        onChange={(e) => setUpdatesDraft(e.target.value)}
+                        placeholder="Conteúdo bruto de updates.md..."
+                        className="w-full p-4 rounded-xl bg-slate-950 border border-white/15 text-xs font-mono text-slate-200 focus:outline-none focus:border-amber-500 leading-relaxed"
+                      />
+                      <div className="flex items-center justify-between">
+                        <p className="text-[11px] text-slate-400">
+                          💡 Dica: Ao salvar o arquivo, o Hermes recebe a atualização imediatamente via URL /p/{slug}.
+                        </p>
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setUpdatesDraft(projectData?.updates || '');
+                              setEditingUpdates(false);
+                            }}
+                            className="px-3 py-2 text-xs text-slate-400 hover:text-white rounded-lg transition-colors cursor-pointer"
+                          >
+                            Cancelar
+                          </button>
+                          <button
+                            onClick={handleSaveUpdatesDraft}
+                            disabled={savingUpdatesDraft}
+                            className="px-4 py-2 text-xs font-semibold bg-amber-400 hover:bg-amber-300 disabled:opacity-50 text-slate-950 rounded-lg transition-colors cursor-pointer shadow-md"
+                          >
+                            {savingUpdatesDraft ? 'Salvando...' : 'Salvar updates.md'}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      {/* Post New Update Form */}
+                      <form onSubmit={handleSendUpdate} className="p-4 rounded-xl bg-slate-950/70 border border-white/10 space-y-3">
+                        <div className="flex items-center justify-between">
+                          <h4 className="text-xs font-bold uppercase tracking-wider text-amber-300 flex items-center gap-1.5">
+                            <MessageSquarePlus className="w-4 h-4 text-amber-400" />
+                            <span>Nova Observação / Cobrança para o Hermes</span>
+                          </h4>
+                          <span className="text-[11px] text-slate-400">Publisher: Sergio Castro</span>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5">
+                          <div>
+                            <label className="block text-[11px] font-medium text-slate-300 mb-1">
+                              Tipo de Mensagem
+                            </label>
+                            <select
+                              value={newType}
+                              onChange={(e) => setNewType(e.target.value)}
+                              className="w-full bg-slate-900 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500"
+                            >
+                              <option value="⚡ Cobrança de Entrega">⚡ Cobrança de Entrega</option>
+                              <option value="✍️ Diretriz Editorial">✍️ Diretriz Editorial</option>
+                              <option value="🎯 Ajuste de Escopo">🎯 Ajuste de Escopo</option>
+                              <option value="🔍 Revisão / Feedback">🔍 Revisão / Feedback</option>
+                              <option value="📌 Nota Geral">📌 Nota Geral</option>
+                            </select>
+                          </div>
+
+                          <div>
+                            <label className="block text-[11px] font-medium text-slate-300 mb-1">
+                              Prioridade
+                            </label>
+                            <select
+                              value={newPriority}
+                              onChange={(e) => setNewPriority(e.target.value)}
+                              className="w-full bg-slate-900 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500"
+                            >
+                              <option value="Urgente">🔴 Urgente</option>
+                              <option value="Alta">🟡 Alta</option>
+                              <option value="Média">🔵 Média</option>
+                            </select>
+                          </div>
+
+                          <div>
+                            <label className="block text-[11px] font-medium text-slate-300 mb-1">
+                              Entregável Relacionado (Opcional)
+                            </label>
+                            <input
+                              type="text"
+                              placeholder="Ex: 01-pesquisa/analise-nicho.md"
+                              value={newDeliverable}
+                              onChange={(e) => setNewDeliverable(e.target.value)}
+                              className="w-full bg-slate-900 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500 font-mono"
+                            />
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="block text-[11px] font-medium text-slate-300 mb-1">
+                            Instrução / Cobrança Detalhada *
+                          </label>
+                          <textarea
+                            rows={3}
+                            required
+                            placeholder="Descreva a orientação, ajuste necessário, cobrança de prazo ou refinamento..."
+                            value={newInstruction}
+                            onChange={(e) => setNewInstruction(e.target.value)}
+                            className="w-full bg-slate-900 border border-white/10 rounded-lg p-3 text-xs text-white focus:outline-none focus:border-amber-500 leading-relaxed"
+                          />
+                        </div>
+
+                        <div className="flex justify-end">
+                          <button
+                            type="submit"
+                            disabled={sendingUpdate || !newInstruction.trim()}
+                            className="flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-slate-950 bg-amber-400 hover:bg-amber-300 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg shadow-md transition-colors cursor-pointer"
+                          >
+                            <Send className="w-3.5 h-3.5" />
+                            <span>{sendingUpdate ? 'Registrando...' : 'Enviar Cobrança ao Hermes'}</span>
+                          </button>
+                        </div>
+                      </form>
+
+                      {/* Active Updates Feed */}
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-2">
+                            <span>Observações & Cobranças no updates.md</span>
+                            <span className="text-[10px] text-slate-400 font-normal">(Clique para marcar como resolvida)</span>
+                          </h4>
+                        </div>
+
+                        {parseUpdates(projectData?.updates || '').length === 0 ? (
+                          <div className="p-6 rounded-xl bg-slate-950/40 border border-white/5 text-center text-slate-500 text-xs">
+                            Nenhuma cobrança ativa no momento. Todas as diretrizes estão em dia!
+                          </div>
+                        ) : (
+                          <div className="space-y-2.5">
+                            {parseUpdates(projectData?.updates || '').map((item, idx) => (
+                              <div
+                                key={idx}
+                                onClick={() => handleToggleUpdate(item.raw, item.checked)}
+                                className={`p-3.5 rounded-xl border flex items-start gap-3 cursor-pointer transition-all ${
+                                  item.checked
+                                    ? 'bg-emerald-500/5 border-emerald-500/20 text-slate-400'
+                                    : 'bg-slate-950/70 border-amber-500/20 text-slate-200 hover:border-amber-500/40'
+                                }`}
+                              >
+                                <div className={`w-5 h-5 rounded mt-0.5 flex items-center justify-center border shrink-0 ${
+                                  item.checked
+                                    ? 'bg-emerald-500 border-emerald-400 text-slate-950'
+                                    : 'border-amber-500/50 bg-slate-900'
+                                }`}>
+                                  {item.checked && <Check className="w-3.5 h-3.5 stroke-[3]" />}
+                                </div>
+
+                                <div className="flex-1 space-y-1">
+                                  <div className="flex items-center justify-between gap-2 flex-wrap">
+                                    <span className={`text-xs font-bold ${item.checked ? 'line-through text-slate-500' : 'text-amber-300'}`}>
+                                      {item.title}
+                                    </span>
+                                    <div className="flex items-center gap-1.5">
+                                      {item.priority && (
+                                        <span className={`text-[10px] px-2 py-0.5 rounded font-semibold ${
+                                          item.priority.toLowerCase().includes('urgente')
+                                            ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
+                                            : item.priority.toLowerCase().includes('alta')
+                                            ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                                            : 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
+                                        }`}>
+                                          {item.priority}
+                                        </span>
+                                      )}
+                                      <span className="text-[10px] text-slate-400 bg-slate-800 px-2 py-0.5 rounded">
+                                        {item.author || 'Sergio Castro'}
+                                      </span>
+                                    </div>
+                                  </div>
+
+                                  {item.instruction && (
+                                    <p className={`text-xs ${item.checked ? 'line-through text-slate-500' : 'text-slate-300'}`}>
+                                      {item.instruction}
+                                    </p>
+                                  )}
+
+                                  {item.deliverable && (
+                                    <p className="text-[11px] font-mono text-emerald-400/80">
+                                      📁 Entregável: {item.deliverable}
+                                    </p>
+                                  )}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </>
+                  )}
                 </div>
               )}
 

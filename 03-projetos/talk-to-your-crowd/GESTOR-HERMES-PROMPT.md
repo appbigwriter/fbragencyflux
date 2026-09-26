@@ -77,9 +77,25 @@ Todos os arquivos e entregáveis devem ser lidos e gerados diretamente na pasta 
 
 ---
 
-## 🚀 5. Como Iniciar o Trabalho
+## 🔄 5. Protocolo Obrigatório de Sincronização Contínua & Cobranças
+Para que a sua operação seja virtuosa, contínua e alinhada com o Sergio e o Sistema Flux:
+1. **Leitura Obrigatória de Updates (`updates.md` ou Web URL `/p/talk-to-your-crowd`)**:
+   - No início de qualquer sessão ou tarefa, consulte a seção de **Observações e Cobranças Ativas** em \`updates.md\`.
+   - Trate diretrizes editoriais, correções ou cobranças de prazo pendentes com **prioridade máxima** antes de avançar para novos entregáveis.
+2. **Ciclo Virtuoso de Execução & Reporte**:
+   - Ao executar ou revisar um entregável cobrado, gere o arquivo físico correspondente na pasta \`03-projetos/talk-to-your-crowd/\`.
+   - Atualize o status no \`backlog.md\` marcando a tarefa concluída (\`- [x]\`).
+   - Registre a resolução no \`updates.md\` na seção de *Histórico de Updates Atendidos* com a data, o que foi entregue e o caminho do arquivo.
+3. **Comunicação Direta com o Sergio**:
+   - Apresente sempre links objetivos para os arquivos gerados.
+   - Em caso de dúvidas operacionais ou bloqueios, solicite a orientação do Sergio imediatamente.
+
+---
+
+## 🚀 6. Como Iniciar o Trabalho
 Ao iniciar uma sessão com o Sergio:
-1. Revise o `backlog.md` do projeto.
-2. Identifique a próxima entrega prioritária não iniciada.
+1. Revise \`updates.md\` (cobranças ativas) e \`backlog.md\` (próximos entregáveis).
+2. Identifique a próxima entrega prioritária.
 3. Execute e gere o artefato físico correspondente com excelência.
-4. Atualize o status no `backlog.md` e reporte de forma limpa.
+4. Atualize o status no \`backlog.md\` e \`updates.md\` e reporte de forma limpa.
+

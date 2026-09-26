@@ -1,6 +1,6 @@
 import fs from 'fs/promises';
 import path from 'path';
-import { ProjectCreationData, generateHermesGestorPrompt, generateInitialBrief, generateInitialBacklog } from './generator';
+import { ProjectCreationData, generateHermesGestorPrompt, generateInitialBrief, generateInitialBacklog, generateInitialUpdates } from './generator';
 import { syncProjectToDatabase } from './integrations/supabase';
 import { registerProjectInControlTower } from './integrations/control-tower';
 import { triggerN8nWorkflow } from './integrations/n8n';
@@ -18,6 +18,8 @@ export interface ProjectSummary {
   hasBrief: boolean;
   hasBacklog: boolean;
   hasPrompt: boolean;
+  hasUpdates?: boolean;
+  pendingUpdatesCount?: number;
   totalTasks: number;
   completedTasks: number;
   lastModified: string;
@@ -153,6 +155,7 @@ export async function getProjectDetail(slug: string) {
   let brief = '';
   let backlog = '';
   let prompt = '';
+  let updates = '';
   const files: { path: string; isDir: boolean; size?: number }[] = [];
 
   try {
@@ -165,6 +168,10 @@ export async function getProjectDetail(slug: string) {
 
   try {
     prompt = await fs.readFile(path.join(projectDir, 'GESTOR-HERMES-PROMPT.md'), 'utf-8');
+  } catch {}
+
+  try {
+    updates = await fs.readFile(path.join(projectDir, 'updates.md'), 'utf-8');
   } catch {}
 
   async function scanFiles(dir: string, base: string = '') {
@@ -245,11 +252,37 @@ export async function getProjectDetail(slug: string) {
     }
   }
 
+  // Se não existir updates.md, mas o projeto existe, cria o inicial
+  if (!updates && (brief || prompt)) {
+    const defaultData: ProjectCreationData = {
+      name: projectName,
+      slug,
+      niche,
+      targetAudience,
+      language,
+      domain,
+      monetization: ['Amazon Associates', 'Afiliados Especializados', 'FBR Ads'],
+      gestorName,
+      personaTone,
+      selectedSkills: selectedSkills.length > 0 ? selectedSkills : ['pesquisa-mercado', 'copy-posicionamento']
+    };
+    updates = generateInitialUpdates(defaultData);
+    try {
+      await fs.writeFile(path.join(projectDir, 'updates.md'), updates, 'utf-8');
+    } catch {}
+  }
+
+  // Contagem de cobranças pendentes
+  const pendingUpdatesMatches = updates ? updates.match(/^- \[ \] \*\*\[.+/gm) : null;
+  const pendingUpdatesCount = pendingUpdatesMatches ? pendingUpdatesMatches.length : 0;
+
   return {
     slug,
     brief,
     backlog,
     prompt,
+    updates,
+    pendingUpdatesCount,
     files,
     metadata: {
       name: projectName,
@@ -285,11 +318,15 @@ export async function createProject(data: ProjectCreationData) {
   const backlogContent = generateInitialBacklog(data);
   await fs.writeFile(path.join(projectDir, 'backlog.md'), backlogContent, 'utf-8');
 
-  // 3. Gerar GESTOR-HERMES-PROMPT.md
+  // 3. Gerar updates.md inicial
+  const updatesContent = generateInitialUpdates(data);
+  await fs.writeFile(path.join(projectDir, 'updates.md'), updatesContent, 'utf-8');
+
+  // 4. Gerar GESTOR-HERMES-PROMPT.md
   const hermesPrompt = generateHermesGestorPrompt(data, WORKSPACE_ROOT.replace(/\\/g, '/'));
   await fs.writeFile(path.join(projectDir, 'GESTOR-HERMES-PROMPT.md'), hermesPrompt, 'utf-8');
 
-  // 4. Integrações Assíncronas (Supabase/Postgres VPS, Control Tower, n8n)
+  // 5. Integrações Assíncronas (Supabase/Postgres VPS, Control Tower, n8n)
   try {
     syncProjectToDatabase(data).catch(() => {});
     registerProjectInControlTower(data).catch(() => {});
@@ -340,5 +377,90 @@ export async function updateProjectFile(slug: string, fileName: string, content:
 
   return { success: true };
 }
+
+export async function addProjectUpdate(slug: string, updateData: {
+  author?: string;
+  type?: string;
+  instruction: string;
+  deliverable?: string;
+  priority?: string;
+}) {
+  const projectDir = path.join(PROJECTS_DIR, slug);
+  const updatesPath = path.join(projectDir, 'updates.md');
+  const dateStr = new Date().toISOString().replace('T', ' ').substring(0, 16);
+
+  let currentContent = '';
+  try {
+    currentContent = await fs.readFile(updatesPath, 'utf-8');
+  } catch {
+    const detail = await getProjectDetail(slug);
+    currentContent = generateInitialUpdates({
+      name: detail.metadata.name,
+      slug,
+      niche: detail.metadata.niche,
+      targetAudience: detail.metadata.targetAudience,
+      language: detail.metadata.language,
+      gestorName: detail.metadata.gestorName,
+      personaTone: detail.metadata.personaTone,
+      monetization: detail.metadata.monetization,
+      selectedSkills: detail.metadata.selectedSkills
+    });
+  }
+
+  const author = updateData.author || 'Sergio Castro (Publisher)';
+  const type = updateData.type || '⚡ Cobrança / Diretriz';
+  const priority = updateData.priority || 'Alta';
+  const deliverable = updateData.deliverable ? `\n  - **Entregável Relacionado**: \`${updateData.deliverable}\`` : '';
+
+  const newEntry = `- [ ] **[${dateStr} - ${type}]**
+  - **Autor**: ${author}
+  - **Instrução**: ${updateData.instruction}${deliverable}
+  - **Prioridade**: ${priority}
+  - **Status**: Pendente de Resposta do Hermes\n`;
+
+  let updatedContent = '';
+  if (currentContent.includes('## 📥 Observações e Cobranças Ativas (Aguardando Ação do Agente)')) {
+    updatedContent = currentContent.replace(
+      '## 📥 Observações e Cobranças Ativas (Aguardando Ação do Agente)',
+      `## 📥 Observações e Cobranças Ativas (Aguardando Ação do Agente)\n${newEntry}`
+    );
+  } else {
+    updatedContent = `${currentContent}\n\n## 📥 Observações e Cobranças Ativas (Aguardando Ação do Agente)\n${newEntry}`;
+  }
+
+  await fs.writeFile(updatesPath, updatedContent, 'utf-8');
+
+  // Notificar n8n e registrar log
+  try {
+    triggerN8nWorkflow('hermes_update_posted', {
+      slug,
+      author,
+      type,
+      instruction: updateData.instruction,
+      priority,
+      timestamp: new Date().toISOString()
+    }).catch(() => {});
+  } catch {}
+
+  return { success: true, updates: updatedContent };
+}
+
+export async function toggleProjectUpdate(slug: string, updateLine: string, currentlyChecked: boolean) {
+  const projectDir = path.join(PROJECTS_DIR, slug);
+  const updatesPath = path.join(projectDir, 'updates.md');
+
+  try {
+    const currentContent = await fs.readFile(updatesPath, 'utf-8');
+    const oldPattern = currentlyChecked ? `- [x] ${updateLine}` : `- [ ] ${updateLine}`;
+    const newPattern = currentlyChecked ? `- [ ] ${updateLine}` : `- [x] ${updateLine}`;
+
+    const newContent = currentContent.replace(oldPattern, newPattern);
+    await fs.writeFile(updatesPath, newContent, 'utf-8');
+    return { success: true, updates: newContent };
+  } catch (err: any) {
+    throw new Error('Falha ao alternar status do update: ' + err.message);
+  }
+}
+
 
 

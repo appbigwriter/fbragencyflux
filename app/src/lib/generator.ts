@@ -83,12 +83,27 @@ Todos os arquivos e entregáveis devem ser lidos e gerados diretamente na pasta 
 
 ---
 
-## 🚀 5. Como Iniciar o Trabalho
+## 🔄 5. Protocolo Obrigatório de Sincronização Contínua & Cobranças
+Para que a sua operação seja virtuosa, contínua e alinhada com o Sergio e o Sistema Flux:
+1. **Leitura Obrigatória de Updates (\`updates.md\` ou Web URL \`/p/${data.slug}\`)**:
+   - No início de qualquer sessão ou tarefa, consulte a seção de **Observações e Cobranças Ativas** em \`updates.md\`.
+   - Se houver diretrizes editoriais, correções ou cobranças de prazo pendentes, trate-as com **prioridade máxima** antes de avançar para novos entregáveis.
+2. **Ciclo Virtuoso de Execução & Reporte**:
+   - Ao executar ou revisar um entregável cobrado, gere o arquivo físico correspondente na pasta \`03-projetos/${data.slug}/\`.
+   - Atualize o status no \`backlog.md\` marcando a tarefa concluída (\`- [x]\`).
+   - Registre a resolução no \`updates.md\` na seção de *Histórico de Updates Atendidos* com a data, o que foi entregue e o caminho do arquivo.
+3. **Comunicação Direta com o Sergio**:
+   - Apresente sempre links objetivos para os arquivos gerados.
+   - Em caso de dúvidas operacionais ou bloqueios, solicite a orientação do Sergio imediatamente.
+
+---
+
+## 🚀 6. Como Iniciar o Trabalho
 Ao iniciar uma sessão com o Sergio:
-1. Revise o \`backlog.md\` do projeto.
-2. Identifique a próxima entrega prioritária não iniciada.
+1. Revise \`updates.md\` (cobranças ativas) e \`backlog.md\` (próximos entregáveis).
+2. Identifique a próxima entrega prioritária.
 3. Execute e gere o artefato físico correspondente com excelência.
-4. Atualize o status no \`backlog.md\` e reporte de forma limpa.
+4. Atualize o status no \`backlog.md\` e \`updates.md\` e reporte de forma limpa.
 `;
 }
 
@@ -159,3 +174,27 @@ Acompanhamento direto e transparente dos entregáveis do projeto.
 - [ ] **Aprovação do Gate Final de Deploy**
 `;
 }
+
+export function generateInitialUpdates(data: ProjectCreationData): string {
+  const dateStr = new Date().toISOString().split('T')[0];
+  return `# 📢 Sincronização & Cobranças: ${data.name} ⚡
+
+Canal ativo de comunicação, observações e cobranças entre o Publisher (Sergio Castro / Sistema Flux) e o Agente Gestor Hermes (**${data.gestorName}**).
+
+---
+
+## 📥 Observações e Cobranças Ativas (Aguardando Ação do Agente)
+- [ ] **[${dateStr} - 🎯 Inicialização do Projeto]**
+  - **Autor**: Sergio Castro (Publisher) / Sistema Flux
+  - **Instrução**: Inicializar as atividades de pesquisa de mercado e definição dos tokens de design conforme o briefing.
+  - **Entregável**: \`01-pesquisa/analise-nicho.md\` e \`03-design-ui/tokens.css\`
+  - **Prioridade**: Alta
+  - **Status**: Pendente de Resposta do Hermes
+
+---
+
+## ✅ Histórico de Updates Atendidos & Resoluções
+- Nenhum update arquivado ainda. Conforme as cobranças forem atendidas, mova-as para esta seção com o link do entregável.
+`;
+}
+
