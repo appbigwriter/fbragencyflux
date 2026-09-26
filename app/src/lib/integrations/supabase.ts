@@ -73,13 +73,11 @@ export async function checkDatabaseHealth(): Promise<{ status: 'connected' | 'di
 }
 
 export async function syncProjectToDatabase(projectData: any) {
-  // Sincronização não bloqueante: tenta persistir no Postgres / Supabase
   if (pgPool) {
     try {
       const client = await pgPool.connect();
       const schemaName = process.env.CONTROL_TOWER_SCHEMA_NAME || 'custom_agency';
       
-      // Cria a tabela se não existir
       await client.query(`
         CREATE SCHEMA IF NOT EXISTS ${schemaName};
         CREATE TABLE IF NOT EXISTS ${schemaName}.agency_projects (
@@ -90,14 +88,26 @@ export async function syncProjectToDatabase(projectData: any) {
           target_audience TEXT,
           language VARCHAR(50),
           domain VARCHAR(255),
+          status VARCHAR(50) DEFAULT 'active',
+          brief_content TEXT,
+          backlog_content TEXT,
+          prompt_content TEXT,
+          updates_content TEXT,
           metadata JSONB,
           updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
         );
+        ALTER TABLE ${schemaName}.agency_projects ADD COLUMN IF NOT EXISTS status VARCHAR(50) DEFAULT 'active';
+        ALTER TABLE ${schemaName}.agency_projects ADD COLUMN IF NOT EXISTS brief_content TEXT;
+        ALTER TABLE ${schemaName}.agency_projects ADD COLUMN IF NOT EXISTS backlog_content TEXT;
+        ALTER TABLE ${schemaName}.agency_projects ADD COLUMN IF NOT EXISTS prompt_content TEXT;
+        ALTER TABLE ${schemaName}.agency_projects ADD COLUMN IF NOT EXISTS updates_content TEXT;
       `);
 
       await client.query(`
-        INSERT INTO ${schemaName}.agency_projects (slug, name, niche, gestor_name, target_audience, language, domain, metadata, updated_at)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW())
+        INSERT INTO ${schemaName}.agency_projects (
+          slug, name, niche, gestor_name, target_audience, language, domain, status, brief_content, backlog_content, prompt_content, updates_content, metadata, updated_at
+        )
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, NOW())
         ON CONFLICT (slug) DO UPDATE SET
           name = EXCLUDED.name,
           niche = EXCLUDED.niche,
@@ -105,6 +115,11 @@ export async function syncProjectToDatabase(projectData: any) {
           target_audience = EXCLUDED.target_audience,
           language = EXCLUDED.language,
           domain = EXCLUDED.domain,
+          status = COALESCE(EXCLUDED.status, ${schemaName}.agency_projects.status),
+          brief_content = COALESCE(EXCLUDED.brief_content, ${schemaName}.agency_projects.brief_content),
+          backlog_content = COALESCE(EXCLUDED.backlog_content, ${schemaName}.agency_projects.backlog_content),
+          prompt_content = COALESCE(EXCLUDED.prompt_content, ${schemaName}.agency_projects.prompt_content),
+          updates_content = COALESCE(EXCLUDED.updates_content, ${schemaName}.agency_projects.updates_content),
           metadata = EXCLUDED.metadata,
           updated_at = NOW();
       `, [
@@ -115,17 +130,40 @@ export async function syncProjectToDatabase(projectData: any) {
         projectData.targetAudience || '',
         projectData.language || '',
         projectData.domain || '',
+        projectData.status || 'active',
+        projectData.briefContent || null,
+        projectData.backlogContent || null,
+        projectData.promptContent || null,
+        projectData.updatesContent || null,
         JSON.stringify(projectData)
       ]);
 
       client.release();
       return { success: true, syncedTo: 'PostgreSQL VPS' };
     } catch (err: any) {
-      console.warn('Aviso: Sincronização com banco PostgreSQL VPS falhou, mantendo persistência File-First:', err.message);
+      console.warn('Aviso: Sincronização com banco PostgreSQL VPS falhou:', err.message);
     }
   }
 
   return { success: true, syncedTo: 'File-First Local' };
+}
+
+export async function updateProjectFieldInDatabase(slug: string, field: 'brief_content' | 'backlog_content' | 'prompt_content' | 'updates_content', value: string) {
+  if (!pgPool) return false;
+  try {
+    const client = await pgPool.connect();
+    const schemaName = process.env.CONTROL_TOWER_SCHEMA_NAME || 'custom_agency';
+    await client.query(`
+      UPDATE ${schemaName}.agency_projects
+      SET ${field} = $1, updated_at = NOW()
+      WHERE slug = $2
+    `, [value, slug]);
+    client.release();
+    return true;
+  } catch (err: any) {
+    console.warn(`Falha ao atualizar coluna ${field} do projeto ${slug} no Postgres VPS:`, err.message);
+    return false;
+  }
 }
 
 export async function fetchProjectsFromDatabase(): Promise<any[]> {
@@ -138,16 +176,15 @@ export async function fetchProjectsFromDatabase(): Promise<any[]> {
     let rows: any[] = [];
     try {
       const res = await client.query(`
-        SELECT slug, name, niche, gestor_name, target_audience, language, domain, metadata, updated_at 
+        SELECT slug, name, niche, gestor_name, target_audience, language, domain, status, brief_content, backlog_content, prompt_content, updates_content, metadata, updated_at 
         FROM ${schemaName}.agency_projects 
         ORDER BY updated_at DESC
       `);
       rows = res.rows;
     } catch {
-      // Fallback tentativa custom_agency
       try {
         const res = await client.query(`
-          SELECT slug, name, niche, gestor_name, target_audience, language, domain, metadata, updated_at 
+          SELECT slug, name, niche, gestor_name, target_audience, language, domain, status, brief_content, backlog_content, prompt_content, updates_content, metadata, updated_at 
           FROM custom_agency.agency_projects 
           ORDER BY updated_at DESC
         `);
@@ -162,4 +199,39 @@ export async function fetchProjectsFromDatabase(): Promise<any[]> {
     return [];
   }
 }
+
+export async function fetchProjectDetailFromDatabase(slug: string): Promise<any | null> {
+  if (!pgPool) return null;
+
+  try {
+    const client = await pgPool.connect();
+    const schemaName = process.env.CONTROL_TOWER_SCHEMA_NAME || 'custom_agency';
+
+    let row = null;
+    try {
+      const res = await client.query(`
+        SELECT slug, name, niche, gestor_name, target_audience, language, domain, status, brief_content, backlog_content, prompt_content, updates_content, metadata, updated_at 
+        FROM ${schemaName}.agency_projects 
+        WHERE slug = $1
+      `, [slug]);
+      if (res.rows.length > 0) row = res.rows[0];
+    } catch {
+      try {
+        const res = await client.query(`
+          SELECT slug, name, niche, gestor_name, target_audience, language, domain, status, brief_content, backlog_content, prompt_content, updates_content, metadata, updated_at 
+          FROM custom_agency.agency_projects 
+          WHERE slug = $1
+        `, [slug]);
+        if (res.rows.length > 0) row = res.rows[0];
+      } catch {}
+    }
+
+    client.release();
+    return row;
+  } catch (err: any) {
+    console.warn(`Falha ao buscar projeto ${slug} do PostgreSQL VPS:`, err.message);
+    return null;
+  }
+}
+
 

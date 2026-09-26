@@ -1,7 +1,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { ProjectCreationData, generateHermesGestorPrompt, generateInitialBrief, generateInitialBacklog, generateInitialUpdates } from './generator';
-import { syncProjectToDatabase, fetchProjectsFromDatabase } from './integrations/supabase';
+import { syncProjectToDatabase, fetchProjectsFromDatabase, fetchProjectDetailFromDatabase, updateProjectFieldInDatabase } from './integrations/supabase';
 import { registerProjectInControlTower } from './integrations/control-tower';
 import { triggerN8nWorkflow } from './integrations/n8n';
 import { ensureDefaultProjectsSeeded } from './seed-data';
@@ -74,153 +74,154 @@ export async function listSkills(): Promise<SkillItem[]> {
 
 export async function listProjects(): Promise<ProjectSummary[]> {
   try {
-    // 1. Tenta carregar do banco PostgreSQL VPS primeiro
+    const projectsMap = new Map<string, ProjectSummary>();
+
+    // 1. Tenta carregar do banco PostgreSQL VPS primeiro (Single Source of Truth)
     const dbProjects = await fetchProjectsFromDatabase();
     for (const dbp of dbProjects) {
       const pDir = path.join(PROJECTS_DIR, dbp.slug);
+      
+      const briefContent = dbp.brief_content || (dbp.metadata?.briefingText ? generateInitialBrief({
+        name: dbp.name,
+        slug: dbp.slug,
+        niche: dbp.niche,
+        targetAudience: dbp.target_audience,
+        language: dbp.language,
+        domain: dbp.domain,
+        gestorName: dbp.gestor_name,
+        personaTone: dbp.metadata?.personaTone || 'Editorial sofisticado',
+        briefingText: dbp.metadata?.briefingText || '',
+        monetization: dbp.metadata?.monetization || ['Amazon Associates', 'Afiliados Especializados', 'FBR Ads'],
+        selectedSkills: dbp.metadata?.selectedSkills || ['pesquisa-mercado', 'copy-posicionamento']
+      }) : '');
+
+      const backlogContent = dbp.backlog_content || '';
+      const promptContent = dbp.prompt_content || '';
+      const updatesContent = dbp.updates_content || '';
+
+      // Sincroniza em disco para navegação local se necessário
       try {
         await fs.mkdir(pDir, { recursive: true });
-        const briefPath = path.join(pDir, 'brief.md');
-        const backlogPath = path.join(pDir, 'backlog.md');
-        const promptPath = path.join(pDir, 'GESTOR-HERMES-PROMPT.md');
-        const updatesPath = path.join(pDir, 'updates.md');
-
-        try { await fs.access(briefPath); } catch {
-          await fs.writeFile(briefPath, generateInitialBrief({
-            name: dbp.name,
-            slug: dbp.slug,
-            niche: dbp.niche,
-            targetAudience: dbp.target_audience,
-            language: dbp.language,
-            domain: dbp.domain,
-            gestorName: dbp.gestor_name,
-            personaTone: dbp.metadata?.personaTone || 'Editorial sofisticado',
-            briefingText: dbp.metadata?.briefingText || '',
-            monetization: dbp.metadata?.monetization || ['Amazon Associates', 'Afiliados Especializados', 'FBR Ads'],
-            selectedSkills: dbp.metadata?.selectedSkills || ['pesquisa-mercado', 'copy-posicionamento']
-          }), 'utf-8');
+        if (briefContent) {
+          const bp = path.join(pDir, 'brief.md');
+          try { await fs.access(bp); } catch { await fs.writeFile(bp, briefContent, 'utf-8'); }
         }
-
-        try { await fs.access(backlogPath); } catch {
-          await fs.writeFile(backlogPath, generateInitialBacklog({
-            name: dbp.name,
-            slug: dbp.slug,
-            niche: dbp.niche,
-            targetAudience: dbp.target_audience,
-            language: dbp.language,
-            domain: dbp.domain,
-            gestorName: dbp.gestor_name,
-            personaTone: dbp.metadata?.personaTone || '',
-            monetization: dbp.metadata?.monetization || [],
-            selectedSkills: dbp.metadata?.selectedSkills || []
-          }), 'utf-8');
+        if (backlogContent) {
+          const blp = path.join(pDir, 'backlog.md');
+          try { await fs.access(blp); } catch { await fs.writeFile(blp, backlogContent, 'utf-8'); }
         }
-
-        try { await fs.access(promptPath); } catch {
-          await fs.writeFile(promptPath, generateHermesGestorPrompt({
-            name: dbp.name,
-            slug: dbp.slug,
-            niche: dbp.niche,
-            targetAudience: dbp.target_audience,
-            language: dbp.language,
-            domain: dbp.domain,
-            gestorName: dbp.gestor_name,
-            personaTone: dbp.metadata?.personaTone || '',
-            briefingText: dbp.metadata?.briefingText || '',
-            monetization: dbp.metadata?.monetization || [],
-            selectedSkills: dbp.metadata?.selectedSkills || []
-          }, WORKSPACE_ROOT.replace(/\\/g, '/')), 'utf-8');
+        if (promptContent) {
+          const pp = path.join(pDir, 'GESTOR-HERMES-PROMPT.md');
+          try { await fs.access(pp); } catch { await fs.writeFile(pp, promptContent, 'utf-8'); }
         }
-
-        try { await fs.access(updatesPath); } catch {
-          await fs.writeFile(updatesPath, generateInitialUpdates({
-            name: dbp.name,
-            slug: dbp.slug,
-            niche: dbp.niche,
-            targetAudience: dbp.target_audience,
-            language: dbp.language,
-            domain: dbp.domain,
-            gestorName: dbp.gestor_name,
-            personaTone: dbp.metadata?.personaTone || '',
-            monetization: dbp.metadata?.monetization || [],
-            selectedSkills: dbp.metadata?.selectedSkills || []
-          }), 'utf-8');
+        if (updatesContent) {
+          const up = path.join(pDir, 'updates.md');
+          try { await fs.access(up); } catch { await fs.writeFile(up, updatesContent, 'utf-8'); }
         }
       } catch {}
+
+      const completedMatches = backlogContent.match(/- \[x\]/gi);
+      const pendingMatches = backlogContent.match(/- \[ \]/gi);
+      const completedTasks = completedMatches ? completedMatches.length : 0;
+      const totalTasks = completedTasks + (pendingMatches ? pendingMatches.length : 0);
+
+      const pendingUpdatesMatches = updatesContent ? updatesContent.match(/^- \[ \] \*\*\[.+/gm) : null;
+      const pendingUpdatesCount = pendingUpdatesMatches ? pendingUpdatesMatches.length : 0;
+
+      projectsMap.set(dbp.slug, {
+        slug: dbp.slug,
+        name: dbp.name,
+        niche: dbp.niche || 'Nicho não especificado',
+        gestorName: dbp.gestor_name || 'Gestor Hermes',
+        hasBrief: !!briefContent,
+        hasBacklog: !!backlogContent,
+        hasPrompt: !!promptContent,
+        hasUpdates: !!updatesContent,
+        pendingUpdatesCount,
+        totalTasks,
+        completedTasks,
+        lastModified: dbp.updated_at ? new Date(dbp.updated_at).toISOString() : new Date().toISOString()
+      });
     }
 
-    // 2. Garante o seed padrão para os que não estiverem no banco
+    // 2. Garante o seed padrão e lê pastas locais que não existam no banco
     await ensureDefaultProjectsSeeded(PROJECTS_DIR, SKILLS_DIR, WORKSPACE_ROOT);
-    const entries = await fs.readdir(PROJECTS_DIR, { withFileTypes: true });
-    const projects: ProjectSummary[] = [];
+    try {
+      const entries = await fs.readdir(PROJECTS_DIR, { withFileTypes: true });
+      for (const entry of entries) {
+        if (entry.isDirectory() && !projectsMap.has(entry.name)) {
+          const projectDir = path.join(PROJECTS_DIR, entry.name);
+          const briefPath = path.join(projectDir, 'brief.md');
+          const backlogPath = path.join(projectDir, 'backlog.md');
+          const promptPath = path.join(projectDir, 'GESTOR-HERMES-PROMPT.md');
+          const updatesPath = path.join(projectDir, 'updates.md');
 
-    for (const entry of entries) {
-      if (entry.isDirectory()) {
-        const projectDir = path.join(PROJECTS_DIR, entry.name);
-        const briefPath = path.join(projectDir, 'brief.md');
-        const backlogPath = path.join(projectDir, 'backlog.md');
-        const promptPath = path.join(projectDir, 'GESTOR-HERMES-PROMPT.md');
+          let hasBrief = false;
+          let hasBacklog = false;
+          let hasPrompt = false;
+          let hasUpdates = false;
+          let projectName = entry.name;
+          let niche = 'Nicho não especificado';
+          let gestorName = 'Gestor Hermes';
+          let totalTasks = 0;
+          let completedTasks = 0;
+          let pendingUpdatesCount = 0;
 
-        let hasBrief = false;
-        let hasBacklog = false;
-        let hasPrompt = false;
-        let projectName = entry.name;
-        let niche = 'Nicho não especificado';
-        let gestorName = 'Gestor Hermes';
-        let totalTasks = 0;
-        let completedTasks = 0;
+          try {
+            const briefContent = await fs.readFile(briefPath, 'utf-8');
+            hasBrief = true;
+            const nameMatch = briefContent.match(/#\s*(?:Briefing do Projeto:\s*)?(.+)/i);
+            if (nameMatch) projectName = nameMatch[1].replace(/⚡|🌿/g, '').trim();
 
-        try {
-          const briefContent = await fs.readFile(briefPath, 'utf-8');
-          hasBrief = true;
-          const nameMatch = briefContent.match(/#\s*(?:Briefing do Projeto:\s*)?(.+)/i);
-          if (nameMatch) projectName = nameMatch[1].replace(/⚡|🌿/g, '').trim();
+            const nicheMatch = briefContent.match(/Nicho Principal\*\*:\s*(.+)/i) || briefContent.match(/Nicho & Mercado\*\*:\s*(.+)/i);
+            if (nicheMatch) niche = nicheMatch[1].trim();
 
-          const nicheMatch = briefContent.match(/Nicho Principal\*\*:\s*(.+)/i) || briefContent.match(/Nicho & Mercado\*\*:\s*(.+)/i);
-          if (nicheMatch) niche = nicheMatch[1].trim();
+            const gestorMatch = briefContent.match(/Gestor Hermes Responsável\*\*:\s*(.+)/i);
+            if (gestorMatch) gestorName = gestorMatch[1].trim();
+          } catch {}
 
-          const gestorMatch = briefContent.match(/Gestor Hermes Responsável\*\*:\s*(.+)/i);
-          if (gestorMatch) gestorName = gestorMatch[1].trim();
-        } catch {
-          // No brief
+          try {
+            const backlogContent = await fs.readFile(backlogPath, 'utf-8');
+            hasBacklog = true;
+            const completedMatches = backlogContent.match(/- \[x\]/gi);
+            const pendingMatches = backlogContent.match(/- \[ \]/gi);
+            completedTasks = completedMatches ? completedMatches.length : 0;
+            totalTasks = completedTasks + (pendingMatches ? pendingMatches.length : 0);
+          } catch {}
+
+          try {
+            await fs.access(promptPath);
+            hasPrompt = true;
+          } catch {}
+
+          try {
+            const updatesContent = await fs.readFile(updatesPath, 'utf-8');
+            hasUpdates = true;
+            const pendingUpdatesMatches = updatesContent.match(/^- \[ \] \*\*\[.+/gm);
+            pendingUpdatesCount = pendingUpdatesMatches ? pendingUpdatesMatches.length : 0;
+          } catch {}
+
+          const stat = await fs.stat(projectDir);
+
+          projectsMap.set(entry.name, {
+            slug: entry.name,
+            name: projectName,
+            niche,
+            gestorName,
+            hasBrief,
+            hasBacklog,
+            hasPrompt,
+            hasUpdates,
+            pendingUpdatesCount,
+            totalTasks,
+            completedTasks,
+            lastModified: stat.mtime.toISOString()
+          });
         }
-
-        try {
-          const backlogContent = await fs.readFile(backlogPath, 'utf-8');
-          hasBacklog = true;
-          const completedMatches = backlogContent.match(/- \[x\]/gi);
-          const pendingMatches = backlogContent.match(/- \[ \]/gi);
-          completedTasks = completedMatches ? completedMatches.length : 0;
-          totalTasks = completedTasks + (pendingMatches ? pendingMatches.length : 0);
-        } catch {
-          // No backlog
-        }
-
-        try {
-          await fs.access(promptPath);
-          hasPrompt = true;
-        } catch {
-          // No prompt
-        }
-
-        const stat = await fs.stat(projectDir);
-
-        projects.push({
-          slug: entry.name,
-          name: projectName,
-          niche,
-          gestorName,
-          hasBrief,
-          hasBacklog,
-          hasPrompt,
-          totalTasks,
-          completedTasks,
-          lastModified: stat.mtime.toISOString()
-        });
       }
-    }
+    } catch {}
 
-    return projects;
+    return Array.from(projectsMap.values());
   } catch (err) {
     console.error('Erro ao listar projetos:', err);
     return [];
@@ -234,24 +235,35 @@ export async function getProjectDetail(slug: string) {
   let backlog = '';
   let prompt = '';
   let updates = '';
+  let dbRow: any = null;
+
+  // 1. Tenta carregar direto do PostgreSQL VPS
+  try {
+    dbRow = await fetchProjectDetailFromDatabase(slug);
+    if (dbRow) {
+      brief = dbRow.brief_content || '';
+      backlog = dbRow.backlog_content || '';
+      prompt = dbRow.prompt_content || '';
+      updates = dbRow.updates_content || '';
+    }
+  } catch {}
+
+  // 2. Fallback / complementar do filesystem local
+  if (!brief) {
+    try { brief = await fs.readFile(path.join(projectDir, 'brief.md'), 'utf-8'); } catch {}
+  }
+  if (!backlog) {
+    try { backlog = await fs.readFile(path.join(projectDir, 'backlog.md'), 'utf-8'); } catch {}
+  }
+  if (!prompt) {
+    try { prompt = await fs.readFile(path.join(projectDir, 'GESTOR-HERMES-PROMPT.md'), 'utf-8'); } catch {}
+  }
+  if (!updates) {
+    try { updates = await fs.readFile(path.join(projectDir, 'updates.md'), 'utf-8'); } catch {}
+  }
+
+  // 3. Scan de arquivos locais (se existirem)
   const files: { path: string; isDir: boolean; size?: number }[] = [];
-
-  try {
-    brief = await fs.readFile(path.join(projectDir, 'brief.md'), 'utf-8');
-  } catch {}
-
-  try {
-    backlog = await fs.readFile(path.join(projectDir, 'backlog.md'), 'utf-8');
-  } catch {}
-
-  try {
-    prompt = await fs.readFile(path.join(projectDir, 'GESTOR-HERMES-PROMPT.md'), 'utf-8');
-  } catch {}
-
-  try {
-    updates = await fs.readFile(path.join(projectDir, 'updates.md'), 'utf-8');
-  } catch {}
-
   async function scanFiles(dir: string, base: string = '') {
     try {
       const items = await fs.readdir(dir, { withFileTypes: true });
@@ -267,18 +279,38 @@ export async function getProjectDetail(slug: string) {
       }
     } catch {}
   }
-
   await scanFiles(projectDir);
 
-  let projectName = slug;
-  let niche = '';
-  let targetAudience = '';
-  let language = 'EN-US (Global)';
-  let gestorName = 'Gestor Hermes';
-  let personaTone = 'Editorial sofisticado, transparente, baseado em evidências científicas e sem falsas promessas.';
-  let domain = '';
-  let briefingText = '';
-  const selectedSkills: string[] = [];
+  // 4. Se arquivos não existirem no disco, salvar a partir do banco para manter coerência
+  try {
+    await fs.mkdir(projectDir, { recursive: true });
+    if (brief) {
+      const bp = path.join(projectDir, 'brief.md');
+      try { await fs.access(bp); } catch { await fs.writeFile(bp, brief, 'utf-8'); }
+    }
+    if (backlog) {
+      const blp = path.join(projectDir, 'backlog.md');
+      try { await fs.access(blp); } catch { await fs.writeFile(blp, backlog, 'utf-8'); }
+    }
+    if (prompt) {
+      const pp = path.join(projectDir, 'GESTOR-HERMES-PROMPT.md');
+      try { await fs.access(pp); } catch { await fs.writeFile(pp, prompt, 'utf-8'); }
+    }
+    if (updates) {
+      const up = path.join(projectDir, 'updates.md');
+      try { await fs.access(up); } catch { await fs.writeFile(up, updates, 'utf-8'); }
+    }
+  } catch {}
+
+  let projectName = dbRow?.name || slug;
+  let niche = dbRow?.niche || '';
+  let targetAudience = dbRow?.target_audience || '';
+  let language = dbRow?.language || 'EN-US (Global)';
+  let gestorName = dbRow?.gestor_name || 'Gestor Hermes';
+  let personaTone = dbRow?.metadata?.personaTone || 'Editorial sofisticado, transparente, baseado em evidências científicas e sem falsas promessas.';
+  let domain = dbRow?.domain || '';
+  let briefingText = dbRow?.metadata?.briefingText || '';
+  const selectedSkills: string[] = dbRow?.metadata?.selectedSkills || [];
 
   if (brief) {
     const nameMatch = brief.match(/#\s*(?:Briefing do Projeto:\s*)?(.+)/i);
@@ -339,7 +371,7 @@ export async function getProjectDetail(slug: string) {
       targetAudience,
       language,
       domain,
-      monetization: ['Amazon Associates', 'Afiliados Especializados', 'FBR Ads'],
+      monetization: dbRow?.metadata?.monetization || ['Amazon Associates', 'Afiliados Especializados', 'FBR Ads'],
       gestorName,
       personaTone,
       selectedSkills: selectedSkills.length > 0 ? selectedSkills : ['pesquisa-mercado', 'copy-posicionamento']
@@ -347,6 +379,7 @@ export async function getProjectDetail(slug: string) {
     updates = generateInitialUpdates(defaultData);
     try {
       await fs.writeFile(path.join(projectDir, 'updates.md'), updates, 'utf-8');
+      await updateProjectFieldInDatabase(slug, 'updates_content', updates);
     } catch {}
   }
 
@@ -373,7 +406,7 @@ export async function getProjectDetail(slug: string) {
       personaTone,
       briefingText,
       selectedSkills: selectedSkills.length > 0 ? selectedSkills : ['pesquisa-mercado', 'copy-posicionamento', 'design-identidade', 'engenharia-fullstack', 'trafego-growth', 'qa-auditoria'],
-      monetization: ['Amazon Associates', 'Afiliados Especializados', 'FBR Ads']
+      monetization: dbRow?.metadata?.monetization || ['Amazon Associates', 'Afiliados Especializados', 'FBR Ads']
     }
   };
 }
@@ -404,9 +437,15 @@ export async function createProject(data: ProjectCreationData) {
   const hermesPrompt = generateHermesGestorPrompt(data, WORKSPACE_ROOT.replace(/\\/g, '/'));
   await fs.writeFile(path.join(projectDir, 'GESTOR-HERMES-PROMPT.md'), hermesPrompt, 'utf-8');
 
-  // 5. Integrações Assíncronas (Supabase/Postgres VPS, Control Tower, n8n)
+  // 5. Salvar 100% dos dados no banco PostgreSQL VPS e integrações
   try {
-    syncProjectToDatabase(data).catch(() => {});
+    await syncProjectToDatabase({
+      ...data,
+      briefContent,
+      backlogContent,
+      promptContent: hermesPrompt,
+      updatesContent
+    });
     registerProjectInControlTower(data).catch(() => {});
     triggerN8nWorkflow('project_created', { slug: data.slug, name: data.name, gestor: data.gestorName }).catch(() => {});
   } catch {}
@@ -430,9 +469,14 @@ export async function updateProjectMetadata(slug: string, data: ProjectCreationD
   const hermesPrompt = generateHermesGestorPrompt(data, WORKSPACE_ROOT.replace(/\\/g, '/'));
   await fs.writeFile(path.join(projectDir, 'GESTOR-HERMES-PROMPT.md'), hermesPrompt, 'utf-8');
 
-  // 3. Integrações Assíncronas (Supabase/Postgres VPS, Control Tower, n8n)
+  // 3. Persistir no PostgreSQL VPS e integrações
   try {
-    syncProjectToDatabase(data).catch(() => {});
+    await syncProjectToDatabase({
+      ...data,
+      slug,
+      briefContent,
+      promptContent: hermesPrompt
+    });
     registerProjectInControlTower(data).catch(() => {});
     triggerN8nWorkflow('project_updated', { slug: data.slug, name: data.name, gestor: data.gestorName }).catch(() => {});
   } catch {}
@@ -447,6 +491,17 @@ export async function updateProjectMetadata(slug: string, data: ProjectCreationD
 export async function updateProjectFile(slug: string, fileName: string, content: string) {
   const filePath = path.join(PROJECTS_DIR, slug, fileName);
   await fs.writeFile(filePath, content, 'utf-8');
+
+  // Persistir diretamente na coluna correspondente do PostgreSQL VPS
+  if (fileName === 'brief.md') {
+    await updateProjectFieldInDatabase(slug, 'brief_content', content);
+  } else if (fileName === 'backlog.md') {
+    await updateProjectFieldInDatabase(slug, 'backlog_content', content);
+  } else if (fileName === 'GESTOR-HERMES-PROMPT.md') {
+    await updateProjectFieldInDatabase(slug, 'prompt_content', content);
+  } else if (fileName === 'updates.md') {
+    await updateProjectFieldInDatabase(slug, 'updates_content', content);
+  }
 
   // Notificar n8n sobre alteração de arquivo
   try {
@@ -469,7 +524,12 @@ export async function addProjectUpdate(slug: string, updateData: {
 
   let currentContent = '';
   try {
-    currentContent = await fs.readFile(updatesPath, 'utf-8');
+    const dbRow = await fetchProjectDetailFromDatabase(slug);
+    if (dbRow?.updates_content) {
+      currentContent = dbRow.updates_content;
+    } else {
+      currentContent = await fs.readFile(updatesPath, 'utf-8');
+    }
   } catch {
     const detail = await getProjectDetail(slug);
     currentContent = generateInitialUpdates({
@@ -506,7 +566,9 @@ export async function addProjectUpdate(slug: string, updateData: {
     updatedContent = `${currentContent}\n\n## 📥 Observações e Cobranças Ativas (Aguardando Ação do Agente)\n${newEntry}`;
   }
 
+  // Grava em disco e atualiza no PostgreSQL VPS
   await fs.writeFile(updatesPath, updatedContent, 'utf-8');
+  await updateProjectFieldInDatabase(slug, 'updates_content', updatedContent);
 
   // Notificar n8n e registrar log
   try {
@@ -528,17 +590,27 @@ export async function toggleProjectUpdate(slug: string, updateLine: string, curr
   const updatesPath = path.join(projectDir, 'updates.md');
 
   try {
-    const currentContent = await fs.readFile(updatesPath, 'utf-8');
+    let currentContent = '';
+    const dbRow = await fetchProjectDetailFromDatabase(slug);
+    if (dbRow?.updates_content) {
+      currentContent = dbRow.updates_content;
+    } else {
+      currentContent = await fs.readFile(updatesPath, 'utf-8');
+    }
+
     const oldPattern = currentlyChecked ? `- [x] ${updateLine}` : `- [ ] ${updateLine}`;
     const newPattern = currentlyChecked ? `- [ ] ${updateLine}` : `- [x] ${updateLine}`;
 
     const newContent = currentContent.replace(oldPattern, newPattern);
     await fs.writeFile(updatesPath, newContent, 'utf-8');
+    await updateProjectFieldInDatabase(slug, 'updates_content', newContent);
+
     return { success: true, updates: newContent };
   } catch (err: any) {
     throw new Error('Falha ao alternar status do update: ' + err.message);
   }
 }
+
 
 
 
