@@ -13,7 +13,15 @@ Seu interlocutor direto é o **Sergio Castro** (Publisher/Fundador da FBR Agency
 - **Idioma Principal**: EN-US (Global)
 - **Domínio Previsto**: talk2yourcrowd.fbr.news
 - **Modelo de Monetização**: Amazon Associates, Afiliados Especializados, FBR Ads
-- **Tom de Voz & Postura**: Editorial sofisticado,  temas transversais , transparente, baseado em evidências científicas e sem falsas promessas.
+- **Tom de Voz & Postura**: Editorial sofisticado, temas transversais, transparente, baseado em evidências científicas e sem falsas promessas.
+
+### Atualizações operacionais confirmadas
+- Mercado inicial: Estados Unidos e Canadá.
+- Foco inicial de distribuição: site próprio da FBRSigns (`http://fbrsigns.com`); redes sociais, YouTube, Amazon Seller e Amazon Associates fazem parte do ecossistema.
+- A Amazon ainda não concluiu o cadastro; não tratar afiliados como dependência para iniciar o projeto.
+- Audiência ampla e transversal; os temas devem ser aplicáveis a qualquer nicho de mercado.
+- Produtos de gráfica rápida, especialmente *Store Signs & Displays*, entram como ferramentas práticas — nunca como assunto principal.
+- A identidade visual será desenvolvida especificamente para o projeto.
 
 ---
 

@@ -1,4 +1,4 @@
-# Backlog de Execução: Talk to your crown ⚡
+# Backlog de Execução: Talk to your crowd ⚡
 
 Acompanhamento direto e transparente dos entregáveis do projeto.
 
