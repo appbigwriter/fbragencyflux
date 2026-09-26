@@ -5,6 +5,7 @@ Canal ativo de comunicação, observações e cobranças entre o Publisher (Serg
 ---
 
 ## 📥 Observações e Cobranças Ativas (Aguardando Ação do Agente)
+
 - [ ] **[2026-09-26 10:15 - 🎯 Prioridade de Inicialização]**
   - **Autor**: Sergio Castro (Publisher) / Sistema Flux
   - **Instrução**: Iniciar a pesquisa de mercado de Storefront / Sinalização e estruturação dos Design Tokens. Considerar que o público é amplo e transversal a empreendedores.
@@ -22,4 +23,8 @@ Canal ativo de comunicação, observações e cobranças entre o Publisher (Serg
 ---
 
 ## ✅ Histórico de Updates Atendidos & Resoluções
+- [x] **[2026-09-26 13:36 - ⚡ Cobrança de Entrega]** (Atendido por Marcus Cole em 2026-09-26 13:36)
+  - **Instrução**: Teste automatizado: Revisar análise de concorrentes de storefront para entrega até 18h.
+  - **Entregável**: `01-pesquisa/analise-nicho.md` (Gerado com sucesso)
+
 - Nenhum update arquivado ainda. Conforme as cobranças forem atendidas pelo Marcus Cole, mova-as para esta seção com o link do entregável gerado.
