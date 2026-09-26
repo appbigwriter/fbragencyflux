@@ -502,7 +502,12 @@ export async function updateProjectMetadata(slug: string, data: ProjectCreationD
 
 export async function updateProjectFile(slug: string, fileName: string, content: string) {
   const filePath = path.join(PROJECTS_DIR, slug, fileName);
-  await fs.writeFile(filePath, content, 'utf-8');
+  try {
+    await fs.mkdir(path.dirname(filePath), { recursive: true });
+    await fs.writeFile(filePath, content, 'utf-8');
+  } catch (err: any) {
+    console.warn('Aviso: escrita local em disco falhou, mantendo persistência no banco:', err.message);
+  }
 
   // Persistir diretamente na coluna correspondente do PostgreSQL VPS
   if (fileName === 'brief.md') {
@@ -578,11 +583,18 @@ export async function addProjectUpdate(slug: string, updateData: {
     updatedContent = `${currentContent}\n\n## 📥 Observações e Cobranças Ativas (Aguardando Ação do Agente)\n${newEntry}`;
   }
 
-  // Grava em disco e atualiza no PostgreSQL VPS
-  await fs.writeFile(updatesPath, updatedContent, 'utf-8');
+  // 1. Grava no PostgreSQL VPS
   await updateProjectFieldInDatabase(slug, 'updates_content', updatedContent);
 
-  // Notificar n8n e registrar log
+  // 2. Grava em disco local com mkdir seguro
+  try {
+    await fs.mkdir(projectDir, { recursive: true });
+    await fs.writeFile(updatesPath, updatedContent, 'utf-8');
+  } catch (err: any) {
+    console.warn('Aviso: escrita local de updates em disco falhou, mantendo persistência no banco:', err.message);
+  }
+
+  // 3. Notificar n8n e registrar log
   try {
     triggerN8nWorkflow('hermes_update_posted', {
       slug,
@@ -607,21 +619,31 @@ export async function toggleProjectUpdate(slug: string, updateLine: string, curr
     if (dbRow?.updates_content) {
       currentContent = dbRow.updates_content;
     } else {
-      currentContent = await fs.readFile(updatesPath, 'utf-8');
+      try {
+        currentContent = await fs.readFile(updatesPath, 'utf-8');
+      } catch {}
     }
 
     const oldPattern = currentlyChecked ? `- [x] ${updateLine}` : `- [ ] ${updateLine}`;
     const newPattern = currentlyChecked ? `- [ ] ${updateLine}` : `- [x] ${updateLine}`;
 
     const newContent = currentContent.replace(oldPattern, newPattern);
-    await fs.writeFile(updatesPath, newContent, 'utf-8');
+
+    // 1. Atualizar no PostgreSQL VPS
     await updateProjectFieldInDatabase(slug, 'updates_content', newContent);
+
+    // 2. Atualizar em disco com mkdir seguro
+    try {
+      await fs.mkdir(projectDir, { recursive: true });
+      await fs.writeFile(updatesPath, newContent, 'utf-8');
+    } catch {}
 
     return { success: true, updates: newContent };
   } catch (err: any) {
     throw new Error('Falha ao alternar status do update: ' + err.message);
   }
 }
+
 
 
 
