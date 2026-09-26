@@ -83,27 +83,29 @@ Todos os arquivos e entregáveis devem ser lidos e gerados diretamente na pasta 
 
 ---
 
-## 🔄 5. Protocolo Obrigatório de Sincronização Contínua & Cobranças
-Para que a sua operação seja virtuosa, contínua e alinhada com o Sergio e o Sistema Flux:
-1. **Leitura Obrigatória de Updates (\`updates.md\` ou Web URL \`/p/${data.slug}\`)**:
-   - No início de qualquer sessão ou tarefa, consulte a seção de **Observações e Cobranças Ativas** em \`updates.md\`.
-   - Se houver diretrizes editoriais, correções ou cobranças de prazo pendentes, trate-as com **prioridade máxima** antes de avançar para novos entregáveis.
-2. **Ciclo Virtuoso de Execução & Reporte**:
-   - Ao executar ou revisar um entregável cobrado, gere o arquivo físico correspondente na pasta \`03-projetos/${data.slug}/\`.
-   - Atualize o status no \`backlog.md\` marcando a tarefa concluída (\`- [x]\`).
-   - Registre a resolução no \`updates.md\` na seção de *Histórico de Updates Atendidos* com a data, o que foi entregue e o caminho do arquivo.
-3. **Comunicação Direta com o Sergio**:
-   - Apresente sempre links objetivos para os arquivos gerados.
-   - Em caso de dúvidas operacionais ou bloqueios, solicite a orientação do Sergio imediatamente.
+## 🔄 5. Protocolo Obrigatório de Conclusão de Tarefas & Sincronização
+Para que a sua operação seja virtuosa, contínua e o Dashboard reflita seu progresso real:
+1. **⚠️ REGRA DE OURO DE PROGRESSO**:
+   - **NUNCA encerre uma tarefa apenas dizendo no chat que concluiu.**
+   - Ao gerar qualquer artefato físico na pasta do projeto, você **DEVE IMEDIATAMENTE** atualizar o \`backlog.md\` marcando a tarefa como \`- [x]\`.
+   - Entregas sem a marcação \`- [x]\` no \`backlog.md\` ou via API são tratadas pelo Sistema Flux como **NÃO EXECUTADAS**.
+
+2. **Como Atualizar seu Progresso (Escolha uma opção)**:
+   - **Opção A (Edição Direta)**: Edite o arquivo \`03-projetos/${data.slug}/backlog.md\` trocando \`- [ ]\` por \`- [x]\` na linha do entregável.
+   - **Opção B (Chamada de API)**: Faça um \`POST /api/projects/${data.slug}/complete-task\` com \`{ "deliverable": "caminho-do-arquivo.md" }\`.
+   - **Opção C (Auto-Detecção)**: Salve o arquivo exatamente no caminho indicado no backlog (ex: \`01-pesquisa/analise-nicho.md\`); o Flux auto-detectará o arquivo e atualizará o dashboard.
+
+3. **Leitura de Cobranças & Feedback**:
+   - No início de cada sessão, consulte \`updates.md\` (ou \`/p/${data.slug}\`).
+   - Resolva pendências prioritárias marcadas com \`- [ ]\` antes de abrir novas frentes.
 
 ---
 
-## 🚀 6. Como Iniciar o Trabalho
-Ao iniciar uma sessão com o Sergio:
-1. Revise \`updates.md\` (cobranças ativas) e \`backlog.md\` (próximos entregáveis).
-2. Identifique a próxima entrega prioritária.
-3. Execute e gere o artefato físico correspondente com excelência.
-4. Atualize o status no \`backlog.md\` e \`updates.md\` e reporte de forma limpa.
+## 🚀 6. Como Operar no Dia a Dia
+1. Identifique o próximo entregável pendente no \`backlog.md\`.
+2. Gere o arquivo completo com alto padrão de qualidade na pasta correspondente.
+3. Marque a tarefa como \`- [x]\` no \`backlog.md\`.
+4. Reporte ao Sergio com o link direto para o artefato gerado.
 `;
 }
 

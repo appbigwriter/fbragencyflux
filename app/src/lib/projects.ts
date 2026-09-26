@@ -111,7 +111,7 @@ export async function listProjects(): Promise<ProjectSummary[]> {
       let promptContent = dbp.prompt_content || '';
       let updatesContent = dbp.updates_content || '';
 
-      // Auto-sincronização: se houver arquivo local no disco com mais tarefas/alterações, sincroniza com o banco VPS
+      // 1. Auto-sincronização de arquivos locais para o banco
       try {
         const blp = path.join(pDir, 'backlog.md');
         const localBacklog = await fs.readFile(blp, 'utf-8');
@@ -119,6 +119,11 @@ export async function listProjects(): Promise<ProjectSummary[]> {
           backlogContent = localBacklog;
           await updateProjectFieldInDatabase(dbp.slug, 'backlog_content', localBacklog);
         }
+      } catch {}
+
+      // 2. Detecção automática de entregáveis físicos criados no disco (marca - [x] automaticamente)
+      try {
+        backlogContent = await autoDetectAndCompleteTasks(dbp.slug, backlogContent, pDir);
       } catch {}
 
       try {
@@ -663,7 +668,88 @@ export async function toggleProjectUpdate(slug: string, updateLine: string, curr
   }
 }
 
+export async function autoDetectAndCompleteTasks(slug: string, backlog: string, projectDir: string): Promise<string> {
+  if (!backlog) return backlog;
+  let modified = false;
+  const lines = backlog.split('\n');
 
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    if (line.trim().startsWith('- [ ]')) {
+      // Procura caminhos de arquivos entre crases no padrão 01-pesquisa/..., 02-conteudo/..., 03-design-ui/..., 04-site/..., etc.
+      const fileMatch = line.match(/`((?:01-pesquisa|02-conteudo|03-design-ui|04-site|brief|updates|GESTOR)[^`]+)`/);
+      if (fileMatch) {
+        const relPath = fileMatch[1].trim();
+        const fullPath = path.join(projectDir, relPath);
+        try {
+          const stat = await fs.stat(fullPath);
+          if (stat.isDirectory() || stat.size > 0) {
+            lines[i] = line.replace('- [ ]', '- [x]');
+            modified = true;
+          }
+        } catch {}
+      }
+    }
+  }
 
+  if (modified) {
+    const newBacklog = lines.join('\n');
+    await updateProjectFieldInDatabase(slug, 'backlog_content', newBacklog);
+    try {
+      await fs.writeFile(path.join(projectDir, 'backlog.md'), newBacklog, 'utf-8');
+    } catch {}
+    return newBacklog;
+  }
 
+  return backlog;
+}
+
+export async function completeProjectTask(slug: string, identifier: string): Promise<{ success: boolean; completedTasks: number; totalTasks: number; backlog: string }> {
+  const detail = await getProjectDetail(slug);
+  let backlog = detail.backlog || '';
+  if (!backlog) throw new Error('Backlog não encontrado');
+
+  const lines = backlog.split('\n');
+  let matched = false;
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    if (line.includes(identifier)) {
+      lines[i] = line.replace('- [ ]', '- [x]');
+      matched = true;
+      break;
+    }
+  }
+
+  if (!matched) {
+    // Se não deu match exato, tenta casar case-insensitive
+    const lowerId = identifier.toLowerCase();
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      if (line.toLowerCase().includes(lowerId)) {
+        lines[i] = line.replace('- [ ]', '- [x]');
+        matched = true;
+        break;
+      }
+    }
+  }
+
+  const updatedBacklog = lines.join('\n');
+  await updateProjectFieldInDatabase(slug, 'backlog_content', updatedBacklog);
+  try {
+    await fs.writeFile(path.join(PROJECTS_DIR, slug, 'backlog.md'), updatedBacklog, 'utf-8');
+  } catch {}
+
+  const completedMatches = updatedBacklog.match(/- \[x\]/gi);
+  const pendingMatches = updatedBacklog.match(/- \[ \]/gi);
+  const completedTasks = completedMatches ? completedMatches.length : 0;
+  const totalTasks = completedTasks + (pendingMatches ? pendingMatches.length : 0);
+
+  return {
+    success: true,
+    completedTasks,
+    totalTasks,
+    backlog: updatedBacklog
+  };
+}
 
