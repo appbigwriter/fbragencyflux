@@ -10,7 +10,7 @@
 - [x] GS-002 Design tokens & identidade visual — `03-design-ui/tokens.css`
 
 ## Fase 2 — Conteúdo & Copywriting
-- [ ] GS-003 Linha editorial e pautas — `02-conteudo/pautas.md`
+- [x] GS-003 Linha editorial e pautas — `02-conteudo/pautas.md`
 - [x] GS-004 Lote 1 de artigos de alta conversão — `02-conteudo/`
 - [x] GS-005 About, Contact e Disclaimer — `02-conteudo/`
 
