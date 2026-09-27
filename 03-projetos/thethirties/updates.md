@@ -137,8 +137,53 @@ Canal ativo de comunicação, observações e cobranças entre o Publisher (Serg
 ## ✅ Follow-up operacional — 2026-09-27 11:58 -03:00
 - **Job:** THIRTIES-OPS-20260927-010.
 - **Receipt:** `qa-operational-followup-2026-09-27-v21.md`.
-- **Fatos verificados:** dez artefatos canônicos presentes; SHA-256 conferidos e coincidentes com v20; busca textual direcionada em `02-conteudo/*.md` retornou zero ocorrências; `git diff --check -- .` exit 0.
+- **Fatos verificados:** dez artefatos canônicos presentes; SHA-256 conferidos e coincidentes com v20; busca textual direcionada em `02-conteudo/*.md` retornou zero ocorrências; ausências de plano SEO, receipt THI-012 e `package.json` continuam registradas; `git diff --check -- .` exit 0.
 - **Discrepâncias:** `01-pesquisa/plano-validacao-keywords-v1.md`, `02-conteudo/qa-local-tt-007-tt-009-institucionais-2026-09-26.md` e `package.json` continuam ausentes; nenhuma recuperação foi inventada. THI-012 permanece não promovida.
 - **Limitação real:** sem `package.json`, npm test/typecheck/lint/build não foram executados nem alegados.
+- **Estado:** nenhum card ou Gate foi promovido. THI-003/004/005/006/007/008 permanecem nos estados do backlog; publicação, monetização, links, migration e deploy continuam fechados.
+- **Próximo check:** após revisão humana/Gate, export SEO autorizado, decisão de marca ou presença verificável dos artefatos ausentes.
+
+## ✅ Follow-up operacional — 2026-09-27 12:31 -03:00
+- **Job:** THIRTIES-OPS-20260927-011.
+- **Receipt:** `qa-operational-followup-2026-09-27-v22.md`.
+- **Fatos verificados:** dez artefatos canônicos permanecem presentes com os mesmos SHA-256; `python verify_cycle_v22.py` exit 0; URLs e padrões clínicos proibidos consultados retornaram zero; `git diff --check -- .` exit 0.
+- **Discrepâncias:** `01-pesquisa/plano-validacao-keywords-v1.md`, `02-conteudo/qa-local-tt-007-tt-009-institucionais-2026-09-26.md`, `package.json`, `article-tt-005.md` e `video-tt-005.md` continuam ausentes; nenhuma recuperação foi inventada. THI-012 permanece não promovida.
+- **Limitação real:** não existe `package.json` no workspace; npm test/typecheck/lint/build não foram executados nem alegados. Termos de guardrail encontrados permanecem em notas/checklists de proibição, não como claims promovidos.
+- **Estado:** nenhum card ou Gate foi promovido. THI-003/004/005/006/007/008 permanecem nos estados do backlog; publicação, monetização, links, migration e deploy continuam fechados.
+- **Próximo check:** após revisão humana/Gate, export SEO autorizado, decisão de marca ou presença verificável dos artefatos ausentes.
+
+## ✅ Follow-up operacional — 2026-09-27 13:06 -03:00
+- **Job:** THIRTIES-OPS-20260927-012.
+- **Receipt:** `qa-operational-followup-2026-09-27-v23.md`.
+- **Fatos verificados:** dez artefatos canônicos presentes com os mesmos SHA-256 do v22; busca textual direcionada em `02-conteudo/*.md` retornou zero URLs e zero padrões clínicos proibidos consultados; `git diff --check -- .` exit 0.
+- **Discrepâncias:** `01-pesquisa/plano-validacao-keywords-v1.md`, `02-conteudo/qa-local-tt-007-tt-009-institucionais-2026-09-26.md`, `package.json`, `article-tt-005.md` e `video-tt-005.md` continuam ausentes; nenhuma recuperação foi inventada. THI-012 permanece não promovida.
+- **Limitação real:** não existe `package.json` no workspace; npm test/typecheck/lint/build não foram executados nem alegados.
+- **Estado:** nenhum card ou Gate foi promovido. THI-003/004/005/006/007/008 permanecem nos estados do backlog; publicação, monetização, links, migration e deploy continuam fechados.
+- **Próximo check:** após revisão humana/Gate, export SEO autorizado, decisão de marca ou presença verificável dos artefatos ausentes.
+
+## ✅ Follow-up operacional — 2026-09-27 13:38 -03:00
+- **Job:** THIRTIES-OPS-20260927-013.
+- **Receipt:** `qa-operational-followup-2026-09-27-v24.md`.
+- **Fatos verificados:** dez artefatos canônicos presentes com os mesmos SHA-256 do v23; busca textual direcionada retornou zero URLs e zero padrões clínicos proibidos. A única ocorrência de `fear-based` está em guardrail negativo de acessibilidade; `git diff --check -- .` exit 0.
+- **Discrepâncias:** `01-pesquisa/plano-validacao-keywords-v1.md`, `02-conteudo/qa-local-tt-007-tt-009-institucionais-2026-09-26.md`, `package.json`, `article-tt-005.md` e `video-tt-005.md` continuam ausentes; nenhuma recuperação foi inventada. THI-012 permanece não promovida.
+- **Limitação real:** não existe `package.json` no workspace; npm test/typecheck/lint/build não foram executados nem alegados.
+- **Estado:** nenhum card ou Gate foi promovido. THI-003/004/005/006/007/008 permanecem nos estados do backlog; publicação, monetização, links, migration e deploy continuam fechados.
+- **Próximo check:** após revisão humana/Gate, export SEO autorizado, decisão de marca ou presença verificável dos artefatos ausentes.
+
+## ✅ Follow-up operacional — 2026-09-27 14:12 -03:00
+- **Job:** THIRTIES-OPS-20260927-014.
+- **Receipt:** `qa-operational-followup-2026-09-27-v25.md`.
+- **Fatos verificados:** dez artefatos canônicos presentes com os mesmos SHA-256 do v24; busca direcionada somente no conteúdo TT-005 retornou `ZERO_MATCHES` para URLs e padrões clínicos selecionados; `git diff --check -- .` exit 0.
+- **Discrepâncias:** `01-pesquisa/plano-validacao-keywords-v1.md`, `02-conteudo/qa-local-tt-007-tt-009-institucionais-2026-09-26.md`, `package.json`, `article-tt-005.md` e `video-tt-005.md` continuam ausentes; nenhuma recuperação foi inventada. THI-012 permanece não promovida.
+- **Limitação real:** não existe `package.json` no workspace; npm test/typecheck/lint/build não foram executados nem alegados.
+- **Estado:** nenhum card ou Gate foi promovido. THI-003/004/005/006/007/008 permanecem nos estados do backlog; publicação, monetização, links, migration e deploy continuam fechados.
+- **Próximo check:** após revisão humana/Gate, export SEO autorizado, decisão de marca ou presença verificável dos artefatos ausentes.
+
+## ✅ Follow-up operacional — 2026-09-27 14:44 -03:00
+- **Job:** THIRTIES-OPS-20260927-014.
+- **Receipt:** `qa-operational-followup-2026-09-27-v26.md`.
+- **Fatos verificados:** dez artefatos canônicos presentes com os mesmos SHA-256 do v25; scans direcionados somente no conteúdo TT-005 retornaram zero linhas para URLs e padrões clínicos selecionados; `git diff --check -- .` exit 0.
+- **Discrepâncias:** `01-pesquisa/plano-validacao-keywords-v1.md`, `02-conteudo/qa-local-tt-007-tt-009-institucionais-2026-09-26.md`, `package.json`, `article-tt-005.md` e `video-tt-005.md` continuam ausentes; nenhuma recuperação foi inventada. THI-012 permanece não promovida.
+- **Limitação real:** não existe `package.json` no workspace; npm test/typecheck/lint/build não foram executados nem alegados.
 - **Estado:** nenhum card ou Gate foi promovido. THI-003/004/005/006/007/008 permanecem nos estados do backlog; publicação, monetização, links, migration e deploy continuam fechados.
 - **Próximo check:** após revisão humana/Gate, export SEO autorizado, decisão de marca ou presença verificável dos artefatos ausentes.
