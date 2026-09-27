@@ -1,18 +1,21 @@
 # 📢 Sincronização & Cobranças: Game Style ⚡
 
-Canal ativo de comunicação, observações e cobranças entre o Publisher (Sergio Castro / Sistema Flux) e o Agente Gestor Hermes (**Tara Lindqvist**).
+Canal ativo de comunicação entre Sergio Castro / Sistema Flux e Tara Lindqvist.
 
----
+## ✅ Histórico de updates atendidos
 
-## 📥 Observações e Cobranças Ativas (Aguardando Ação do Agente)
-- [ ] **[2026-09-26 - 🎯 Inicialização do Projeto]**
-  - **Autor**: Sergio Castro (Publisher) / Sistema Flux
-  - **Instrução**: Inicializar as atividades de pesquisa de mercado e definição dos tokens de design conforme o briefing.
-  - **Entregável**: `01-pesquisa/analise-nicho.md` e `03-design-ui/tokens.css`
-  - **Prioridade**: Alta
-  - **Status**: Pendente de Resposta do Hermes
+- **GS-001 — Pesquisa:** `01-pesquisa/analise-nicho.md` criado e verificado.
+- **GS-002 — Design:** `03-design-ui/tokens.css` criado e status persistido no Flux.
+- **GS-003 — Editorial:** `02-conteudo/pautas.md` criado e status persistido no Flux.
+- **GS-004 — Conteúdo inicial:** lote editorial registrado no backlog.
+- **GS-005 — Institucionais:** About, Contact e Disclaimer registrados no backlog.
+- **GS-006 — Site:** setup Next.js/Tailwind registrado no backlog.
 
----
+## 📌 Pendências ativas
 
-## ✅ Histórico de Updates Atendidos & Resoluções
-- Nenhum update arquivado ainda. Conforme as cobranças forem atendidas, mova-as para esta seção com o link do entregável.
+- GS-007 — página inicial/layout editorial.
+- GS-008 — templates de artigo e callouts afiliados.
+- GS-009 — auditoria SEO, performance e compliance.
+- GS-010 — deploy final, aguardando aprovação explícita do Sergio.
+
+A fonte canônica de progresso é o backlog retornado pela API do Flux. Este arquivo deve refletir o estado persistido, não cobranças antigas já atendidas.
