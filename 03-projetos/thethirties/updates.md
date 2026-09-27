@@ -187,3 +187,101 @@ Canal ativo de comunicação, observações e cobranças entre o Publisher (Serg
 - **Limitação real:** não existe `package.json` no workspace; npm test/typecheck/lint/build não foram executados nem alegados.
 - **Estado:** nenhum card ou Gate foi promovido. THI-003/004/005/006/007/008 permanecem nos estados do backlog; publicação, monetização, links, migration e deploy continuam fechados.
 - **Próximo check:** após revisão humana/Gate, export SEO autorizado, decisão de marca ou presença verificável dos artefatos ausentes.
+
+## ✅ Follow-up operacional — 2026-09-27 15:18 -03:00
+- **Job:** THIRTIES-OPS-20260927-015.
+- **Receipt:** `qa-operational-followup-2026-09-27-v27.md`.
+- **Fatos verificados:** dez artefatos canônicos presentes com os mesmos SHA-256 do v26; scans TT-005 retornaram `URL_COUNT=0` e `CLINICAL_COUNT=0`; os dois matches de framing são guardrails negativos; `git diff --check -- .` exit 0.
+- **Discrepâncias:** `01-pesquisa/plano-validacao-keywords-v1.md`, `02-conteudo/qa-local-tt-007-tt-009-institucionais-2026-09-26.md`, `package.json`, `article-tt-005.md` e `video-tt-005.md` continuam ausentes; nenhuma recuperação foi inventada. THI-012 permanece não promovida.
+- **Limitação real:** não existe `package.json` no workspace; npm test/typecheck/lint/build não foram executados nem alegados.
+- **Estado:** nenhum card ou Gate foi promovido. THI-003/004/005/006/007/008 permanecem nos estados do backlog; publicação, monetização, links, migration e deploy continuam fechados.
+- **Próximo check:** após revisão humana/Gate, export SEO autorizado, decisão de marca ou presença verificável dos artefatos ausentes.
+
+## ✅ Follow-up operacional — 2026-09-27 15:51 -03:00
+- **Job:** THIRTIES-OPS-20260927-015.
+- **Receipt:** `qa-operational-followup-2026-09-27-v28.md`.
+- **Fatos verificados:** dez artefatos canônicos presentes com os mesmos SHA-256 do v27; scans direcionados do pacote/QA TT-005 retornaram `URL_COUNT=0`, `CLINICAL_COUNT=0` e `FRAMING_COUNT=0`; `git diff --check -- .` exit 0.
+- **Discrepâncias:** `01-pesquisa/plano-validacao-keywords-v1.md`, `02-conteudo/qa-local-tt-007-tt-009-institucionais-2026-09-26.md`, `package.json`, `article-tt-005.md` e `video-tt-005.md` continuam ausentes; nenhuma recuperação foi inventada. THI-012 permanece não promovida.
+- **Limitação real:** não existe `package.json` no workspace; npm test/typecheck/lint/build não foram executados nem alegados.
+- **Estado:** nenhum card ou Gate foi promovido. THI-003/004/005/006/007/008 permanecem nos estados do backlog; publicação, monetização, links, migration e deploy continuam fechados.
+- **Próximo check:** após revisão humana/Gate, export SEO autorizado, decisão de marca ou presença verificável dos artefatos ausentes.
+
+## ✅ Registro de execução — 2026-09-27 16:24 -03:00
+- **Job:** THIRTIES-OPS-20260927-016.
+- **Estado:** concluído e verificado; follow-up read-only sem mutação externa.
+- **Owner:** Maia Mendes / Gestor Editorial.
+- **Escopo:** somente workspace canônico; sem publicação, links, monetização, migration, deploy, gasto ou mutação externa.
+- **Próxima ação:** novo follow-up após evidência nova, decisão humana/Gate ou presença dos artefatos ausentes.
+- **Critério de aceite:** backlog e artefatos lidos antes da escrita; checks reais registrados; ausências mantidas como problema técnico; nenhum card promovido; receipt/backlog/updates lidos de volta.
+- **Evidência:** `qa-operational-followup-2026-09-27-v29.md`; dez SHA-256 conferidos; scans `URL_MATCHES=0`, `CLINICAL_MATCHES=0`, `FRAMING_MATCHES=0`; `git diff --check -- .` exit 0.
+- **Next check:** próximo ciclo ou após nova evidência/Gate humano.
+
+## ✅ Follow-up operacional — 2026-09-27 16:58 -03:00
+- **Job:** THIRTIES-OPS-20260927-017.
+- **Estado:** concluído e verificado; follow-up read-only sem mutação externa.
+- **Owner:** Maia Mendes / Gestor Editorial.
+- **Escopo:** somente workspace canônico; sem publicação, links, monetização, migration, deploy, gasto ou mutação externa.
+- **Próxima ação:** novo follow-up após evidência nova, decisão humana/Gate ou presença dos artefatos ausentes.
+- **Critério de aceite:** backlog e artefatos lidos antes da escrita; checks reais registrados; ausências mantidas como problema técnico; nenhum card promovido; receipt/backlog/updates lidos de volta.
+- **Evidência:** `qa-operational-followup-2026-09-27-v30.md`; dez SHA-256 conferidos; scans direcionados sem ocorrências; `git diff --check -- .` exit 0.
+- **Next check:** próximo ciclo ou após nova evidência/Gate humano.
+-
+## ✅ Follow-up operacional — 2026-09-27 17:30 -03:00
+- **Job:** THIRTIES-OPS-20260927-018.
+- **Estado:** concluído e verificado; follow-up read-only sem mutação externa.
+- **Owner:** Maia Mendes / Gestor Editorial.
+- **Escopo:** somente workspace canônico; sem publicação, links, monetização, migration, deploy, gasto ou mutação externa.
+- **Próxima ação:** novo follow-up após evidência nova, decisão humana/Gate ou presença dos artefatos ausentes.
+- **Critério de aceite:** backlog e artefatos lidos antes da escrita; checks reais registrados; ausências mantidas como problema técnico; nenhum card promovido; receipt/backlog/updates lidos de volta.
+- **Evidência:** `qa-operational-followup-2026-09-27-v31.md`; dez SHA-256 conferidos; URLs e padrões clínicos selecionados = 0; dois matches de framing são guardrails negativos; `git diff --check -- .` exit 0.
+- **Problemas reais:** plano SEO, receipt institucional THI-012, `package.json` e nomes separados `article-tt-005.md`/`video-tt-005.md` continuam ausentes; não reconstruídos.
+- **Gate:** nenhum card/Gate promovido; publicação, monetização, links, migration e deploy permanecem fechados.
+- **Next check:** próximo ciclo ou após nova evidência/Gate humano.
+
+## ✅ Follow-up operacional — 2026-09-27 18:03 -03:00
+- **Job:** THIRTIES-OPS-20260927-018.
+- **Estado:** concluído e verificado; follow-up read-only sem mutação externa.
+- **Owner:** Maia Mendes / Gestor Editorial.
+- **Escopo:** somente workspace canônico; sem publicação, links, monetização, migration, deploy, gasto ou mutação externa.
+- **Próxima ação:** novo follow-up após evidência nova, decisão humana/Gate ou presença dos artefatos ausentes.
+- **Critério de aceite:** backlog e artefatos lidos antes da escrita; checks reais registrados; ausências mantidas como problema técnico; nenhum card promovido; receipt/backlog/updates lidos de volta.
+- **Evidência:** `qa-operational-followup-2026-09-27-v32.md`; dez SHA-256 conferidos; scans `URL=0`, `CLINICAL=0`, `FRAMING=3` (matches somente em instruções/checklists negativos); `git diff --check -- .` exit 0.
+- **Problemas reais:** plano SEO, receipt institucional THI-012, `package.json` e nomes separados `article-tt-005.md`/`video-tt-005.md` continuam ausentes; não reconstruídos.
+- **Gate:** nenhum card/Gate promovido; publicação, monetização, links, migration e deploy permanecem fechados.
+- **Next check:** próximo ciclo ou após nova evidência/Gate humano.
+
+## ✅ Follow-up operacional — 2026-09-27 18:37 -03:00
+- **Job:** THIRTIES-OPS-20260927-019.
+- **Estado:** concluído e verificado; follow-up read-only sem mutação externa.
+- **Owner:** Maia Mendes / Gestor Editorial.
+- **Escopo:** somente workspace canônico; sem publicação, links, monetização, migration, deploy, gasto ou mutação externa.
+- **Próxima ação:** novo follow-up após evidência nova, decisão humana/Gate ou presença dos artefatos ausentes.
+- **Critério de aceite:** backlog e artefatos lidos antes da escrita; checks reais registrados; ausências mantidas como problema técnico; nenhum card promovido; receipt/backlog/updates lidos de volta.
+- **Evidência:** `qa-operational-followup-2026-09-27-v33.md`; dez SHA-256 conferidos; scans `URL=0`, `CLINICAL=0`, framing somente em guardrails negativos; `git diff --check -- .` exit 0.
+- **Problemas reais:** plano SEO, receipt institucional THI-012, `package.json` e nomes separados `article-tt-005.md`/`video-tt-005.md` continuam ausentes; não reconstruídos.
+- **Gate:** nenhum card/Gate promovido; publicação, monetização, links, migration e deploy permanecem fechados.
+- **Next check:** próximo ciclo ou após nova evidência/Gate humano.
+
+## ✅ Follow-up operacional — 2026-09-27 19:10 -03:00
+- **Job:** THIRTIES-OPS-20260927-020.
+- **Estado:** concluído e verificado; follow-up read-only sem mutação externa.
+- **Owner:** Maia Mendes / Gestor Editorial.
+- **Escopo:** somente workspace canônico; sem publicação, links, monetização, migration, deploy, gasto ou mutação externa.
+- **Próxima ação:** novo follow-up após evidência nova, decisão humana/Gate ou presença dos artefatos ausentes.
+- **Critério de aceite:** backlog e artefatos lidos antes da escrita; checks reais registrados; ausências mantidas como problema técnico; nenhum card promovido; receipt/backlog/updates lidos de volta.
+- **Evidência:** `qa-operational-followup-2026-09-27-v34.md`; dez SHA-256 conferidos; scan TT-005 sem URLs, URLs de produto ou padrões clínicos proibidos; `git diff --check -- .` exit 0.
+- **Problemas reais:** plano SEO, receipt institucional THI-012, `package.json` e nomes separados `article-tt-005.md`/`video-tt-005.md` continuam ausentes; não reconstruídos.
+- **Gate:** nenhum card/Gate promovido; publicação, monetização, links, migration e deploy permanecem fechados.
+- **Next check:** próximo ciclo ou após nova evidência/Gate humano.
+
+## ✅ Follow-up operacional — 2026-09-27 19:44 -03:00
+- **Job:** THIRTIES-OPS-20260927-021.
+- **Estado:** concluído e verificado; follow-up read-only sem mutação externa.
+- **Owner:** Maia Mendes / Gestor Editorial.
+- **Escopo:** somente workspace canônico; sem publicação, links, monetização, migration, deploy, gasto ou mutação externa.
+- **Próxima ação:** novo follow-up após evidência nova, decisão humana/Gate ou presença dos artefatos ausentes.
+- **Critério de aceite:** backlog e artefatos lidos antes da escrita; checks reais registrados; ausências mantidas como problema técnico; nenhum card promovido; receipt/backlog/updates lidos de volta.
+- **Evidência:** `qa-operational-followup-2026-09-27-v35.md`; dez SHA-256 coincidem com v34; `git diff --check -- .` exit 0; buscas de URLs e padrões clínicos retornaram zero. As duas ocorrências de `shop` são uso editorial genérico, sem link de produto.
+- **Problemas reais:** plano SEO, receipt institucional THI-012, `package.json` e nomes separados `article-tt-005.md`/`video-tt-005.md` continuam ausentes; não reconstruídos.
+- **Gate:** nenhum card/Gate promovido; publicação, monetização, links, migration e deploy permanecem fechados.
+- **Next check:** próximo ciclo ou após nova evidência/Gate humano.

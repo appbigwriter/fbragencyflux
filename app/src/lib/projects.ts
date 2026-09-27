@@ -27,6 +27,17 @@ export interface ProjectSummary {
   lastModified: string;
 }
 
+export function countBacklogTasks(backlogContent: string): { completedTasks: number; totalTasks: number; percent: number } {
+  if (!backlogContent) return { completedTasks: 0, totalTasks: 0, percent: 0 };
+  const completedMatches = backlogContent.match(/^-\s*\[x\]/gim);
+  const pendingMatches = backlogContent.match(/^-\s*\[\s\]/gim);
+  const completedTasks = completedMatches ? completedMatches.length : 0;
+  const pendingTasks = pendingMatches ? pendingMatches.length : 0;
+  const totalTasks = completedTasks + pendingTasks;
+  const percent = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+  return { completedTasks, totalTasks, percent };
+}
+
 export interface SkillItem {
   id: string;
   name: string;
@@ -156,10 +167,7 @@ export async function listProjects(): Promise<ProjectSummary[]> {
         }
       } catch {}
 
-      const completedMatches = backlogContent.match(/- \[x\]/gi);
-      const pendingMatches = backlogContent.match(/- \[ \]/gi);
-      const completedTasks = completedMatches ? completedMatches.length : 0;
-      const totalTasks = completedTasks + (pendingMatches ? pendingMatches.length : 0);
+      const { completedTasks, totalTasks } = countBacklogTasks(backlogContent);
 
       const pendingUpdatesMatches = updatesContent ? updatesContent.match(/^- \[ \] \*\*\[.+/gm) : null;
       const pendingUpdatesCount = pendingUpdatesMatches ? pendingUpdatesMatches.length : 0;
@@ -219,10 +227,9 @@ export async function listProjects(): Promise<ProjectSummary[]> {
           try {
             const backlogContent = await fs.readFile(backlogPath, 'utf-8');
             hasBacklog = true;
-            const completedMatches = backlogContent.match(/- \[x\]/gi);
-            const pendingMatches = backlogContent.match(/- \[ \]/gi);
-            completedTasks = completedMatches ? completedMatches.length : 0;
-            totalTasks = completedTasks + (pendingMatches ? pendingMatches.length : 0);
+            const counts = countBacklogTasks(backlogContent);
+            completedTasks = counts.completedTasks;
+            totalTasks = counts.totalTasks;
           } catch {}
 
           try {
@@ -683,9 +690,26 @@ export async function autoDetectAndCompleteTasks(slug: string, backlog: string, 
         const fullPath = path.join(projectDir, relPath);
         try {
           const stat = await fs.stat(fullPath);
-          if (stat.isDirectory() || stat.size > 0) {
+          if (stat.isFile() && stat.size > 80) {
             lines[i] = line.replace('- [ ]', '- [x]');
             modified = true;
+          } else if (stat.isDirectory()) {
+            // Se for diretório (ex: 02-conteudo/ ou 04-site/), só marcar concluído se houver arquivos reais de conteúdo > 80 bytes
+            const files = await fs.readdir(fullPath);
+            const validFiles: string[] = [];
+            for (const f of files) {
+              if (f === 'README.md' || f === '.gitkeep' || f === '.DS_Store') continue;
+              try {
+                const fStat = await fs.stat(path.join(fullPath, f));
+                if (fStat.isFile() && fStat.size > 80) {
+                  validFiles.push(f);
+                }
+              } catch {}
+            }
+            if (validFiles.length > 0) {
+              lines[i] = line.replace('- [ ]', '- [x]');
+              modified = true;
+            }
           }
         } catch {}
       }
@@ -739,10 +763,7 @@ export async function completeProjectTask(slug: string, identifier: string): Pro
     await fs.writeFile(path.join(PROJECTS_DIR, slug, 'backlog.md'), updatedBacklog, 'utf-8');
   } catch {}
 
-  const completedMatches = updatedBacklog.match(/- \[x\]/gi);
-  const pendingMatches = updatedBacklog.match(/- \[ \]/gi);
-  const completedTasks = completedMatches ? completedMatches.length : 0;
-  const totalTasks = completedTasks + (pendingMatches ? pendingMatches.length : 0);
+  const { completedTasks, totalTasks } = countBacklogTasks(updatedBacklog);
 
   return {
     success: true,
@@ -843,10 +864,7 @@ export async function syncProjectFromDiskAndAgent(targetSlug?: string): Promise<
         if (updates) await fs.writeFile(path.join(pDir, 'updates.md'), updates, 'utf-8');
       } catch {}
 
-      const done = (backlog.match(/- \[x\]/gi) || []).length;
-      const pending = (backlog.match(/- \[ \]/gi) || []).length;
-      const total = done + pending;
-      const percent = total > 0 ? Math.round((done / total) * 100) : 0;
+      const { completedTasks: done, totalTasks: total, percent } = countBacklogTasks(backlog);
 
       syncedProjects.push({
         slug,

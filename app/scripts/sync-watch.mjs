@@ -44,8 +44,8 @@ async function syncAllProjects() {
             WHERE slug = $5
           `, [backlog, brief, prompt, updates, slug]);
 
-          const done = (backlog.match(/- \[x\]/gi) || []).length;
-          const pending = (backlog.match(/- \[ \]/gi) || []).length;
+          const done = (backlog.match(/^-\s*\[x\]/gim) || []).length;
+          const pending = (backlog.match(/^-\s*\[\s\]/gim) || []).length;
           const percent = Math.round((done / (done + pending || 1)) * 100);
           console.log(`   ✅ [${slug}] => Concluídas: ${done}/${done + pending} (${percent}%)`);
         }
@@ -81,8 +81,8 @@ async function syncSingleProject(slug, fileChanged) {
         `, [content, slug]);
 
         if (fileChanged === 'backlog.md') {
-          const done = (content.match(/- \[x\]/gi) || []).length;
-          const pending = (content.match(/- \[ \]/gi) || []).length;
+          const done = (content.match(/^-\s*\[x\]/gim) || []).length;
+          const pending = (content.match(/^-\s*\[\s\]/gim) || []).length;
           console.log(`⚡ [AUTO-SYNC] Projeto '${slug}' atualizou backlog: ${done}/${done + pending} tarefas concluídas!`);
         } else {
           console.log(`⚡ [AUTO-SYNC] Projeto '${slug}' atualizou ${fileChanged} no banco VPS.`);
