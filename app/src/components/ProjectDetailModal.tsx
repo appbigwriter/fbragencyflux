@@ -41,6 +41,10 @@ export function ProjectDetailModal({ slug, onClose, onProjectUpdated, onOpenEdit
   const [newDeliverable, setNewDeliverable] = useState('');
   const [sendingUpdate, setSendingUpdate] = useState(false);
 
+  // Sync Backlog state
+  const [syncingBacklog, setSyncingBacklog] = useState(false);
+  const [syncFeedback, setSyncFeedback] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
+
   const fetchProject = async () => {
     if (!slug) return;
     setLoading(true);
@@ -57,6 +61,37 @@ export function ProjectDetailModal({ slug, onClose, onProjectUpdated, onOpenEdit
       console.error('Erro ao carregar detalhes:', err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSyncBacklog = async () => {
+    if (!slug) return;
+    setSyncingBacklog(true);
+    setSyncFeedback(null);
+    try {
+      const res = await fetch(`/api/projects/${slug}/sync`, { method: 'POST' });
+      const data = await res.json();
+      if (data.success) {
+        await fetchProject();
+        onProjectUpdated();
+        setSyncFeedback({
+          type: 'success',
+          text: data.message || `Backlog atualizado! ${data.completedTasks || 0}/${data.totalTasks || 0} tarefas concluídas (${data.percent || 0}%).`
+        });
+        setTimeout(() => setSyncFeedback(null), 5000);
+      } else {
+        setSyncFeedback({
+          type: 'error',
+          text: data.error || 'Erro ao sincronizar backlog do agente.'
+        });
+      }
+    } catch (err: any) {
+      setSyncFeedback({
+        type: 'error',
+        text: 'Falha de comunicação ao sincronizar backlog.'
+      });
+    } finally {
+      setSyncingBacklog(false);
     }
   };
 
@@ -716,19 +751,52 @@ export function ProjectDetailModal({ slug, onClose, onProjectUpdated, onOpenEdit
               {/* Tab: Backlog */}
               {tab === 'backlog' && (
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-xl bg-slate-950/60 border border-white/10">
                     <div>
-                      <h3 className="text-sm font-bold text-white">Checklist de Execução Real</h3>
-                      <p className="text-xs text-slate-400">Clique nas tarefas para marcar como concluídas no arquivo físico.</p>
+                      <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                        <CheckSquare className="w-4 h-4 text-emerald-400" />
+                        <span>Checklist de Execução Real ({slug}/backlog.md)</span>
+                      </h3>
+                      <p className="text-xs text-slate-400 mt-0.5">
+                        Lê diretamente os artefatos e arquivos de entrega do agente para marcar as tarefas concluídas.
+                      </p>
                     </div>
 
-                    <button
-                      onClick={() => setEditingBacklog(!editingBacklog)}
-                      className="text-xs text-slate-400 hover:text-white px-3 py-1.5 rounded-lg border border-white/10 hover:bg-slate-800 transition-colors"
-                    >
-                      {editingBacklog ? 'Ver Modo Lista' : 'Editar Markdown'}
-                    </button>
+                    <div className="flex items-center gap-2 self-start sm:self-center shrink-0">
+                      <button
+                        onClick={handleSyncBacklog}
+                        disabled={syncingBacklog}
+                        title="Compara os arquivos locais gerados pelo agente e atualiza o checklist"
+                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-slate-950 bg-gradient-to-r from-emerald-400 to-teal-300 hover:from-emerald-300 hover:to-teal-200 disabled:opacity-50 rounded-lg shadow-md transition-all cursor-pointer"
+                      >
+                        <RefreshCw className={`w-3.5 h-3.5 ${syncingBacklog ? 'animate-spin' : ''}`} />
+                        <span>{syncingBacklog ? 'Sincronizando...' : '🔄 Sincronizar com o Agente'}</span>
+                      </button>
+
+                      <button
+                        onClick={() => setEditingBacklog(!editingBacklog)}
+                        className="text-xs text-slate-300 hover:text-white px-3 py-1.5 rounded-lg border border-white/10 hover:bg-slate-800 transition-colors cursor-pointer"
+                      >
+                        {editingBacklog ? 'Ver Modo Lista' : '✏️ Editar Markdown'}
+                      </button>
+                    </div>
                   </div>
+
+                  {syncFeedback && (
+                    <div className={`p-3 rounded-xl border text-xs flex items-center justify-between animate-fadeIn ${
+                      syncFeedback.type === 'success'
+                        ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300'
+                        : 'bg-rose-500/10 border-rose-500/30 text-rose-300'
+                    }`}>
+                      <span>{syncFeedback.text}</span>
+                      <button
+                        onClick={() => setSyncFeedback(null)}
+                        className="text-xs opacity-70 hover:opacity-100 ml-2 cursor-pointer"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  )}
 
                   {editingBacklog ? (
                     <div className="space-y-3">

@@ -1,0 +1,36 @@
+:root {
+  --gs-ink-950: #0b0d12;
+  --gs-ink-900: #11151d;
+  --gs-surface: #171c26;
+  --gs-surface-raised: #202735;
+  --gs-border: #303949;
+  --gs-text: #f4f6fb;
+  --gs-text-muted: #a9b2c2;
+  --gs-accent: #a78bfa;
+  --gs-accent-strong: #8b5cf6;
+  --gs-cyan: #38bdf8;
+  --gs-success: #34d399;
+  --gs-warning: #fbbf24;
+  --gs-danger: #fb7185;
+  --gs-gradient-accent: linear-gradient(135deg, #38bdf8 0%, #a78bfa 52%, #f472b6 100%);
+  --gs-font-display: "Space Grotesk", "Inter", system-ui, sans-serif;
+  --gs-font-body: "Inter", system-ui, sans-serif;
+  --gs-radius-md: 0.75rem;
+  --gs-radius-lg: 1rem;
+  --gs-content-max: 72rem;
+}
+
+.gs-card {
+  background: var(--gs-surface);
+  border: 1px solid var(--gs-border);
+  border-radius: var(--gs-radius-lg);
+}
+
+.gs-focusable:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--gs-cyan) 45%, transparent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+}

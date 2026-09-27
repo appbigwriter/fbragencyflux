@@ -34,7 +34,7 @@ Acompanhamento direto e transparente dos entregáveis do projeto.
 ---
 
 ## 💻 Fase 3: Desenvolvimento do Blog / Site
-- [ ] **Setup da Aplicação Web (Next.js / Tailwind)** (`04-site/`)
+- [x] **Setup da Aplicação Web (Next.js / Tailwind)** (`04-site/`)
 - [ ] **Página Inicial (Hero, Artigos em Destaque, Newsletter, Sobre Heidi)**
 - [ ] **Páginas de Categoria & Artigo Individual**
 - [ ] **Componentes de Afiliados (Callout Box de Produtos)**

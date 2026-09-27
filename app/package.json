@@ -6,7 +6,9 @@
     "dev": "next dev -p 3400 -H 0.0.0.0",
     "build": "next build",
     "start": "next start -p 3400 -H 0.0.0.0",
-    "lint": "eslint"
+    "lint": "eslint",
+    "sync": "node scripts/sync-local-to-db.mjs",
+    "sync:watch": "node scripts/sync-watch.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.117.2",

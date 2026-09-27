@@ -23,3 +23,12 @@ Canal ativo de comunicação, observações e cobranças entre o Publisher (Serg
 - THI-006: pauta e fontes específicas ainda precisam ser selecionadas; owner: Maia.
 - THI-007: sem pacote editorial verificável neste workspace; não marcar QA como concluído.
 - THI-008: publicação/deploy aguardam Gate formal de Sergio.
+
+## ✅ Follow-up operacional — 2026-09-26 20:47 -03:00
+- **Job:** THIRTIES-OPS-20260926-003.
+- **Receipt:** `qa-operational-followup-2026-09-26-v8.md`.
+- **Fatos verificados:** readback do backlog, updates, briefing, matriz editorial, análise de nicho e arquitetura; busca independente confirmou a cobertura contratual de THI-005; `git diff --check -- .` exit 0.
+- **Estado:** THI-001/002/005 permanecem respaldados; THI-003/004/006/007/008 permanecem HOLD/condicionais/bloqueados conforme backlog. Ausências históricas não foram reconstruídas.
+- **Limitação real:** não existe aplicação Next.js executável neste diretório; `npm test`, typecheck, lint e build não foram alegados nem executados.
+- **Próximo check:** após revisão técnica/humana de THI-005, export SEO autorizado, decisão de marca ou novos artefatos editoriais.
+- **Gate:** publicação, monetização, migration, deploy e links continuam fechados sem decisão formal de Sergio.

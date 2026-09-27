@@ -6,25 +6,31 @@ Canal ativo de comunicação, observações e cobranças entre o Publisher (Serg
 
 ## 📥 Observações e Cobranças Ativas (Aguardando Ação do Agente)
 
-- [ ] **[2026-09-26 10:15 - 🎯 Prioridade de Inicialização]**
-  - **Autor**: Sergio Castro (Publisher) / Sistema Flux
-  - **Instrução**: Iniciar a pesquisa de mercado de Storefront / Sinalização e estruturação dos Design Tokens. Considerar que o público é amplo e transversal a empreendedores.
-  - **Entregável**: `01-pesquisa/analise-nicho.md` e `03-design-ui/tokens.css`
-  - **Prioridade**: Alta
-  - **Status**: Pendente de Resposta do Hermes
-
-- [ ] **[2026-09-26 10:15 - ✍️ Diretriz Editorial]**
-  - **Autor**: Sergio Castro (Publisher)
-  - **Instrução**: Produtos de gráfica rápida entram como ferramentas práticas para o empreendedor, nunca como assunto principal. Tom editorial sofisticado e prático.
-  - **Entregável**: `02-conteudo/pautas.md`
-  - **Prioridade**: Alta
-  - **Status**: Pendente de Resposta do Hermes
+- Nenhuma cobrança ativa.
+- **Pendência técnica não bloqueante:** o formulário de checklist da homepage está em modo de apresentação e ainda não possui provedor de entrega/armazenamento de leads. Não publicar como captura real antes da integração e dos requisitos de privacidade.
+- O gate de deploy permanece dependente de aprovação explícita do Sergio.
 
 ---
 
 ## ✅ Histórico de Updates Atendidos & Resoluções
-- [x] **[2026-09-26 13:36 - ⚡ Cobrança de Entrega]** (Atendido por Marcus Cole em 2026-09-26 13:36)
-  - **Instrução**: Teste automatizado: Revisar análise de concorrentes de storefront para entrega até 18h.
-  - **Entregável**: `01-pesquisa/analise-nicho.md` (Gerado com sucesso)
 
-- Nenhum update arquivado ainda. Conforme as cobranças forem atendidas pelo Marcus Cole, mova-as para esta seção com o link do entregável gerado.
+- [x] **[2026-09-26 - Fundação e fluxo inicial]**
+  - Pesquisa de mercado e análise de audiência entregues em `01-pesquisa/analise-nicho.md`.
+  - Design tokens e identidade Editorial Signal entregues em `03-design-ui/tokens.css`, `design-tokens.json` e `styleguide.md`.
+  - Linha editorial e pautas entregues em `02-conteudo/pautas.md`.
+  - Três artigos EN-US e páginas About, Contact e Disclaimer entregues em `02-conteudo/`.
+  - Site Next.js, homepage, template de artigo, callout de afiliados, metadata, robots e sitemap entregues em `04-site/`.
+  - Build de produção validado com Next.js 16.3.6.
+  - `npm audit --omit=dev --audit-level=high` validado com zero vulnerabilidades.
+  - Homepage e artigo testados no navegador local sem erros de console.
+  - Backlog atualizado até a conclusão dos itens da Fase 3.
+
+- [x] **[2026-09-26 13:36 - ⚡ Cobrança de Entrega]**
+  - **Instrução**: Teste automatizado: revisar análise de concorrentes de storefront.
+  - **Entregável**: `01-pesquisa/analise-nicho.md`.
+
+- [x] **Auditoria de SEO, Performance & Compliance**
+  - Build Next.js 16.3.6, TypeScript, rotas estáticas, metadata, robots, sitemap, console e `npm audit` verificados.
+  - Relatório: `04-site/QA-REPORT.md`.
+  - Condição de produção registrada: formulário de leads ainda não possui provedor de entrega/armazenamento.
+

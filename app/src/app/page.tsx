@@ -26,6 +26,9 @@ export default function Home() {
   const [editingSlug, setEditingSlug] = useState<string | null>(null);
   const [editingProjectData, setEditingProjectData] = useState<any>(null);
 
+  const [syncingAll, setSyncingAll] = useState(false);
+  const [syncToast, setSyncToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+
   const fetchData = async () => {
     setLoading(true);
     try {
@@ -41,6 +44,51 @@ export default function Home() {
       console.error('Erro ao carregar dados:', err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSyncAll = async () => {
+    setSyncingAll(true);
+    try {
+      const res = await fetch('/api/projects/sync', { method: 'POST' });
+      const data = await res.json();
+      if (data.success) {
+        await fetchData();
+        setSyncToast({
+          type: 'success',
+          message: `🎉 ${data.syncedCount || projects.length} projetos sincronizados com os backlogs reais dos agentes!`
+        });
+        setTimeout(() => setSyncToast(null), 5000);
+      } else {
+        setSyncToast({
+          type: 'error',
+          message: data.error || 'Erro ao sincronizar projetos'
+        });
+      }
+    } catch (err) {
+      setSyncToast({
+        type: 'error',
+        message: 'Falha de conexão ao sincronizar com os agentes'
+      });
+    } finally {
+      setSyncingAll(false);
+    }
+  };
+
+  const handleSyncSingle = async (slug: string) => {
+    try {
+      const res = await fetch(`/api/projects/${slug}/sync`, { method: 'POST' });
+      const data = await res.json();
+      if (data.success) {
+        await fetchData();
+        setSyncToast({
+          type: 'success',
+          message: `✅ [${slug}] Backlog atualizado: ${data.completedTasks}/${data.totalTasks} tarefas concluídas!`
+        });
+        setTimeout(() => setSyncToast(null), 4000);
+      }
+    } catch (err) {
+      console.error(`Erro ao sincronizar ${slug}:`, err);
     }
   };
 
@@ -135,7 +183,7 @@ export default function Home() {
 
         {/* Projects Section */}
         <section className="space-y-4">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
               <h2 className="text-xl font-bold text-white flex items-center gap-2">
                 <span>Projetos Ativos</span>
@@ -143,17 +191,48 @@ export default function Home() {
                   {projects.length}
                 </span>
               </h2>
-              <p className="text-xs text-slate-400">Projetos em desenvolvimento na pasta <code className="text-emerald-400">03-projetos/</code></p>
+              <p className="text-xs text-slate-400">Projetos em desenvolvimento na pasta <code className="text-emerald-400">03-projetos/</code> com Gestores Hermes autônomos</p>
             </div>
 
-            <button
-              onClick={fetchData}
-              title="Atualizar lista"
-              className="p-2 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800/80 border border-white/5 transition-colors cursor-pointer"
-            >
-              <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-            </button>
+            <div className="flex items-center gap-2 self-start sm:self-center">
+              <button
+                onClick={handleSyncAll}
+                disabled={syncingAll}
+                title="Lê os arquivos reais dos agentes (backlog.md, entregáveis) e atualiza o banco"
+                className="flex items-center gap-2 px-3.5 py-2 text-xs font-bold text-slate-950 bg-gradient-to-r from-emerald-400 to-teal-300 hover:from-emerald-300 hover:to-teal-200 disabled:opacity-50 rounded-xl shadow-md shadow-emerald-500/10 transition-all cursor-pointer"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 ${syncingAll ? 'animate-spin' : ''}`} />
+                <span>{syncingAll ? 'Sincronizando Backlogs...' : '🔄 Sincronizar Backlogs dos Agentes'}</span>
+              </button>
+
+              <button
+                onClick={fetchData}
+                title="Atualizar lista"
+                className="p-2 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800/80 border border-white/5 transition-colors cursor-pointer"
+              >
+                <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+              </button>
+            </div>
           </div>
+
+          {/* Toast Notification */}
+          {syncToast && (
+            <div className={`p-3.5 rounded-2xl border text-xs flex items-center justify-between animate-fadeIn ${
+              syncToast.type === 'success'
+                ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300 shadow-lg shadow-emerald-500/5'
+                : 'bg-rose-500/10 border-rose-500/30 text-rose-300 shadow-lg shadow-rose-500/5'
+            }`}>
+              <div className="flex items-center gap-2 font-medium">
+                <span>{syncToast.message}</span>
+              </div>
+              <button
+                onClick={() => setSyncToast(null)}
+                className="text-xs opacity-70 hover:opacity-100 ml-3 cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+          )}
 
           {loading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -184,6 +263,7 @@ export default function Home() {
                   onSelect={handleOpenDetail}
                   onViewPrompt={handleOpenDetail}
                   onEdit={handleOpenEditFromCard}
+                  onSync={handleSyncSingle}
                 />
               ))}
             </div>

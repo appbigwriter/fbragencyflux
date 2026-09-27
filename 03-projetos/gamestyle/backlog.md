@@ -7,15 +7,15 @@
 - [x] Briefing e escopo definidos — `brief.md`
 - [x] Agente Gestor Hermes configurado — contexto oficial recebido
 - [x] **GS-001 Pesquisa de mercado e palavras-chave** — `01-pesquisa/analise-nicho.md`
-- [ ] GS-002 Design tokens & identidade visual — `03-design-ui/tokens.css`
+- [x] GS-002 Design tokens & identidade visual — `03-design-ui/tokens.css`
 
 ## Fase 2 — Conteúdo & Copywriting
 - [ ] GS-003 Linha editorial e pautas — `02-conteudo/pautas.md`
-- [ ] GS-004 Lote 1 de artigos de alta conversão — `02-conteudo/`
-- [ ] GS-005 About, Contact e Disclaimer — `02-conteudo/`
+- [x] GS-004 Lote 1 de artigos de alta conversão — `02-conteudo/`
+- [x] GS-005 About, Contact e Disclaimer — `02-conteudo/`
 
 ## Fase 3 — Desenvolvimento Web
-- [ ] GS-006 Setup Next.js/Tailwind — `04-site/`
+- [x] GS-006 Setup Next.js/Tailwind — `04-site/`
 - [ ] GS-007 Página inicial e layout editorial
 - [ ] GS-008 Templates de artigo e callouts afiliados
 

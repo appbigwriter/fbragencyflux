@@ -722,7 +722,6 @@ export async function completeProjectTask(slug: string, identifier: string): Pro
   }
 
   if (!matched) {
-    // Se não deu match exato, tenta casar case-insensitive
     const lowerId = identifier.toLowerCase();
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
@@ -752,4 +751,121 @@ export async function completeProjectTask(slug: string, identifier: string): Pro
     backlog: updatedBacklog
   };
 }
+
+export async function syncProjectFromDiskAndAgent(targetSlug?: string): Promise<{
+  success: boolean;
+  syncedCount: number;
+  projects: Array<{
+    slug: string;
+    completedTasks: number;
+    totalTasks: number;
+    percent: number;
+    hasBacklog: boolean;
+  }>;
+}> {
+  const syncedProjects: Array<{
+    slug: string;
+    completedTasks: number;
+    totalTasks: number;
+    percent: number;
+    hasBacklog: boolean;
+  }> = [];
+
+  try {
+    let slugsToSync: string[] = [];
+
+    if (targetSlug) {
+      slugsToSync = [targetSlug];
+    } else {
+      // Lista todos os slugs locais e do banco
+      const dbProjects = await fetchProjectsFromDatabase().catch(() => []);
+      const dbSlugs = dbProjects.map(p => p.slug);
+      let localSlugs: string[] = [];
+      try {
+        const entries = await fs.readdir(PROJECTS_DIR, { withFileTypes: true });
+        localSlugs = entries.filter(e => e.isDirectory()).map(e => e.name);
+      } catch {}
+
+      slugsToSync = Array.from(new Set([...dbSlugs, ...localSlugs]));
+    }
+
+    for (const slug of slugsToSync) {
+      const pDir = path.join(PROJECTS_DIR, slug);
+      let backlog = '';
+      let brief = '';
+      let prompt = '';
+      let updates = '';
+
+      // 1. Lê os arquivos locais do disco
+      try { backlog = await fs.readFile(path.join(pDir, 'backlog.md'), 'utf-8'); } catch {}
+      try { brief = await fs.readFile(path.join(pDir, 'brief.md'), 'utf-8'); } catch {}
+      try { prompt = await fs.readFile(path.join(pDir, 'GESTOR-HERMES-PROMPT.md'), 'utf-8'); } catch {}
+      try { updates = await fs.readFile(path.join(pDir, 'updates.md'), 'utf-8'); } catch {}
+
+      // Se não encontrou localmente, tenta do banco
+      if (!backlog || !brief || !prompt) {
+        const dbRow = await fetchProjectDetailFromDatabase(slug).catch(() => null);
+        if (dbRow) {
+          if (!backlog && dbRow.backlog_content) backlog = dbRow.backlog_content;
+          if (!brief && dbRow.brief_content) brief = dbRow.brief_content;
+          if (!prompt && dbRow.prompt_content) prompt = dbRow.prompt_content;
+          if (!updates && dbRow.updates_content) updates = dbRow.updates_content;
+        }
+      }
+
+      // 2. Auto-detecção de entregáveis criados nas pastas do projeto
+      if (backlog) {
+        try {
+          backlog = await autoDetectAndCompleteTasks(slug, backlog, pDir);
+        } catch {}
+      }
+
+      // 3. Atualiza no PostgreSQL VPS
+      if (backlog) {
+        await updateProjectFieldInDatabase(slug, 'backlog_content', backlog);
+      }
+      if (brief) {
+        await updateProjectFieldInDatabase(slug, 'brief_content', brief);
+      }
+      if (prompt) {
+        await updateProjectFieldInDatabase(slug, 'prompt_content', prompt);
+      }
+      if (updates) {
+        await updateProjectFieldInDatabase(slug, 'updates_content', updates);
+      }
+
+      // 4. Salva de volta no disco para manter coerência
+      try {
+        await fs.mkdir(pDir, { recursive: true });
+        if (backlog) await fs.writeFile(path.join(pDir, 'backlog.md'), backlog, 'utf-8');
+        if (brief) await fs.writeFile(path.join(pDir, 'brief.md'), brief, 'utf-8');
+        if (prompt) await fs.writeFile(path.join(pDir, 'GESTOR-HERMES-PROMPT.md'), prompt, 'utf-8');
+        if (updates) await fs.writeFile(path.join(pDir, 'updates.md'), updates, 'utf-8');
+      } catch {}
+
+      const done = (backlog.match(/- \[x\]/gi) || []).length;
+      const pending = (backlog.match(/- \[ \]/gi) || []).length;
+      const total = done + pending;
+      const percent = total > 0 ? Math.round((done / total) * 100) : 0;
+
+      syncedProjects.push({
+        slug,
+        completedTasks: done,
+        totalTasks: total,
+        percent,
+        hasBacklog: !!backlog
+      });
+    }
+
+    return {
+      success: true,
+      syncedCount: syncedProjects.length,
+      projects: syncedProjects
+    };
+  } catch (err: any) {
+    console.error('Erro ao sincronizar projetos do disco/agente:', err);
+    throw new Error('Falha ao sincronizar projetos: ' + err.message);
+  }
+}
+
 

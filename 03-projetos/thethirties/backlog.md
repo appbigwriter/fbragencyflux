@@ -21,7 +21,7 @@ Fonte: briefing recebido do Publisher; nenhum item é considerado concluído sem
 - [x] **THI-002** Pesquisa de mercado e concorrência com fontes rastreáveis — P0 — pesquisa inicial concluída/verificada; volume de keywords/SERP pendente; `01-pesquisa/analise-nicho.md`
 - [ ] **THI-003** Mapa de palavras-chave e oportunidades — P1 — HOLD quantitativo; depende de export/ferramenta SEO autorizada para US/en-US
 - [ ] **THI-004** Sistema visual e design tokens — P1 — HOLD; depende de decisão final de marca; não há `tokens.css` verificado neste workspace
-- [ ] **THI-005** Arquitetura Next.js/Supabase e contratos — P1 — `review`; proposta local criada em `04-site/architecture-contracts-v1.md`; implementação e readback remotos pendentes
+- [x] **THI-005** Arquitetura Next.js/Supabase e contratos — P1 — proposta local concluída/verificada em `04-site/architecture-contracts-v1.md`; implementação e readback remotos permanecem como etapa posterior
 - [ ] **THI-006** Primeira pauta You Asked e artigo EN-US — P1 — pronta para preparação editorial após seleção de pauta e fontes específicas; nenhum artigo verificado neste workspace
 - [ ] **THI-007** QA editorial/técnico e readiness — P0 — dependente dos artefatos editoriais; nenhum pacote TT-005 verificável neste workspace
 - [ ] **THI-008** Publicação/deploy — BLOQUEADO por Gate de Sergio; não executar
@@ -41,3 +41,5 @@ Fonte: briefing recebido do Publisher; nenhum item é considerado concluído sem
 
 - 2026-09-26 20:12 -03:00: THI-005 avançou para `review` com proposta local de arquitetura e contratos; nenhum código executável, migration, deploy, publicação, gasto ou estado externo foi mutado.
 - Gate de expectativa: a entrega cobre o briefing atual e cria a próxima entrada técnica, mas não é implementação nem autoriza produção. A revisão técnica/humana permanece necessária.
+- **PROBLEMA TÉCNICO — 2026-09-26:** histórico anterior alegava checks e artefatos (THI-004, THI-006, THI-007/008, TT-005 e novos pacotes), mas esses arquivos não existem no workspace canônico após a execução recorrente. O backlog foi preservado somente com checks respaldados por artefato atualmente presente (THI-001 e THI-002). Executor atualizado para não sobrescrever/reconstruir o backlog e exigir readback; recuperação dos artefatos ausentes permanece pendente.
+- 2026-09-26 20:47 -03:00: follow-up operacional read-only concluído; receipt `qa-operational-followup-2026-09-26-v8.md` criado e lido de volta. `git diff --check -- .` exit 0; THI-001/002/005 permanecem respaldados por artefato; ausências de THI-004/006/007/008 e TT-005 continuam registradas. Nenhum card foi promovido, e nenhum estado externo foi mutado.

@@ -9,9 +9,28 @@ interface ProjectCardProps {
   onSelect: (slug: string) => void;
   onViewPrompt: (slug: string) => void;
   onEdit?: (slug: string) => void;
+  onSync?: (slug: string) => Promise<void>;
 }
 
-export function ProjectCard({ project, onSelect, onViewPrompt, onEdit }: ProjectCardProps) {
+export function ProjectCard({ project, onSelect, onViewPrompt, onEdit, onSync }: ProjectCardProps) {
+  const [syncing, setSyncing] = React.useState(false);
+
+  const handleSync = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setSyncing(true);
+    try {
+      if (onSync) {
+        await onSync(project.slug);
+      } else {
+        await fetch(`/api/projects/${project.slug}/sync`, { method: 'POST' });
+      }
+    } catch (err) {
+      console.error('Erro ao sincronizar projeto:', err);
+    } finally {
+      setSyncing(false);
+    }
+  };
+
   const percentComplete = project.totalTasks > 0
     ? Math.round((project.completedTasks / project.totalTasks) * 100)
     : 0;
@@ -49,6 +68,16 @@ export function ProjectCard({ project, onSelect, onViewPrompt, onEdit }: Project
             </div>
           </div>
           <div className="flex items-center gap-1.5">
+            <button
+              onClick={handleSync}
+              disabled={syncing}
+              title="Sincronizar backlog e arquivos do agente"
+              className="text-[11px] text-teal-300 hover:text-teal-100 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/30 px-2 py-1 rounded-lg transition-colors flex items-center gap-1 cursor-pointer disabled:opacity-50"
+            >
+              <span className={syncing ? 'animate-spin inline-block' : ''}>🔄</span>
+              <span>{syncing ? 'Sync...' : 'Sync'}</span>
+            </button>
+
             <button
               onClick={(e) => {
                 e.stopPropagation();
