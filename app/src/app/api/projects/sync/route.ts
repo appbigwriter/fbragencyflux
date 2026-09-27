@@ -16,11 +16,10 @@ export async function POST(req: NextRequest) {
 
     const result = await syncProjectFromDiskAndAgent(slug);
     return NextResponse.json({
-      success: true,
+      ...result,
       message: slug
         ? `Projeto '${slug}' sincronizado com sucesso com os artefatos e backlog do agente!`
-        : `Todos os ${result.syncedCount} projetos foram sincronizados com os backlogs dos agentes!`,
-      ...result
+        : `Todos os ${result.syncedCount} projetos foram sincronizados com os backlogs dos agentes!`
     });
   } catch (err: any) {
     console.error('Erro na rota POST /api/projects/sync:', err);
