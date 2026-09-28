@@ -95,6 +95,16 @@ The site is considered ready for Sergio’s deploy gate only when:
 - [ ] Q5.5 — Verify external fonts, images and scripts do not block core content.
   - Acceptance: page remains readable and usable if third-party assets fail.
 
+## Phase 5.5 — Image assets and visual integration
+
+- [ ] I5.1 — Generate and review IMG-001 homepage hero.
+- [ ] I5.2 — Generate and review IMG-002 four-touchpoint strip.
+- [ ] I5.3 — Generate and review IMG-003 point-of-sale audit cover.
+- [ ] I5.4 — Generate and review IMG-004 and IMG-005 article covers.
+- [ ] I5.5 — Generate and review IMG-006 default Open Graph image.
+- [ ] I5.6 — Add images to `public/images/` with explicit dimensions, `next/image`, alt text and responsive sizes.
+- [ ] I5.7 — Re-run build and visual QA after integration.
+
 ## Phase 6 — QA and release preparation
 
 - [ ] R6.1 — Run `npm run build` from the physical `04-site` directory.

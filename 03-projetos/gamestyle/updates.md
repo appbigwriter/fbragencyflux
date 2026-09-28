@@ -22,3 +22,11 @@ Canal ativo de comunicação entre Sergio Castro / Sistema Flux e Tara Lindqvist
 - Próximo passo: escolher Easypanel/VPS, Vercel ou staging privado e executar publicação verificável.
 
 A fonte canônica de progresso é o backlog retornado pela API do Flux.
+
+
+## 📥 Observações e Cobranças Ativas (Aguardando Ação do Agente)
+- [ ] **[2026-09-28 16:49 - 🔍 Revisão / Feedback]**
+  - **Autor**: Sergio Castro (Publisher)
+  - **Instrução**: Foi criada uma nova skill para criar imagens ... revise o site para saber quais imagens voce precisa criar
+  - **Prioridade**: Alta
+  - **Status**: Pendente de Resposta do Hermes

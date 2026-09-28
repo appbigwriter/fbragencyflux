@@ -36,6 +36,11 @@
   - Aceite: página de demonstração visual; contraste e teclado verificados.
   - Dependência: SITE-002, SITE-003.
 
+- [ ] **SITE-004A — Produzir pacote visual P0**
+  - Criar logo/monograma, favicon, OG card, hero, Featured Teardown, Five-Second Test e comparativo de formatos conforme `03-design-ui/image-inventory.md`.
+  - Aceite: arquivos fonte/exportados, alt text, licença/origem, crops mobile e status de aprovação registrados; sem logos/fotos de terceiros não autorizados.
+  - Dependência: SITE-002, SITE-004.
+
 - [ ] **SITE-005 — Modelar schema do conteúdo**
   - Definir tipos/contratos para `articles`, `sources`, `teardowns`, `products`, `reviews` e `submissions`.
   - Aceite: schema versionado, campos obrigatórios, estados editoriais e regras de proveniência documentados.

@@ -84,6 +84,12 @@ As tarefas devem ser executadas nesta ordem, respeitando dependências. Cada ite
   - Aceite: componente não permite publicação de artigo YMYL sem Sources/disclosure exigidos.
   - Dependência: SITE-005 e SITE-006.
 
+- [ ] SITE-023 — Produzir e integrar assets visuais
+  - Criar IMG-001 a IMG-007 conforme `03-design-ui/image-asset-inventory-v1.md`, registrar origem/licença/prompt e conectar logo, favicon, OG, avatar e TT-005.
+  - Aceite: arquivos válidos, alt text factual, `next/image` otimizado, sem logos/produtos não validados, build e verificação visual passam.
+  - Dependência: SITE-001, SITE-004, decisão visual Q11/Q12 do questionário.
+  - Gate: aprovação da direção visual antes da produção final/publicação.
+
 ### Fase 4 — Supabase/Postgres
 
 - [ ] SITE-014 — Provisionar projeto Supabase autorizado
@@ -144,7 +150,7 @@ As tarefas devem ser executadas nesta ordem, respeitando dependências. Cada ite
 
 O site só pode ser declarado finalizado quando:
 
-1. todas as tarefas SITE-001 a SITE-022 aplicáveis estiverem concluídas ou tiverem exceção formal;
+1. todas as tarefas SITE-001 a SITE-023 aplicáveis estiverem concluídas ou tiverem exceção formal;
 2. `typecheck`, `lint`, testes e `build` passarem;
 3. artigos e vídeos renderizarem com Sources, disclosure e acessibilidade;
 4. Supabase/RLS/auth forem verificados com testes de isolamento;
