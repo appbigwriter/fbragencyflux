@@ -5,14 +5,15 @@ Canal ativo de comunicação, observações e cobranças entre o Publisher (Serg
 ---
 
 ## 📥 Observações e Cobranças Ativas (Aguardando Ação do Agente)
-- [ ] **[2026-09-26 10:15 - 🎯 Diretriz de Compliance & Tom de Voz]**
+- [x] **[2026-09-26 10:15 - 🎯 Diretriz de Compliance & Tom de Voz]**
   - **Autor**: Sergio Castro (Publisher) / Sistema Flux
   - **Instrução**: Manter conformidade rigorosa com diretrizes de saúde para 40+, base científica e zero falsas promessas de resultados milagrosos.
   - **Entregável**: `01-pesquisa/personas.md` e `02-conteudo/`
   - **Prioridade**: Alta
-  - **Status**: Pendente de Resposta do Hermes
+  - **Status**: Atendido em 2026-09-26.
+  - **Evidência:** `01-pesquisa/personas.md`, `02-conteudo/artigo-01.md`, `02-conteudo/artigo-02.md` e `02-conteudo/artigo-03.md`.
 
 ---
 
 ## ✅ Histórico de Updates Atendidos & Resoluções
-- Nenhum update arquivado ainda. Conforme as cobranças forem atendidas pela Heidi Braun, mova-as para esta seção com o link do entregável gerado.
+- **2026-09-26** — Diretriz atendida no lote prioritário: artigos 01–03 produzidos com fontes, limitações, disclosure e compliance; Character Bible v0.1 criada. A identidade oficial é Heidi Braun Manager.

@@ -1,11 +1,18 @@
 import { NextResponse } from 'next/server';
 import { getProjectDetail, updateProjectFile, updateProjectMetadata } from '@/lib/projects';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function GET(req: Request, { params }: { params: Promise<{ slug: string }> }) {
   try {
     const { slug } = await params;
     const detail = await getProjectDetail(slug);
-    return NextResponse.json({ success: true, project: detail });
+    return NextResponse.json({ success: true, project: detail }, {
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate'
+      }
+    });
   } catch (err: any) {
     return NextResponse.json({ success: false, error: err.message }, { status: 500 });
   }

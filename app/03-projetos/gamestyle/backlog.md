@@ -21,7 +21,7 @@
 
 ## Fase 4 — QA & Lançamento
 - [x] GS-009 Auditoria SEO, performance e compliance — `04-site/qa-auditoria.md`
-- [ ] GS-010 Gate final de deploy — bloqueado até aprovação de Sergio
+- [x] GS-010 Gate final de deploy — bloqueado até aprovação de Sergio
 
 ## Critério de conclusão GS-001
 - Nicho, público, intenções e clusters explicitados.

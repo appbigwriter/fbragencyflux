@@ -8,15 +8,15 @@ Acompanhamento direto e transparente dos entregáveis do projeto.
 - [x] **Briefing e Definição de Escopo** (`brief.md`)
 - [x] **Mapeamento de Nicho & Palavras-Chave** (`01-pesquisa/analise-nicho-e-persona.md`)
 - [x] **Styleguide & Design Tokens** (`03-design-ui/tokens.css` / `styleguide.md`) — v0.1 criada; aguardando validação editorial do publisher
-- [ ] **Character Bible & Assets da Heidi Braun** (`03-design-ui/assets/`)
+- [x] **Character Bible & Assets da Heidi Braun** (`03-design-ui/character-bible.md`, `03-design-ui/assets/`) — Character Bible v0.1 entregue
 
 ---
 
 ## ✍️ Fase 2: Conteúdo Inicial (12 Artigos)
 ### Skin & Beauty
-- [ ] Artigo 01: Retinol vs Bakuchiol for 40+ Skin (`02-conteudo/artigo-01.md`)
-- [ ] Artigo 02: Essential Morning Skincare Routine for Mature Skin (`02-conteudo/artigo-02.md`)
-- [ ] Artigo 03: Sunscreen Over 40: Mineral vs Chemical (`02-conteudo/artigo-03.md`)
+- [x] Artigo 01: Retinol vs Bakuchiol for 40+ Skin (`02-conteudo/artigo-01.md`) — fontes e limitações registradas
+- [x] Artigo 02: Essential Morning Skincare Routine for Mature Skin (`02-conteudo/artigo-02.md`) — fontes e compliance registrados
+- [x] Artigo 03: Sunscreen Over 40: Mineral vs Chemical (`02-conteudo/artigo-03.md`) — fontes e limitações registradas
 - [ ] Artigo 04: Hyaluronic Acid & Ceramide Deep Hydration (`02-conteudo/artigo-04.md`)
 
 ### Recovery & Wellness
