@@ -1,0 +1,5 @@
+import Link from "next/link";
+
+export function AffiliateCallout(){return <aside className="my-8 rounded-xl border border-purple-400/40 bg-purple-400/10 p-5" aria-label="Affiliate disclosure"><p className="text-sm leading-6 text-slate-200"><strong>Disclosure:</strong> Game Style may earn a commission from eligible purchases. Recommendations remain based on stated editorial criteria.</p></aside>}
+
+export function ArticleTemplate({title,dek,children}:{title:string;dek:string;children:React.ReactNode}){return <article className="mx-auto max-w-3xl px-6 py-16"><Link href="/" className="text-sm text-purple-300">← Game Style</Link><header className="mt-8"><p className="text-xs uppercase tracking-[.2em] text-slate-500">Guide · Last reviewed 2026-09-26</p><h1 className="mt-3 text-4xl font-bold tracking-tight md:text-6xl">{title}</h1><p className="mt-5 text-xl leading-8 text-slate-300">{dek}</p></header><div className="prose prose-invert mt-10 max-w-none">{children}</div><AffiliateCallout/></article>}

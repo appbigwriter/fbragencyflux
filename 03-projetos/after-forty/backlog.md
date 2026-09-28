@@ -1,7 +1,7 @@
 # Backlog de Execução: After Forty by Heidi Braun 🌿
 
 > Gestora Oficial: **Heidi Braun Manager**  
-> Status Canônico: **7 concluídas / 17 pendentes (Total: 24 entregáveis)**
+> Status Canônico: **12 concluídas / 12 pendentes (Total: 24 entregáveis)**
 
 ---
 
@@ -13,7 +13,7 @@
 
 ---
 
-## ✍️ Fase 2: Conteúdo Inicial (3/12)
+## ✍️ Fase 2: Conteúdo Inicial (8/12)
 ### Skin & Beauty
 - [x] **Artigo 01 — Retinol vs Bakuchiol** (`02-conteudo/artigo-01.md`)
 - [x] **Artigo 02 — Essential Morning Skincare Routine** (`02-conteudo/artigo-02.md`)

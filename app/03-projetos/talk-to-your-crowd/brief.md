@@ -8,15 +8,11 @@
 - **Público-Alvo**: Empresas e Empreendedores
 - **Nicho Principal**: Storefront, Sinalização e Varejo
 - **Gestor Hermes Responsável**: Marcus Cole
----
-
-## 📖 Briefing Global & Visão Detalhada
-Mercado inicial: Estados Unidos e Canadá. Foco inicial de distribuição: site próprio da FBRSigns (http://fbrsigns.com); redes sociais, YouTube, Amazon Seller e Amazon Associates. Produtos de gráfica rápida (Store Signs & Displays) entram como ferramentas práticas para empreendedores.
 
 ---
 
 ## 🎯 Pilares & Proposta de Valor
-- **Posicionamento**: Editorial sofisticado, temas transversais, transparente, baseado em evidências científicas e sem falsas promessas.
+- **Posicionamento**: Editorial sofisticado,  temas transversais , transparente, baseado em evidências científicas e sem falsas promessas.
 - **Monetização**: Amazon Associates, Afiliados Especializados, FBR Ads
 
 ---

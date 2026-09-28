@@ -681,55 +681,7 @@ export async function toggleProjectUpdate(slug: string, updateLine: string, curr
 }
 
 export async function autoDetectAndCompleteTasks(slug: string, backlog: string, projectDir: string): Promise<string> {
-  if (!backlog) return backlog;
-  let modified = false;
-  const lines = backlog.split('\n');
-
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
-    if (line.trim().startsWith('- [ ]')) {
-      // Procura caminhos de arquivos entre crases no padrão 01-pesquisa/..., 02-conteudo/..., 03-design-ui/..., 04-site/..., etc.
-      const fileMatch = line.match(/`((?:01-pesquisa|02-conteudo|03-design-ui|04-site|brief|updates|GESTOR)[^`]+)`/);
-      if (fileMatch) {
-        const relPath = fileMatch[1].trim();
-        const fullPath = path.join(projectDir, relPath);
-        try {
-          const stat = await fs.stat(fullPath);
-          if (stat.isFile() && stat.size > 80) {
-            lines[i] = line.replace('- [ ]', '- [x]');
-            modified = true;
-          } else if (stat.isDirectory()) {
-            // Se for diretório (ex: 02-conteudo/ ou 04-site/), só marcar concluído se houver arquivos reais de conteúdo > 80 bytes
-            const files = await fs.readdir(fullPath);
-            const validFiles: string[] = [];
-            for (const f of files) {
-              if (f === 'README.md' || f === '.gitkeep' || f === '.DS_Store') continue;
-              try {
-                const fStat = await fs.stat(path.join(fullPath, f));
-                if (fStat.isFile() && fStat.size > 80) {
-                  validFiles.push(f);
-                }
-              } catch {}
-            }
-            if (validFiles.length > 0) {
-              lines[i] = line.replace('- [ ]', '- [x]');
-              modified = true;
-            }
-          }
-        } catch {}
-      }
-    }
-  }
-
-  if (modified) {
-    const newBacklog = lines.join('\n');
-    await updateProjectFieldInDatabase(slug, 'backlog_content', newBacklog);
-    try {
-      await fs.writeFile(path.join(projectDir, 'backlog.md'), newBacklog, 'utf-8');
-    } catch {}
-    return newBacklog;
-  }
-
+  // O backlog é mantido estritamente canônico conforme registrado pelos Agentes Gestores
   return backlog;
 }
 

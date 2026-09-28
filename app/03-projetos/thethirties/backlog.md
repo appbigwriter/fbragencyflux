@@ -1,48 +1,75 @@
-# Backlog de Execução: The Thirties ⚡
+# Backlog — The Thirties by Maia Mendes
 
-Acompanhamento direto e transparente dos entregáveis do projeto.
+Atualizado em: 2026-09-27
+Fonte: briefing recebido do Publisher; nenhum item é considerado concluído sem artefato e evidência.
 
----
+## Próxima entrega prioritária
 
-## 🏁 Fase 1: Fundação & Inteligência
-- [x] **Briefing e Escopo Definido** (`brief.md`)
-- [x] **Agente Gestor Hermes Configurado** (`GESTOR-HERMES-PROMPT.md`)
-- [ ] **Pesquisa de Mercado e Palavras-Chave** (`01-pesquisa/analise-nicho.md`)
-- [ ] **Design Tokens & Identidade Visual** (`03-design-ui/tokens.css`)
+### THI-001 — Fundação editorial, YMYL e compliance
+- **Estado:** concluída e verificada
+- **Prioridade:** P0
+- **Owner:** Maia Mendes / Gestor Editorial
+- **Objetivo:** converter o briefing em regras operacionais para pesquisa, copy e futura implementação.
+- **Artefato:** `01-pesquisa/matriz-editorial-compliance-v1.md`
+- **Aceite:** escopo e fora de escopo explícitos; riscos YMYL classificados; claims proibidos/rebaixados documentados; fontes pendentes separadas de fatos; gates de publicação/monetização registrados.
+- **Dependências:** nenhuma para a versão inicial; pesquisa externa será etapa seguinte.
+- **Gate:** publicação pública e ativação de monetização exigem aprovação de Sergio.
 
----
+## Sequência planejada
 
-## ✍️ Fase 2: Conteúdo & Copywriting
-- [ ] **Estruturação da Linha Editorial e Pautas** (`02-conteudo/pautas.md`)
-- [x] **Lote 1 de Artigos de Alta Conversão** (`02-conteudo/`)
-- [x] **Páginas Institucionais (About, Contact, Disclaimer)** (`02-conteudo/`)
+- [x] **THI-001** Fundação editorial/YMYL/compliance — P0 — concluída/verificada; `01-pesquisa/matriz-editorial-compliance-v1.md`
+- [x] **THI-002** Pesquisa de mercado e concorrência com fontes rastreáveis — P0 — pesquisa inicial concluída/verificada; volume de keywords/SERP pendente; `01-pesquisa/analise-nicho.md`
+- [ ] **THI-003** Mapa de palavras-chave e oportunidades — P1 — HOLD quantitativo; depende de export/ferramenta SEO autorizada para US/en-US
+- [ ] **THI-004** Sistema visual e design tokens — P1 — HOLD; proposta local `03-design-ui/tokens.css` verificada; depende de decisão final de marca
+- [x] **THI-005** Arquitetura Next.js/Supabase e contratos — P1 — proposta local concluída/verificada em `04-site/architecture-contracts-v1.md`; scaffold Next.js executável criado em `04-site/` e validado com typecheck/build/audit; implementação Supabase/readback remoto permanecem como etapas posteriores
+- [x] **THI-006** Primeira pauta You Asked e artigo EN-US — P1 — pacote combinado TT-005 e revisão editorial final local verificados; revisão humana pública e links continuam fora do escopo
+- [x] **THI-007** QA editorial/técnico e readiness — P0 — QA, transcript, captions e acessibilidade verificados localmente; publicação/Gate humano continuam bloqueados
+- [ ] **THI-008** Publicação/deploy — BLOQUEADO por Gate de Sergio; não executar
 
----
+## Tracks e dependências
 
-## 💻 Fase 3: Desenvolvimento Web
-- [x] **Setup da Aplicação Web (Next.js / Tailwind)** (`04-site/`)
-- [ ] **Página Inicial & Layout Editorial**
-- [ ] **Templates de Artigo & Callouts de Afiliados**
+| Track | Estado | Owner | Depende de | Próxima ação |
+|---|---|---|---|---|
+| THI-003 | HOLD ativo | Maia / Gestor Editorial | export ou ferramenta SEO autorizada | obter dados quantitativos rastreáveis; próximo check após acesso |
+| THI-004 | HOLD ativo | Sergio / Publisher | decisão de marca | revisar `03-design-ui/tokens.css`; manter como proposta até decisão formal |
+| THI-005 | review | Maia; Théo futuro | escopo técnico validado | revisar `architecture-contracts-v1.md`; depois story de implementação |
+| THI-006 | concluído local | Maia / Gestor Editorial | revisão humana/publicação | manter pacote sem links e encaminhar para aprovação editorial |
+| THI-007 | concluído local | Maia / Gestor Editorial | Gate de publicação | manter Gate fechado e preparar eventual preview |
+| THI-008 | awaiting_approval | Sergio | QA completo + Gates | não executar sem aprovação formal |
 
----
+## Registro desta sessão
 
-## 🚀 Fase 4: QA & Lançamento
-- [ ] **Auditoria de SEO, Performance & Compliance**
-- [ ] **Aprovação do Gate Final de Deploy**
-ar-01.md`
-- [ ] **Artigo Pilar 02 (Meio de Funil / Comparativo)** `02-conteudo/artigo-pilar-02.md`
-- [ ] **Artigo Pilar 03 (Fundo de Funil / Conversão & Review)** `02-conteudo/artigo-pilar-03.md`
-
----
-
-## 💻 Fase 4: Engenharia & Infraestrutura Web
-- [ ] **Estrutura Next.js & Integração Supabase** `04-site/architecture.md`
-- [ ] **Implementação de SEO On-Page, Schema.org & OpenGraph** `04-site/seo-setup.md`
-- [ ] **Páginas Obrigatórias (About, Privacy, Terms, Disclaimer)** `04-site/legal-pages.md`
-
----
-
-## 🚀 Fase 5: QA, Monetização & Go-Live
-- [ ] **Auditoria de Performance, Acessibilidade e SEO** `01-pesquisa/qa-audit.md`
-- [ ] **Integração de Tags de Afiliados e AdSense** `04-site/monetization-tags.md`
-- [ ] **Deploy de Produção & Verificação de Domínio** `04-site/deployment-verification.md`
+- 2026-09-27 — execução recorrente operacional registrada: revalidar artefatos canônicos, checks locais e discrepâncias; não promover cards nem mutar publicação, links, monetização, migration, deploy ou Gates.
+- 2026-09-26 20:12 -03:00: THI-005 avançou para `review` com proposta local de arquitetura e contratos; nenhum código executável, migration, deploy, publicação, gasto ou estado externo foi mutado.
+- Gate de expectativa: a entrega cobre o briefing atual e cria a próxima entrada técnica, mas não é implementação nem autoriza produção. A revisão técnica/humana permanece necessária.
+- **PROBLEMA TÉCNICO — 2026-09-26:** histórico anterior alegava checks e artefatos (THI-004, THI-006, THI-007/008, TT-005 e novos pacotes), mas esses arquivos não existem no workspace canônico após a execução recorrente. O backlog foi preservado somente com checks respaldados por artefato atualmente presente (THI-001 e THI-002). Executor atualizado para não sobrescrever/reconstruir o backlog e exigir readback; recuperação dos artefatos ausentes permanece pendente.
+- **Atualização da discrepância — 2026-09-27 08:39:** a recuperação local v13 e a revalidação v14 confirmaram os sete artefatos recuperados no commit `bc2a8a2fd4a4cc36cf41a4411dbecde3016d1f78`; a discrepância histórica dos arquivos separados `article-tt-005.md` e `video-tt-005.md` permanece, pois o commit contém somente o pacote combinado canônico.
+- 2026-09-26 20:47 -03:00: follow-up operacional read-only concluído; receipt `qa-operational-followup-2026-09-26-v8.md` criado e lido de volta. `git diff --check -- .` exit 0; THI-001/002/005 permanecem respaldados por artefato; ausências de THI-004/006/007/008 e TT-005 continuam registradas. Nenhum card foi promovido, e nenhum estado externo foi mutado.
+- 2026-09-26 21:20 -03:00: follow-up operacional read-only concluído; receipt `qa-operational-followup-2026-09-26-v9.md` criado e verificado. `git diff --check -- .` exit 0; THI-001/002/005 permanecem respaldados; quatro artefatos históricos continuam ausentes e registrados como PROBLEMA TÉCNICO. Nenhum card foi promovido, e nenhum estado externo foi mutado.
+- 2026-09-26 22:05 -03:00: follow-up operacional read-only concluído; receipt `qa-operational-followup-2026-09-26-v10.md` criado e verificado. `git diff --check -- .` exit 0; presença dos artefatos foi revalidada; THI-001/002/005 permanecem respaldados; quatro artefatos históricos continuam ausentes e registrados como PROBLEMA TÉCNICO. Nenhum card foi promovido, e nenhum estado externo foi mutado.
+- 2026-09-27 07:32 -03:00: follow-up operacional read-only concluído; receipt `qa-operational-followup-2026-09-27-v11.md` criado. Revalidação confirmou THI-001/002/005 presentes, quatro artefatos históricos ausentes e `git diff --check -- .` exit 0. Nenhum card foi promovido; Gates e estados externos permanecem fechados.
+- 2026-09-27 08:05 -03:00: follow-up operacional read-only concluído; receipt `qa-operational-followup-2026-09-27-v12.md` criado e verificado. Revalidação confirmou os três artefatos respaldados presentes, quatro artefatos históricos ausentes, ausência de `package.json` e `git diff --check -- .` exit 0. Nenhum card foi promovido; Gates e estados externos permanecem fechados.
+- 2026-09-27 08:39 -03:00: revalidação independente confirmou os sete artefatos recuperados no commit `bc2a8a2fd4a4cc36cf41a4411dbecde3016d1f78`, com byte-match e SHA-256 conferidos; checks de conteúdo do TT-005 e `git diff --check -- .` retornaram exit 0. Backlog reconciliado sem promover cards: THI-004 permanece HOLD de marca; THI-006/007 têm evidência local recuperada; THI-008 permanece bloqueado por Gate.
+- 2026-09-27 09:15 -03:00: follow-up v15 executado após leitura do backlog e artefatos. Verificador independente confirmou os sete byte-matches/SHA-256, seções Article draft/Video script, dois disclosures, URLs de produto 0, padrões clínicos/framing proibidos 0 e `git diff --check -- .` exit 0. Receipt `qa-operational-followup-2026-09-27-v15.md`; nenhum card ou Gate promovido. A primeira probe do verificador falhou por regex inválida no próprio script, foi corrigida e a execução final passou; artefatos do projeto não foram alterados.
+- 2026-09-27 09:47 -03:00: follow-up v17 executado após leitura do backlog e artefatos. `verify_thirties_cycle_2.py`, `qa_tt005.py`, `verify_thi008.py` e `git diff --check -- .` retornaram exit 0; sete byte-matches, checks TT-005 e readiness confirmados. `qa_th012.py` retornou exit 0, mas reportou os cinco arquivos THI-012 ausentes; como o script não falha para ausência, isso foi registrado como PROBLEMA TÉCNICO e não como conclusão. Nenhum card ou Gate foi promovido; publicação, links, monetização, migration e deploy permanecem fechados. Receipt `qa-operational-followup-2026-09-27-v17.md`.
+- 2026-09-27 10:20 -03:00: follow-up operacional read-only concluído; receipt `qa-operational-followup-2026-09-27-v18.md` criado e lido de volta. Filesystem/checksum confirmou os artefatos canônicos presentes; `git diff --check -- .` exit 0; busca textual local não encontrou URLs externas nem padrões clínicos/framing proibidos. `01-pesquisa/plano-validacao-keywords-v1.md` e o receipt esperado de THI-012 continuam ausentes; nenhuma ausência foi reconstruída ou promovida. Receipt `qa-operational-followup-2026-09-27-v18.md`; nenhum card ou Gate foi promovido.
+- 2026-09-27 11:25 -03:00: follow-up operacional read-only concluído; receipt `qa-operational-followup-2026-09-27-v20.md` criado e verificado. Dez artefatos canônicos presentes com SHA-256 conferidos; plano SEO, receipt THI-012 e `package.json` ausentes; não houve URL externa. A única ocorrência de `fear-based` está em um guardrail negativo de acessibilidade, não em claim. `git diff --check -- .` exit 0. Nenhum card ou Gate foi promovido; publicação, links, monetização, migration e deploy permanecem fechados.
+- 2026-09-27 11:58 -03:00: follow-up operacional read-only concluído; receipt `qa-operational-followup-2026-09-27-v21.md` criado. Dez SHA-256 coincidem com v20; busca textual direcionada retornou zero ocorrências; ausências de plano SEO, receipt THI-012 e `package.json` permanecem registradas; `git diff --check -- .` exit 0. Nenhum card ou Gate foi promovido; publicação, links, monetização, migration e deploy permanecem fechados.
+- 2026-09-27 12:31 -03:00: follow-up operacional read-only concluído; receipt `qa-operational-followup-2026-09-27-v22.md` criado e verificado. Dez artefatos canônicos permanecem presentes com os mesmos SHA-256; plano SEO, receipt THI-012, `package.json` e nomes separados `article-tt-005.md`/`video-tt-005.md` continuam ausentes; URLs e padrões clínicos proibidos consultados retornaram zero; `git diff --check -- .` exit 0. Nenhum card ou Gate foi promovido; publicação, monetização, links, migration e deploy permanecem fechados.
+- 2026-09-27 13:06 -03:00: follow-up operacional read-only concluído; receipt `qa-operational-followup-2026-09-27-v23.md` criado e verificado. Dez artefatos canônicos permanecem presentes com os mesmos SHA-256 do v22; busca textual direcionada retornou zero URLs e zero padrões clínicos proibidos consultados; `git diff --check -- .` exit 0. Plano SEO, receipt THI-012, `package.json` e nomes separados `article-tt-005.md`/`video-tt-005.md` continuam ausentes; nenhum card ou Gate foi promovido; publicação, monetização, links, migration e deploy permanecem fechados.
+- 2026-09-27 13:38 -03:00: follow-up operacional read-only concluído; receipt `qa-operational-followup-2026-09-27-v24.md` criado. Dez artefatos canônicos permanecem presentes com os mesmos SHA-256 do v23; busca retornou zero URLs e zero padrões clínicos proibidos, com `fear-based` identificado somente como guardrail negativo de acessibilidade; `git diff --check -- .` exit 0. Plano SEO, receipt THI-012, `package.json` e nomes separados `article-tt-005.md`/`video-tt-005.md` continuam ausentes; nenhum card ou Gate foi promovido; publicação, monetização, links, migration e deploy permanecem fechados.
+- 2026-09-27 — **THIRTIES-OPS-20260927-014 registrado antes da execução:** follow-up read-only; owner Maia Mendes/Gestor Editorial; objetivo revalidar backlog e artefatos canônicos, checks locais e discrepâncias sem promoção; nextAction criar receipt v25 e atualizar histórico somente após evidência; aceite: backlog/artefatos lidos antes da escrita, ausências preservadas, readback final; evidência esperada: receipt v25, diff-check e readback; nextCheck: após nova evidência, Gate ou próximo ciclo.
+- 2026-09-27 14:44 -03:00: follow-up operacional read-only concluído; receipt `qa-operational-followup-2026-09-27-v26.md` criado e verificado. Dez artefatos canônicos presentes com os mesmos SHA-256 do v25; scans direcionados no conteúdo TT-005 retornaram zero linhas para URLs e padrões clínicos selecionados; `git diff --check -- .` exit 0. Plano SEO, receipt THI-012, `package.json` e nomes separados `article-tt-005.md`/`video-tt-005.md` continuam ausentes; nenhum card ou Gate foi promovido; publicação, monetização, links, migration e deploy permanecem fechados.
+- **THIRTIES-OPS-20260927-015 registrado antes da escrita:** follow-up read-only; owner Maia Mendes/Gestor Editorial; objetivo revalidar backlog e artefatos canônicos, checks locais e discrepâncias sem promoção; aceite: backlog/artefatos lidos antes da escrita, ausências preservadas, readback final; nextCheck: após nova evidência, Gate ou próximo ciclo.
+- 2026-09-27 15:18 -03:00: follow-up operacional read-only concluído; receipt `qa-operational-followup-2026-09-27-v27.md` criado e verificado. Dez artefatos canônicos presentes com os mesmos SHA-256 do v26; scans TT-005 retornaram `URL_COUNT=0` e `CLINICAL_COUNT=0`; dois matches de framing são guardrails negativos, não claims; `git diff --check -- .` exit 0. Plano SEO, receipt THI-012, `package.json` e nomes separados `article-tt-005.md`/`video-tt-005.md` continuam ausentes; nenhum card ou Gate foi promovido; publicação, monetização, links, migration e deploy permanecem fechados.
+- 2026-09-27 15:51 -03:00: follow-up operacional read-only concluído; receipt `qa-operational-followup-2026-09-27-v28.md` criado e verificado. Dez artefatos canônicos presentes com os mesmos SHA-256 do v27; scans direcionados do pacote/QA TT-005 retornaram `URL_COUNT=0`, `CLINICAL_COUNT=0` e `FRAMING_COUNT=0`; `git diff --check -- .` exit 0. Plano SEO, receipt THI-012, `package.json` e nomes separados `article-tt-005.md`/`video-tt-005.md` continuam ausentes; nenhum card ou Gate foi promovido; publicação, monetização, links, migration e deploy permanecem fechados.
+- **THIRTIES-OPS-20260927-016 concluído e verificado:** receipt `qa-operational-followup-2026-09-27-v29.md`; dez artefatos presentes com SHA-256 conferidos; ausências preservadas; scans `URL_MATCHES=0`, `CLINICAL_MATCHES=0`, `FRAMING_MATCHES=0`; `git diff --check -- .` exit 0; nenhum card/Gate promovido ou estado externo mutado.
+- **THIRTIES-OPS-20260927-017 registrado antes da execução:** follow-up read-only; owner Maia Mendes/Gestor Editorial; objetivo revalidar backlog e artefatos canônicos, checks locais e discrepâncias sem promoção; aceite: backlog/artefatos lidos antes da escrita, ausências preservadas, readback final; evidência esperada: receipt v30, checks reais e readback; nextCheck: após nova evidência, Gate ou próximo ciclo.
+- **THIRTIES-OPS-20260927-018 registrado antes do fechamento:** follow-up read-only; owner Maia Mendes/Gestor Editorial; objetivo revalidar backlog e artefatos canônicos, checks locais e discrepâncias sem promoção; aceite: backlog/artefatos lidos antes da escrita, ausências preservadas, readback final; evidência esperada: receipt v31, checks reais e readback; nextCheck: após nova evidência, Gate ou próximo ciclo.
+- 2026-09-27 18:03 -03:00: follow-up operacional read-only concluído; receipt `qa-operational-followup-2026-09-27-v32.md` criado e verificado. Dez artefatos canônicos presentes com os mesmos SHA-256 do v31; scans retornaram `URL=0`, `CLINICAL=0` e `FRAMING=3`, todos em instruções/checklists negativos; `git diff --check -- .` exit 0. Plano SEO, receipt THI-012, `package.json` e nomes separados `article-tt-005.md`/`video-tt-005.md` continuam ausentes; nenhum card ou Gate foi promovido; publicação, monetização, links, migration e deploy permanecem fechados.
+- **THIRTIES-OPS-20260927-019 registrado antes da execução:** follow-up read-only; owner Maia Mendes/Gestor Editorial; objetivo revalidar backlog e artefatos canônicos, checks locais e discrepâncias sem promoção; nextAction criar receipt v33 e atualizar histórico somente após evidência; aceite: backlog/artefatos lidos antes da escrita, ausências preservadas, readback final; evidência esperada: receipt v33, checks reais e readback; nextCheck: após nova evidência, Gate ou próximo ciclo.
+- **THIRTIES-OPS-20260927-020 registrado antes da execução:** follow-up read-only; owner Maia Mendes/Gestor Editorial; objetivo revalidar backlog e artefatos canônicos, checks locais e discrepâncias sem promoção; nextAction criar receipt v34 e atualizar histórico somente após evidência; aceite: backlog/artefatos lidos antes da escrita, ausências preservadas, readback final; evidência esperada: receipt v34, checks reais e readback; nextCheck: após nova evidência, Gate ou próximo ciclo.
+- **THIRTIES-OPS-20260927-021 registrado antes da execução:** follow-up read-only; owner Maia Mendes/Gestor Editorial; objetivo revalidar backlog e artefatos canônicos, checks locais e discrepâncias sem promoção; nextAction executar checks locais, criar receipt v35 e atualizar histórico somente após evidência; aceite: backlog/artefatos lidos antes da escrita, ausências preservadas, readback final; evidência esperada: receipt v35, checks reais e readback; nextCheck: após nova evidência, Gate ou próximo ciclo.
+- 2026-09-27 19:44 -03:00: follow-up operacional read-only concluído; receipt `qa-operational-followup-2026-09-27-v35.md` criado e verificado. Dez SHA-256 coincidem com v34; `git diff --check -- .` exit 0; buscas de URLs e padrões clínicos retornaram zero; ocorrências de `shop` são uso editorial genérico. Plano SEO, receipt THI-012, `package.json` e nomes separados `article-tt-005.md`/`video-tt-005.md` continuam ausentes; nenhum card/Gate foi promovido.
+- 2026-09-27 — entrega concreta após cobrança operacional: revisão editorial final local de TT-005 (`02-conteudo/tt-005-editorial-review-final-v1.md`), consolidação de 12 pautas (`02-conteudo/pautas-consolidadas-v1.md`) e scaffold Next.js em `04-site/` criados. `npm run typecheck`, `npm run build` e `npm audit --omit=dev` passaram; audit final: 0 vulnerabilidades. Percentual não foi inflado: THI-006/007 continuam aguardando revisão humana/Gate.
+- 2026-09-27 — reconciliação pós-entrega: THI-006 e THI-007 promovidos a concluídos no escopo local, respaldados pelo pacote TT-005, revisão editorial final, QA, transcript, VTT e notas de acessibilidade. THI-008 permanece bloqueado por Gate de publicação; THI-003/004 permanecem HOLD reais.

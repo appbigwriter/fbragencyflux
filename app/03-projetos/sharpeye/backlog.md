@@ -7,8 +7,10 @@
 
 ## 📋 Fase 1: Fundação, Identidade & Pesquisa de Mercado
 - [x] **Setup Inicial do Projeto** `01-pesquisa/setup-workspace.md`
-- [ ] **Pesquisa Profunda de Palavras-Chave & Intenção** `01-pesquisa/keywords-intent.md`
-- [ ] **Mapeamento de Concorrentes & Gaps de Mercado** `01-pesquisa/competitor-analysis.md`
+- [x] **Pesquisa Profunda de Palavras-Chave & Intenção** `01-pesquisa/keywords-intent.md`
+  - Evidência: mapa qualitativo EN-US com 11 clusters, 20 queries prioritárias, intenção/funil/ângulos, limitações e fontes live; métricas quantitativas permanecem explicitamente pendentes de export SEO autorizado.
+- [x] **Mapeamento de Concorrentes & Gaps de Mercado** `01-pesquisa/competitor-analysis.md`
+  - Evidência: análise de 6 camadas/concorrentes públicos, posicionamento, forças, gaps, riscos, diferenciação SharpEye e fontes URL datadas; tráfego/share/CPC não foram inventados.
 - [ ] **Definição de Persona Editorial & Diretrizes de Tom** `01-pesquisa/persona-guidelines.md`
 
 ---

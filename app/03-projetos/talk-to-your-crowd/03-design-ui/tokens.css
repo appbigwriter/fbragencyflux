@@ -1,0 +1,27 @@
+:root {
+  --tyc-ink-950: #0B1220;
+  --tyc-ink-900: #111B2E;
+  --tyc-ink-600: #4C5D73;
+  --tyc-paper-50: #FFFDF8;
+  --tyc-paper-100: #F7F4EC;
+  --tyc-paper-200: #EDE8DC;
+  --tyc-coral: #FF6B4A;
+  --tyc-coral-dark: #D94C31;
+  --tyc-mint: #69D6C3;
+  --tyc-yellow: #F4C95D;
+  --tyc-white: #FFFFFF;
+  --tyc-font-display: "Plus Jakarta Sans", "Inter", sans-serif;
+  --tyc-font-body: "Inter", sans-serif;
+  --tyc-font-mono: "IBM Plex Mono", monospace;
+  --tyc-radius-md: .875rem;
+  --tyc-radius-lg: 1.5rem;
+  --tyc-radius-pill: 999px;
+  --tyc-shadow-card: 0 16px 40px rgb(11 18 32 / .10);
+  --tyc-container-wide: 76rem;
+}
+.tyc-display { font-family: var(--tyc-font-display); font-weight: 800; letter-spacing: -.045em; line-height: 1.08; }
+.tyc-eyebrow { color: var(--tyc-coral-dark); font-family: var(--tyc-font-mono); font-size: .75rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+.tyc-button { background: var(--tyc-coral); border: 0; border-radius: var(--tyc-radius-pill); color: var(--tyc-ink-950); font-family: var(--tyc-font-body); font-weight: 750; min-height: 2.75rem; padding: 0 1.5rem; }
+.tyc-button:hover { background: var(--tyc-yellow); }
+.tyc-card { background: var(--tyc-white); border: 1px solid rgb(11 18 32 / .12); border-radius: var(--tyc-radius-lg); box-shadow: var(--tyc-shadow-card); padding: 2rem; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; } }

@@ -14,10 +14,14 @@ Seu interlocutor direto é o **Sergio Castro** (Publisher/Fundador da FBR Agency
 - **Domínio Previsto**: talk2yourcrowd.fbr.news
 - **Modelo de Monetização**: Amazon Associates, Afiliados Especializados, FBR Ads
 - **Tom de Voz & Postura**: Editorial sofisticado, temas transversais, transparente, baseado em evidências científicas e sem falsas promessas.
----
 
-## 📖 Contexto & Briefing Global do Projeto
-Mercado inicial: Estados Unidos e Canadá. Foco inicial de distribuição: site próprio da FBRSigns (http://fbrsigns.com); redes sociais, YouTube, Amazon Seller e Amazon Associates. Produtos de gráfica rápida (Store Signs & Displays) entram como ferramentas práticas para empreendedores.
+### Atualizações operacionais confirmadas
+- Mercado inicial: Estados Unidos e Canadá.
+- Foco inicial de distribuição: site próprio da FBRSigns (`http://fbrsigns.com`); redes sociais, YouTube, Amazon Seller e Amazon Associates fazem parte do ecossistema.
+- A Amazon ainda não concluiu o cadastro; não tratar afiliados como dependência para iniciar o projeto.
+- Audiência ampla e transversal; os temas devem ser aplicáveis a qualquer nicho de mercado.
+- Produtos de gráfica rápida, especialmente *Store Signs & Displays*, entram como ferramentas práticas — nunca como assunto principal.
+- A identidade visual será desenvolvida especificamente para o projeto.
 
 ---
 
@@ -25,22 +29,22 @@ Mercado inicial: Estados Unidos e Canadá. Foco inicial de distribuição: site 
 Você deve operar com maestria multidisciplinar utilizando as diretrizes e frameworks da FBR Agency:
 
 - **Skill: `pesquisa-mercado`**
-  - Diretriz: [02-skills/pesquisa-mercado/SKILL.md](/app/02-skills/pesquisa-mercado/SKILL.md)
+  - Diretriz: [02-skills/pesquisa-mercado/SKILL.md](F:/Projetos/_FBR/FBR Agency Flux/02-skills/pesquisa-mercado/SKILL.md)
   - Aplicação no projeto: Consultar para orientar a geração de entregáveis desta disciplina.
 - **Skill: `copy-posicionamento`**
-  - Diretriz: [02-skills/copy-posicionamento/SKILL.md](/app/02-skills/copy-posicionamento/SKILL.md)
+  - Diretriz: [02-skills/copy-posicionamento/SKILL.md](F:/Projetos/_FBR/FBR Agency Flux/02-skills/copy-posicionamento/SKILL.md)
   - Aplicação no projeto: Consultar para orientar a geração de entregáveis desta disciplina.
 - **Skill: `design-identidade`**
-  - Diretriz: [02-skills/design-identidade/SKILL.md](/app/02-skills/design-identidade/SKILL.md)
+  - Diretriz: [02-skills/design-identidade/SKILL.md](F:/Projetos/_FBR/FBR Agency Flux/02-skills/design-identidade/SKILL.md)
   - Aplicação no projeto: Consultar para orientar a geração de entregáveis desta disciplina.
 - **Skill: `engenharia-fullstack`**
-  - Diretriz: [02-skills/engenharia-fullstack/SKILL.md](/app/02-skills/engenharia-fullstack/SKILL.md)
+  - Diretriz: [02-skills/engenharia-fullstack/SKILL.md](F:/Projetos/_FBR/FBR Agency Flux/02-skills/engenharia-fullstack/SKILL.md)
   - Aplicação no projeto: Consultar para orientar a geração de entregáveis desta disciplina.
 - **Skill: `trafego-growth`**
-  - Diretriz: [02-skills/trafego-growth/SKILL.md](/app/02-skills/trafego-growth/SKILL.md)
+  - Diretriz: [02-skills/trafego-growth/SKILL.md](F:/Projetos/_FBR/FBR Agency Flux/02-skills/trafego-growth/SKILL.md)
   - Aplicação no projeto: Consultar para orientar a geração de entregáveis desta disciplina.
 - **Skill: `qa-auditoria`**
-  - Diretriz: [02-skills/qa-auditoria/SKILL.md](/app/02-skills/qa-auditoria/SKILL.md)
+  - Diretriz: [02-skills/qa-auditoria/SKILL.md](F:/Projetos/_FBR/FBR Agency Flux/02-skills/qa-auditoria/SKILL.md)
   - Aplicação no projeto: Consultar para orientar a geração de entregáveis desta disciplina.
 
 > **Instrução de Uso das Skills**: Ao executar tarefas de pesquisa, redação de copy, criação visual ou código, leia diretamente as instruções de cada skill listada acima para manter o padrão de excelência da agência.
@@ -49,7 +53,7 @@ Você deve operar com maestria multidisciplinar utilizando as diretrizes e frame
 
 ## 📁 3. Estrutura de Pastas e Artefatos do Projeto
 Todos os arquivos e entregáveis devem ser lidos e gerados diretamente na pasta do projeto:
-`/app/03-projetos/talk-to-your-crowd/`
+`F:/Projetos/_FBR/FBR Agency Flux/03-projetos/talk-to-your-crowd/`
 
 - `brief.md`: Briefing consolidado e visão do projeto.
 - `backlog.md`: Checklist de progresso real e entregáveis.
@@ -76,12 +80,12 @@ Todos os arquivos e entregáveis devem ser lidos e gerados diretamente na pasta 
 ## 🔄 5. Protocolo Obrigatório de Sincronização Contínua & Cobranças
 Para que a sua operação seja virtuosa, contínua e alinhada com o Sergio e o Sistema Flux:
 1. **Leitura Obrigatória de Updates (`updates.md` ou Web URL `/p/talk-to-your-crowd`)**:
-   - No início de qualquer sessão ou tarefa, consulte a seção de **Observações e Cobranças Ativas** em `updates.md`.
-   - Se houver diretrizes editoriais, correções ou cobranças de prazo pendentes, trate-as com **prioridade máxima** antes de avançar para novos entregáveis.
+   - No início de qualquer sessão ou tarefa, consulte a seção de **Observações e Cobranças Ativas** em \`updates.md\`.
+   - Trate diretrizes editoriais, correções ou cobranças de prazo pendentes com **prioridade máxima** antes de avançar para novos entregáveis.
 2. **Ciclo Virtuoso de Execução & Reporte**:
-   - Ao executar ou revisar um entregável cobrado, gere o arquivo físico correspondente na pasta `03-projetos/talk-to-your-crowd/`.
-   - Atualize o status no `backlog.md` marcando a tarefa concluída (`- [x]`).
-   - Registre a resolução no `updates.md` na seção de *Histórico de Updates Atendidos* com a data, o que foi entregue e o caminho do arquivo.
+   - Ao executar ou revisar um entregável cobrado, gere o arquivo físico correspondente na pasta \`03-projetos/talk-to-your-crowd/\`.
+   - Atualize o status no \`backlog.md\` marcando a tarefa concluída (\`- [x]\`).
+   - Registre a resolução no \`updates.md\` na seção de *Histórico de Updates Atendidos* com a data, o que foi entregue e o caminho do arquivo.
 3. **Comunicação Direta com o Sergio**:
    - Apresente sempre links objetivos para os arquivos gerados.
    - Em caso de dúvidas operacionais ou bloqueios, solicite a orientação do Sergio imediatamente.
@@ -90,7 +94,8 @@ Para que a sua operação seja virtuosa, contínua e alinhada com o Sergio e o S
 
 ## 🚀 6. Como Iniciar o Trabalho
 Ao iniciar uma sessão com o Sergio:
-1. Revise `updates.md` (cobranças ativas) e `backlog.md` (próximos entregáveis).
+1. Revise \`updates.md\` (cobranças ativas) e \`backlog.md\` (próximos entregáveis).
 2. Identifique a próxima entrega prioritária.
 3. Execute e gere o artefato físico correspondente com excelência.
-4. Atualize o status no `backlog.md` e `updates.md` e reporte de forma limpa.
+4. Atualize o status no \`backlog.md\` e \`updates.md\` e reporte de forma limpa.
+
