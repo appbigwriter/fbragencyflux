@@ -17,13 +17,13 @@ Acompanhamento direto e transparente dos entregáveis do projeto.
 - [x] Artigo 01: Retinol vs Bakuchiol for 40+ Skin (`02-conteudo/artigo-01.md`) — fontes e limitações registradas
 - [x] Artigo 02: Essential Morning Skincare Routine for Mature Skin (`02-conteudo/artigo-02.md`) — fontes e compliance registrados
 - [x] Artigo 03: Sunscreen Over 40: Mineral vs Chemical (`02-conteudo/artigo-03.md`) — fontes e limitações registradas
-- [ ] Artigo 04: Hyaluronic Acid & Ceramide Deep Hydration (`02-conteudo/artigo-04.md`)
+- [x] Artigo 04: Hyaluronic Acid & Ceramide Deep Hydration (`02-conteudo/artigo-04.md`) — fontes, limitações e compliance registrados
 
 ### Recovery & Wellness
-- [ ] Artigo 05: Sleep Optimization & Circadian Reset after 40 (`02-conteudo/artigo-05.md`)
-- [ ] Artigo 06: Joint Health & Collagen: What Science Actually Says (`02-conteudo/artigo-06.md`)
-- [ ] Artigo 07: Stress, Cortisol & Midlife Fatigue (`02-conteudo/artigo-07.md`)
-- [ ] Artigo 08: Daily Mobility Routine for Lower Back & Hips (`02-conteudo/artigo-08.md`)
+- [x] Artigo 05: Sleep Optimization & Circadian Reset after 40 (`02-conteudo/artigo-05.md`) — fontes, limitações e compliance registrados
+- [x] Artigo 06: Joint Health & Collagen: What Science Actually Says (`02-conteudo/artigo-06.md`) — fontes, limitações e compliance registrados
+- [x] Artigo 07: Stress, Cortisol & Midlife Fatigue (`02-conteudo/artigo-07.md`) — fontes, limitações e compliance registrados
+- [x] Artigo 08: Daily Mobility Routine for Lower Back & Hips (`02-conteudo/artigo-08.md`) — fontes, limitações e compliance registrados
 
 ### Home Fitness
 - [ ] Artigo 09: Creatine for Adults 40+: Benefits, Myths & Dosage (`02-conteudo/artigo-09.md`)

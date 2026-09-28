@@ -6,9 +6,32 @@ import { registerProjectInControlTower } from './integrations/control-tower';
 import { triggerN8nWorkflow } from './integrations/n8n';
 import { ensureDefaultProjectsSeeded } from './seed-data';
 
-// Caminho para a raiz do repositório (com suporte seguro a ambiente Docker/Easypanel e local)
-const isInsideApp = process.cwd().replace(/\\/g, '/').endsWith('/app') || process.cwd().replace(/\\/g, '/').endsWith('app');
-const WORKSPACE_ROOT = process.env.WORKSPACE_ROOT || process.env.FLUX_ROOT || (process.env.NODE_ENV === 'production' && !process.env.WORKSPACE_ROOT ? process.cwd() : (isInsideApp ? path.resolve(process.cwd(), '..') : process.cwd()));
+import fsSync from 'fs';
+
+// Resolução inteligente e robusta da raiz do repositório
+function getWorkspaceRoot(): string {
+  if (process.env.WORKSPACE_ROOT) return process.env.WORKSPACE_ROOT;
+  if (process.env.FLUX_ROOT) return process.env.FLUX_ROOT;
+  
+  const current = process.cwd();
+  // Se 03-projetos existe na pasta pai (ex: executando dentro de /app)
+  const parentProjects = path.resolve(current, '..', '03-projetos');
+  if (fsSync.existsSync(parentProjects)) {
+    return path.resolve(current, '..');
+  }
+  
+  // Se 03-projetos existe na pasta atual (ex: container Docker da raiz)
+  const localProjects = path.resolve(current, '03-projetos');
+  if (fsSync.existsSync(localProjects)) {
+    return current;
+  }
+
+  // Fallback seguro se estiver em subpasta
+  const isInsideApp = current.replace(/\\/g, '/').endsWith('/app') || current.replace(/\\/g, '/').endsWith('app');
+  return isInsideApp ? path.resolve(current, '..') : current;
+}
+
+const WORKSPACE_ROOT = getWorkspaceRoot();
 const PROJECTS_DIR = process.env.PROJECTS_DIR || path.join(WORKSPACE_ROOT, '03-projetos');
 const SKILLS_DIR = process.env.SKILLS_DIR || path.join(WORKSPACE_ROOT, '02-skills');
 
@@ -104,7 +127,7 @@ export async function listProjects(): Promise<ProjectSummary[]> {
     for (const dbp of dbProjects) {
       const pDir = path.join(PROJECTS_DIR, dbp.slug);
       
-      const briefContent = dbp.brief_content || (dbp.metadata?.briefingText ? generateInitialBrief({
+      let briefContent = dbp.brief_content || (dbp.metadata?.briefingText ? generateInitialBrief({
         name: dbp.name,
         slug: dbp.slug,
         niche: dbp.niche,
@@ -117,54 +140,35 @@ export async function listProjects(): Promise<ProjectSummary[]> {
         monetization: dbp.metadata?.monetization || ['Amazon Associates', 'Afiliados Especializados', 'FBR Ads'],
         selectedSkills: dbp.metadata?.selectedSkills || ['pesquisa-mercado', 'copy-posicionamento']
       }) : '');
-
       let backlogContent = dbp.backlog_content || '';
       let promptContent = dbp.prompt_content || '';
       let updatesContent = dbp.updates_content || '';
 
-      // 1. Auto-sincronização de arquivos locais para o banco
+      // 1. Prioridade absoluta para arquivos reais do disco local
       try {
         const blp = path.join(pDir, 'backlog.md');
         const localBacklog = await fs.readFile(blp, 'utf-8');
-        if (localBacklog && localBacklog !== backlogContent) {
+        if (localBacklog) {
           backlogContent = localBacklog;
-          await updateProjectFieldInDatabase(dbp.slug, 'backlog_content', localBacklog);
         }
       } catch {}
 
-      // 2. Detecção automática de entregáveis físicos criados no disco (marca - [x] automaticamente)
       try {
-        backlogContent = await autoDetectAndCompleteTasks(dbp.slug, backlogContent, pDir);
+        const bp = path.join(pDir, 'brief.md');
+        const localBrief = await fs.readFile(bp, 'utf-8');
+        if (localBrief) briefContent = localBrief;
+      } catch {}
+
+      try {
+        const pp = path.join(pDir, 'GESTOR-HERMES-PROMPT.md');
+        const localPrompt = await fs.readFile(pp, 'utf-8');
+        if (localPrompt) promptContent = localPrompt;
       } catch {}
 
       try {
         const up = path.join(pDir, 'updates.md');
         const localUpdates = await fs.readFile(up, 'utf-8');
-        if (localUpdates && localUpdates !== updatesContent) {
-          updatesContent = localUpdates;
-          await updateProjectFieldInDatabase(dbp.slug, 'updates_content', localUpdates);
-        }
-      } catch {}
-
-      // Sincroniza em disco caso o arquivo ainda não exista localmente
-      try {
-        await fs.mkdir(pDir, { recursive: true });
-        if (briefContent) {
-          const bp = path.join(pDir, 'brief.md');
-          try { await fs.access(bp); } catch { await fs.writeFile(bp, briefContent, 'utf-8'); }
-        }
-        if (backlogContent) {
-          const blp = path.join(pDir, 'backlog.md');
-          try { await fs.access(blp); } catch { await fs.writeFile(blp, backlogContent, 'utf-8'); }
-        }
-        if (promptContent) {
-          const pp = path.join(pDir, 'GESTOR-HERMES-PROMPT.md');
-          try { await fs.access(pp); } catch { await fs.writeFile(pp, promptContent, 'utf-8'); }
-        }
-        if (updatesContent) {
-          const up = path.join(pDir, 'updates.md');
-          try { await fs.access(up); } catch { await fs.writeFile(up, updatesContent, 'utf-8'); }
-        }
+        if (localUpdates) updatesContent = localUpdates;
       } catch {}
 
       const { completedTasks, totalTasks } = countBacklogTasks(backlogContent);

@@ -21,9 +21,9 @@ Fonte: briefing recebido do Publisher; nenhum item é considerado concluído sem
 - [x] **THI-002** Pesquisa de mercado e concorrência com fontes rastreáveis — P0 — pesquisa inicial concluída/verificada; volume de keywords/SERP pendente; `01-pesquisa/analise-nicho.md`
 - [ ] **THI-003** Mapa de palavras-chave e oportunidades — P1 — HOLD quantitativo; depende de export/ferramenta SEO autorizada para US/en-US
 - [ ] **THI-004** Sistema visual e design tokens — P1 — HOLD; proposta local `03-design-ui/tokens.css` verificada; depende de decisão final de marca
-- [x] **THI-005** Arquitetura Next.js/Supabase e contratos — P1 — proposta local concluída/verificada em `04-site/architecture-contracts-v1.md`; implementação e readback remotos permanecem como etapa posterior
-- [ ] **THI-006** Primeira pauta You Asked e artigo EN-US — P1 — pacote combinado TT-005 (artigo + roteiro) recuperado e verificado localmente; revisão editorial/pauta final ainda pendentes
-- [ ] **THI-007** QA editorial/técnico e readiness — P0 — QA, transcript, captions e acessibilidade verificados localmente; revisão humana/Gate ainda pendentes
+- [x] **THI-005** Arquitetura Next.js/Supabase e contratos — P1 — proposta local concluída/verificada em `04-site/architecture-contracts-v1.md`; scaffold Next.js executável criado em `04-site/` e validado com typecheck/build/audit; implementação Supabase/readback remoto permanecem como etapas posteriores
+- [x] **THI-006** Primeira pauta You Asked e artigo EN-US — P1 — pacote combinado TT-005 e revisão editorial final local verificados; revisão humana pública e links continuam fora do escopo
+- [x] **THI-007** QA editorial/técnico e readiness — P0 — QA, transcript, captions e acessibilidade verificados localmente; publicação/Gate humano continuam bloqueados
 - [ ] **THI-008** Publicação/deploy — BLOQUEADO por Gate de Sergio; não executar
 
 ## Tracks e dependências
@@ -33,8 +33,8 @@ Fonte: briefing recebido do Publisher; nenhum item é considerado concluído sem
 | THI-003 | HOLD ativo | Maia / Gestor Editorial | export ou ferramenta SEO autorizada | obter dados quantitativos rastreáveis; próximo check após acesso |
 | THI-004 | HOLD ativo | Sergio / Publisher | decisão de marca | revisar `03-design-ui/tokens.css`; manter como proposta até decisão formal |
 | THI-005 | review | Maia; Théo futuro | escopo técnico validado | revisar `architecture-contracts-v1.md`; depois story de implementação |
-| THI-006 | ready condicional | Maia / Gestor Editorial | pauta escolhida + fontes específicas | revisar o pacote combinado TT-005 e fechar pauta/fontes, sem publicação |
-| THI-007 | verifying local concluído | Maia / Gestor Editorial | revisão humana + produção final | registrar revisão humana e manter Gate fechado |
+| THI-006 | concluído local | Maia / Gestor Editorial | revisão humana/publicação | manter pacote sem links e encaminhar para aprovação editorial |
+| THI-007 | concluído local | Maia / Gestor Editorial | Gate de publicação | manter Gate fechado e preparar eventual preview |
 | THI-008 | awaiting_approval | Sergio | QA completo + Gates | não executar sem aprovação formal |
 
 ## Registro desta sessão
@@ -71,3 +71,5 @@ Fonte: briefing recebido do Publisher; nenhum item é considerado concluído sem
 - **THIRTIES-OPS-20260927-020 registrado antes da execução:** follow-up read-only; owner Maia Mendes/Gestor Editorial; objetivo revalidar backlog e artefatos canônicos, checks locais e discrepâncias sem promoção; nextAction criar receipt v34 e atualizar histórico somente após evidência; aceite: backlog/artefatos lidos antes da escrita, ausências preservadas, readback final; evidência esperada: receipt v34, checks reais e readback; nextCheck: após nova evidência, Gate ou próximo ciclo.
 - **THIRTIES-OPS-20260927-021 registrado antes da execução:** follow-up read-only; owner Maia Mendes/Gestor Editorial; objetivo revalidar backlog e artefatos canônicos, checks locais e discrepâncias sem promoção; nextAction executar checks locais, criar receipt v35 e atualizar histórico somente após evidência; aceite: backlog/artefatos lidos antes da escrita, ausências preservadas, readback final; evidência esperada: receipt v35, checks reais e readback; nextCheck: após nova evidência, Gate ou próximo ciclo.
 - 2026-09-27 19:44 -03:00: follow-up operacional read-only concluído; receipt `qa-operational-followup-2026-09-27-v35.md` criado e verificado. Dez SHA-256 coincidem com v34; `git diff --check -- .` exit 0; buscas de URLs e padrões clínicos retornaram zero; ocorrências de `shop` são uso editorial genérico. Plano SEO, receipt THI-012, `package.json` e nomes separados `article-tt-005.md`/`video-tt-005.md` continuam ausentes; nenhum card/Gate foi promovido.
+- 2026-09-27 — entrega concreta após cobrança operacional: revisão editorial final local de TT-005 (`02-conteudo/tt-005-editorial-review-final-v1.md`), consolidação de 12 pautas (`02-conteudo/pautas-consolidadas-v1.md`) e scaffold Next.js em `04-site/` criados. `npm run typecheck`, `npm run build` e `npm audit --omit=dev` passaram; audit final: 0 vulnerabilidades. Percentual não foi inflado: THI-006/007 continuam aguardando revisão humana/Gate.
+- 2026-09-27 — reconciliação pós-entrega: THI-006 e THI-007 promovidos a concluídos no escopo local, respaldados pelo pacote TT-005, revisão editorial final, QA, transcript, VTT e notas de acessibilidade. THI-008 permanece bloqueado por Gate de publicação; THI-003/004 permanecem HOLD reais.
