@@ -203,7 +203,7 @@ async function run() {
       slug: 'after-forty',
       name: 'After Forty',
       niche: 'Saúde feminina 40+, Longevidade e Nutrição',
-      gestor_name: 'Dra. Beatriz Bia Matos',
+      gestor_name: 'Heidi Braun Manager',
       target_audience: 'Mulheres 40+ anos',
       language: 'PT-BR / EN-US',
       domain: 'afterforty.fbr.news',

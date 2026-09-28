@@ -7,6 +7,7 @@ import { triggerN8nWorkflow } from './integrations/n8n';
 import { ensureDefaultProjectsSeeded } from './seed-data';
 
 import fsSync from 'fs';
+import crypto from 'crypto';
 
 // Resolução inteligente e robusta da raiz do repositório
 function getWorkspaceRoot(): string {
@@ -732,48 +733,137 @@ export async function autoDetectAndCompleteTasks(slug: string, backlog: string, 
   return backlog;
 }
 
-export async function completeProjectTask(slug: string, identifier: string): Promise<{ success: boolean; completedTasks: number; totalTasks: number; backlog: string }> {
-  const detail = await getProjectDetail(slug);
-  let backlog = detail.backlog || '';
-  if (!backlog) throw new Error('Backlog não encontrado');
+export interface TaskStatusOptions {
+  taskIdentifier: string;
+  newStatus?: boolean; // true para [x], false para [ ]
+  author?: string;
+  expectedRevisionId?: string;
+}
 
-  const lines = backlog.split('\n');
+export interface TaskStatusResult {
+  success: boolean;
+  project: string;
+  task: string;
+  previousStatus: 'completed' | 'pending' | 'unknown';
+  newStatus: 'completed' | 'pending';
+  timestamp: string;
+  author: string;
+  revisionId: string;
+  persisted: boolean;
+  completedTasks: number;
+  totalTasks: number;
+  percentComplete: number;
+}
+
+function generateRevisionId(content: string): string {
+  const hash = crypto.createHash('sha256').update(content || '').digest('hex').substring(0, 12);
+  return `rev-${Date.now()}-${hash}`;
+}
+
+export async function setProjectTaskStatus(
+  slug: string, 
+  options: TaskStatusOptions
+): Promise<TaskStatusResult> {
+  const { taskIdentifier, newStatus = true, author = 'Heidi Braun Manager', expectedRevisionId } = options;
+  const projectDir = path.join(PROJECTS_DIR, slug);
+  const backlogPath = path.join(projectDir, 'backlog.md');
+
+  // 1. Obter conteúdo canônico atual (Banco VPS como single source of truth, com fallback para disco)
+  let currentBacklog = '';
+  const dbRow = await fetchProjectDetailFromDatabase(slug).catch(() => null);
+  if (dbRow?.backlog_content) {
+    currentBacklog = dbRow.backlog_content;
+  } else {
+    try {
+      currentBacklog = await fs.readFile(backlogPath, 'utf-8');
+    } catch {
+      throw new Error(`Projeto '${slug}' não possui backlog.`);
+    }
+  }
+
+  // 2. Verificar conflito de revisão se expectedRevisionId foi fornecido
+  const currentHash = crypto.createHash('sha256').update(currentBacklog).digest('hex').substring(0, 12);
+  if (expectedRevisionId && !expectedRevisionId.includes(currentHash)) {
+    throw new Error(`CONFLITO DE VERSÃO: O backlog foi alterado concorrentemente. Revisão esperada: ${expectedRevisionId}, atual: ${currentHash}. Rejeitando sobrescrita silenciosa.`);
+  }
+
+  // 3. Localizar e alternar a tarefa
+  const lines = currentBacklog.split('\n');
   let matched = false;
+  let previousStatus: 'completed' | 'pending' | 'unknown' = 'unknown';
+  let matchedTaskTitle = taskIdentifier;
+
+  const targetBox = newStatus ? '- [x]' : '- [ ]';
+  const prevBox = newStatus ? '- [ ]' : '- [x]';
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
-    if (line.includes(identifier)) {
-      lines[i] = line.replace('- [ ]', '- [x]');
+    if (line.includes(taskIdentifier) || line.toLowerCase().includes(taskIdentifier.toLowerCase())) {
+      if (line.includes('- [x]')) previousStatus = 'completed';
+      else if (line.includes('- [ ]')) previousStatus = 'pending';
+
+      lines[i] = line.replace(/-\s*\[[ x]\]/i, targetBox);
       matched = true;
+      matchedTaskTitle = line.replace(/-\s*\[[ x]\]/i, '').trim();
       break;
     }
   }
 
   if (!matched) {
-    const lowerId = identifier.toLowerCase();
-    for (let i = 0; i < lines.length; i++) {
-      const line = lines[i];
-      if (line.toLowerCase().includes(lowerId)) {
-        lines[i] = line.replace('- [ ]', '- [x]');
-        matched = true;
-        break;
-      }
-    }
+    throw new Error(`Tarefa contendo '${taskIdentifier}' não encontrada no backlog de ${slug}.`);
   }
 
   const updatedBacklog = lines.join('\n');
-  await updateProjectFieldInDatabase(slug, 'backlog_content', updatedBacklog);
-  try {
-    await fs.writeFile(path.join(PROJECTS_DIR, slug, 'backlog.md'), updatedBacklog, 'utf-8');
-  } catch {}
+  const newRevisionId = generateRevisionId(updatedBacklog);
 
-  const { completedTasks, totalTasks } = countBacklogTasks(updatedBacklog);
+  // 4. Backup preventivo antes da escrita em disco (contra rollbacks silenciosos)
+  try {
+    await fs.mkdir(projectDir, { recursive: true });
+    if (fsSync.existsSync(backlogPath)) {
+      const backupPath = path.join(projectDir, 'backlog.md.bak');
+      await fs.copyFile(backlogPath, backupPath);
+    }
+    await fs.writeFile(backlogPath, updatedBacklog, 'utf-8');
+  } catch (err: any) {
+    console.warn(`Aviso de gravação em disco para ${slug}:`, err.message);
+  }
+
+  // 5. Persistência atômica no Banco PostgreSQL VPS (Fonte Canônica)
+  await updateProjectFieldInDatabase(slug, 'backlog_content', updatedBacklog);
+
+  const { completedTasks, totalTasks, percent } = countBacklogTasks(updatedBacklog);
 
   return {
     success: true,
+    project: slug,
+    task: matchedTaskTitle,
+    previousStatus,
+    newStatus: newStatus ? 'completed' : 'pending',
+    timestamp: new Date().toISOString(),
+    author,
+    revisionId: newRevisionId,
+    persisted: true,
     completedTasks,
     totalTasks,
-    backlog: updatedBacklog
+    percentComplete: percent
+  };
+}
+
+export async function completeProjectTask(slug: string, identifier: string) {
+  const res = await setProjectTaskStatus(slug, {
+    taskIdentifier: identifier,
+    newStatus: true
+  });
+
+  return {
+    success: true,
+    completedTasks: res.completedTasks,
+    totalTasks: res.totalTasks,
+    percentComplete: res.percentComplete,
+    revisionId: res.revisionId,
+    timestamp: res.timestamp,
+    persisted: res.persisted,
+    backlog: ''
   };
 }
 

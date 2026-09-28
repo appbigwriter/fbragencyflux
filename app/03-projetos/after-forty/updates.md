@@ -1,6 +1,6 @@
 # 📢 Sincronização & Cobranças: After Forty ⚡
 
-Canal ativo de comunicação, observações e cobranças entre o Publisher (Sergio Castro / Sistema Flux) e o Agente Gestor Hermes (**Dra. Beatriz Bia Matos**).
+Canal ativo de comunicação, observações e cobranças entre o Publisher (Sergio Castro / Sistema Flux) e o Agente Gestor Hermes (**Heidi Braun Manager**).
 
 ---
 

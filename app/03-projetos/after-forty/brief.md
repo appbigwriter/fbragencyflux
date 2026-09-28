@@ -7,7 +7,7 @@
 - **Idioma / Mercado**: PT-BR / EN-US
 - **Público-Alvo**: Mulheres 40+ anos
 - **Nicho Principal**: Saúde feminina 40+, Longevidade e Nutrição
-- **Gestor Hermes Responsável**: Dra. Beatriz Bia Matos
+- **Gestor Hermes Responsável**: Heidi Braun Manager
 ---
 
 ## 📖 Briefing Global & Visão Detalhada

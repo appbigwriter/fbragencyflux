@@ -59,5 +59,5 @@ Initial visual assets should be neutral vector placeholders until the publisher 
 ## Traceability
 
 - **FACT:** Based on `brief.md`, `GESTOR-HERMES-PROMPT.md`, and the existing niche analysis.
-- **DECISION:** Heidi Braun is the official project manager/persona; no Bia Matos identity is valid for this project.
+- **DECISION:** Heidi Braun Manager is the official project manager and editorial persona for After Forty by Heidi Braun.
 - **BLOCKER:** Final photography/likeness requires creative production approval.

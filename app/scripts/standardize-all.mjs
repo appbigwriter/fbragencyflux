@@ -7,7 +7,9 @@ const pool = new Pool({
   ssl: false
 });
 
-const projectsDir = path.resolve('..', '03-projetos');
+const projectsDir = fs.existsSync(path.resolve('03-projetos')) 
+  ? path.resolve('03-projetos') 
+  : path.resolve('..', '03-projetos');
 
 function countBacklogTasks(backlogContent) {
   if (!backlogContent) return { completedTasks: 0, totalTasks: 0, percent: 0 };
