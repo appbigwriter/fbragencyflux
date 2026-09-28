@@ -855,13 +855,17 @@ export async function syncProjectFromDiskAndAgent(targetSlug?: string): Promise<
         await updateProjectFieldInDatabase(slug, 'updates_content', updates);
       }
 
-      // 4. Salva de volta no disco para manter coerência
+      // 4. Salva no disco APENAS se o arquivo NÃO existir localmente (preserva 100% o trabalho dos agentes)
       try {
         await fs.mkdir(pDir, { recursive: true });
-        if (backlog) await fs.writeFile(path.join(pDir, 'backlog.md'), backlog, 'utf-8');
-        if (brief) await fs.writeFile(path.join(pDir, 'brief.md'), brief, 'utf-8');
-        if (prompt) await fs.writeFile(path.join(pDir, 'GESTOR-HERMES-PROMPT.md'), prompt, 'utf-8');
-        if (updates) await fs.writeFile(path.join(pDir, 'updates.md'), updates, 'utf-8');
+        const blp = path.join(pDir, 'backlog.md');
+        try { await fs.access(blp); } catch { if (backlog) await fs.writeFile(blp, backlog, 'utf-8'); }
+        const bp = path.join(pDir, 'brief.md');
+        try { await fs.access(bp); } catch { if (brief) await fs.writeFile(bp, brief, 'utf-8'); }
+        const pp = path.join(pDir, 'GESTOR-HERMES-PROMPT.md');
+        try { await fs.access(pp); } catch { if (prompt) await fs.writeFile(pp, prompt, 'utf-8'); }
+        const up = path.join(pDir, 'updates.md');
+        try { await fs.access(up); } catch { if (updates) await fs.writeFile(up, updates, 'utf-8'); }
       } catch {}
 
       const { completedTasks: done, totalTasks: total, percent } = countBacklogTasks(backlog);

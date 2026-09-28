@@ -17,14 +17,14 @@ export const DEFAULT_PROJECTS: ProjectCreationData[] = [
     selectedSkills: ['pesquisa-mercado', 'copy-posicionamento', 'design-identidade', 'engenharia-fullstack', 'trafego-growth', 'qa-auditoria']
   },
   {
-    name: 'After Forty',
+    name: 'After Forty by Heidi Braun',
     slug: 'after-forty',
-    niche: 'Saúde feminina 40+, Longevidade e Nutrição',
-    targetAudience: 'Mulheres 40+ anos',
-    language: 'PT-BR / EN-US',
+    niche: 'Longevidade, Skincare Maduro & Home Fitness 40+',
+    targetAudience: 'Homens e mulheres 40+ focados em saude e estetica',
+    language: 'EN-US (Global)',
     domain: 'afterforty.fbr.news',
-    gestorName: 'Dra. Beatriz Bia Matos',
-    personaTone: 'Acolhedor, altamente científico, baseado em evidências médicas, empático e sem falsas promessas.',
+    gestorName: 'Heidi Braun',
+    personaTone: 'Editorial premium baseado em evidencias cientificas',
     monetization: ['Afiliados Especializados', 'Produtos Próprios', 'FBR Ads'],
     briefingText: 'Guia definitivo de longevidade e saúde para mulheres com mais de 40 anos. Foco em equilíbrio hormonal, alimentação baseada em evidências, estilo de vida e sono reparador. Rigoroso compliance de saúde (zero promessas milagrosas).',
     selectedSkills: ['pesquisa-mercado', 'copy-posicionamento', 'design-identidade', 'engenharia-fullstack', 'trafego-growth', 'qa-auditoria']
