@@ -17,8 +17,9 @@ Canal ativo de comunicação entre Sergio Castro / Sistema Flux e Tara Lindqvist
 
 ## Deploy externo
 
-- Estado: aprovado para execução, ainda não publicado.
-- Bloqueio técnico: falta target/contrato de infraestrutura e readback externo.
-- Próximo passo: escolher Easypanel/VPS, Vercel ou staging privado e executar publicação verificável.
+- Estado: publicação externa funcional em `https://gameraesthetic.fbr.news`.
+- Readback verificado: `/`, `/articles`, `/sitemap.xml` e `/robots.txt` respondem HTTP 200; title correto: `Gamer Aesthetic — Better gear decisions`.
+- Pendência técnica: `/health` ainda responde HTTP 404 no release externo atual; a rota foi adicionada ao código e requer novo deploy.
+- Próximo passo: redeploy do serviço `blogs/gamer` e readback HTTPS de `/health` com HTTP 200.
 
 A fonte canônica de progresso é o backlog retornado pela API do Flux.

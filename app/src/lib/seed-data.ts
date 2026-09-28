@@ -14,7 +14,7 @@ export const DEFAULT_PROJECTS: ProjectCreationData[] = [
     personaTone: 'Editorial sofisticado, temas transversais, transparente, baseado em evidências científicas e sem falsas promessas.',
     monetization: ['Amazon Associates', 'Afiliados Especializados', 'FBR Ads'],
     briefingText: 'Mercado inicial: Estados Unidos e Canadá. Foco inicial de distribuição: site próprio da FBRSigns (http://fbrsigns.com); redes sociais, YouTube, Amazon Seller e Amazon Associates. Produtos de gráfica rápida (Store Signs & Displays) entram como ferramentas práticas para empreendedores.',
-    selectedSkills: ['pesquisa-mercado', 'copy-posicionamento', 'design-identidade', 'engenharia-fullstack', 'trafego-growth', 'qa-auditoria']
+    selectedSkills: ['pesquisa-mercado', 'copy-posicionamento', 'design-identidade', 'geracao-imagens', 'engenharia-fullstack', 'trafego-growth', 'qa-auditoria']
   },
   {
     name: 'After Forty by Heidi Braun',
@@ -27,7 +27,7 @@ export const DEFAULT_PROJECTS: ProjectCreationData[] = [
     personaTone: 'Editorial premium baseado em evidencias cientificas',
     monetization: ['Afiliados Especializados', 'Produtos Próprios', 'FBR Ads'],
     briefingText: 'Guia definitivo de longevidade e saúde para mulheres com mais de 40 anos. Foco em equilíbrio hormonal, alimentação baseada em evidências, estilo de vida e sono reparador. Rigoroso compliance de saúde (zero promessas milagrosas).',
-    selectedSkills: ['pesquisa-mercado', 'copy-posicionamento', 'design-identidade', 'engenharia-fullstack', 'trafego-growth', 'qa-auditoria']
+    selectedSkills: ['pesquisa-mercado', 'copy-posicionamento', 'design-identidade', 'geracao-imagens', 'engenharia-fullstack', 'trafego-growth', 'qa-auditoria']
   },
   {
     name: 'Gamer Aesthetic',
@@ -40,7 +40,7 @@ export const DEFAULT_PROJECTS: ProjectCreationData[] = [
     personaTone: 'Curadoria sofisticada, transparente e útil: hardware, periféricos, setup e estilo gamer sem hype falso.',
     monetization: ['Amazon Associates', 'Afiliados Especializados', 'FBR Ads'],
     briefingText: 'Gamer Aesthetic organiza escolhas do universo gamer com curadoria sofisticada, transparente e útil: hardware, periféricos, setup, acessórios, estilo e cultura gamer. O produto deve entrar por adequação contextual, não por pressão.',
-    selectedSkills: ['pesquisa-mercado', 'copy-posicionamento', 'design-identidade', 'engenharia-fullstack', 'trafego-growth', 'qa-auditoria']
+    selectedSkills: ['pesquisa-mercado', 'copy-posicionamento', 'design-identidade', 'geracao-imagens', 'engenharia-fullstack', 'trafego-growth', 'qa-auditoria']
   },
   {
     name: 'The Thirties',
@@ -53,7 +53,7 @@ export const DEFAULT_PROJECTS: ProjectCreationData[] = [
     personaTone: 'Evidence-based living in your thirties. Humor inteligente, calor humano, transparente e sem falsas promessas.',
     monetization: ['Amazon Associates', 'Afiliados Especializados', 'FBR Ads'],
     briefingText: 'Maia Mendes abordará com humor inteligente e evidências as situações da vida de mulheres 30+: saúde, relacionamentos, trabalho, maternidade, autocuidado e finanças com recomendações contextuais sutis e úteis.',
-    selectedSkills: ['pesquisa-mercado', 'copy-posicionamento', 'design-identidade', 'engenharia-fullstack', 'trafego-growth', 'qa-auditoria']
+    selectedSkills: ['pesquisa-mercado', 'copy-posicionamento', 'design-identidade', 'geracao-imagens', 'engenharia-fullstack', 'trafego-growth', 'qa-auditoria']
   }
 ];
 
@@ -67,6 +67,7 @@ export async function ensureDefaultProjectsSeeded(projectsDir: string, skillsDir
       { id: 'pesquisa-mercado', name: 'Pesquisa de Mercado & Concorrência', desc: 'Análise de concorrentes, dores, personas e palavras-chave' },
       { id: 'copy-posicionamento', name: 'Copywriting & Posicionamento', desc: 'Linha editorial, artigos de conversão e pautas' },
       { id: 'design-identidade', name: 'Design & Identidade Visual', desc: 'Design tokens, paleta de cores e identidade' },
+      { id: 'geracao-imagens', name: 'Geração Autônoma de Imagens & IA Visual', desc: 'Prompts visuais, acionamento de apps de IA e ingestão de capas e assets' },
       { id: 'engenharia-fullstack', name: 'Engenharia Fullstack Next.js', desc: 'Estruturação de componentes, templates e banco' },
       { id: 'trafego-growth', name: 'Tráfego & Growth', desc: 'SEO técnico, indexação e distribuição' },
       { id: 'qa-auditoria', name: 'QA & Compliance Editorial', desc: 'Auditoria de claims, segurança e compliance' }

@@ -73,6 +73,7 @@ const DEFAULT_SKILLS: SkillItem[] = [
   { id: 'pesquisa-mercado', name: 'Pesquisa de Mercado & Concorrência', description: 'Análise de concorrentes, dores, personas e palavras-chave', content: '' },
   { id: 'copy-posicionamento', name: 'Copywriting & Posicionamento', description: 'Linha editorial, artigos de conversão e pautas', content: '' },
   { id: 'design-identidade', name: 'Design & Identidade Visual', description: 'Design tokens, paleta de cores e identidade', content: '' },
+  { id: 'geracao-imagens', name: 'Geração Autônoma de Imagens & IA Visual', description: 'Prompts visuais, acionamento de apps de IA e ingestão de capas e assets', content: '' },
   { id: 'engenharia-fullstack', name: 'Engenharia Fullstack Next.js', description: 'Estruturação de componentes, templates e banco', content: '' },
   { id: 'trafego-growth', name: 'Tráfego & Growth', description: 'SEO técnico, indexação e distribuição', content: '' },
   { id: 'qa-auditoria', name: 'QA & Compliance Editorial', description: 'Auditoria de claims, segurança e compliance', content: '' }

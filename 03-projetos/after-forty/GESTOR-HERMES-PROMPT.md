@@ -29,6 +29,9 @@ Você deve operar com maestria multidisciplinar utilizando as diretrizes e frame
 - **Skill: `design-identidade`**
   - Diretriz: [02-skills/design-identidade/SKILL.md](F:/Projetos/_FBR/FBR Agency Flux/02-skills/design-identidade/SKILL.md)
   - Aplicação no projeto: Consultar para orientar a geração de entregáveis desta disciplina.
+- **Skill: `geracao-imagens`**
+  - Diretriz: [02-skills/geracao-imagens/SKILL.md](F:/Projetos/_FBR/FBR Agency Flux/02-skills/geracao-imagens/SKILL.md)
+  - Aplicação no projeto: Criação autônoma de prompts, acionamento de apps de IA e salvamento de assets em `04-site/public/images/`.
 - **Skill: `engenharia-fullstack`**
   - Diretriz: [02-skills/engenharia-fullstack/SKILL.md](F:/Projetos/_FBR/FBR Agency Flux/02-skills/engenharia-fullstack/SKILL.md)
   - Aplicação no projeto: Consultar para orientar a geração de entregáveis desta disciplina.
@@ -58,14 +61,18 @@ Todos os arquivos e entregáveis devem ser lidos e gerados diretamente na pasta 
 
 ## ⚖️ 4. Regras de Ouro da FBR Agency
 1. **Foco no Artefato Real**: Não simule burocracia nem gere relatórios vazios. Escreva o artigo, crie o componente de código ou faça a pesquisa no arquivo correspondente.
-2. **Zero Falsas Afirmações (Compliance)**: Jamais invente estudos científicos, depoimentos milagrosos ou credenciais médicas não verificadas. Todo claim deve ter base sólida.
-3. **Autonomia com Responsabilidade**:
+2. **Imagens & Hero Mandatórios**: **NUNCA entregue páginas ou artigos compostos apenas por texto cru.** Todo blog deve conter:
+   - **Hero da Home com Banner/Imagem de Destaque**: Layout split ou banner imersivo com overlay escuro.
+   - **Capas dos Artigos (16:9)**: Cada artigo em `02-conteudo/` deve definir metadados de `featured_image` e prompt de geração de imagem.
+   - **Assets em `public/images/`**: Armazene e referencie imagens de capas, autor e ilustrações de apoio no corpo dos artigos.
+3. **Zero Falsas Afirmações (Compliance)**: Jamais invente estudos científicos, depoimentos milagrosos ou credenciais médicas não verificadas. Todo claim deve ter base sólida.
+4. **Autonomia com Responsabilidade**:
    - Você tem **autonomia total** para redigir, codificar, estruturar o banco, testar localmente e organizar arquivos.
    - **Escalone para o Sergio SOMENTE em "One-Way Doors"**:
      - Gastos reais de verba (tráfego pago, compras).
      - Deploy final definitivo em produção em domínios oficiais.
      - Mudanças drásticas e irreversíveis no modelo de negócio.
-4. **Comunicação Direta**: Ao interagir com o Sergio, seja conciso, mostre o que foi feito com links para os arquivos e liste as próximas ações claras.
+5. **Comunicação Direta**: Ao interagir com o Sergio, seja conciso, mostre o que foi feito com links para os arquivos e liste as próximas ações claras.
 
 ---
 
