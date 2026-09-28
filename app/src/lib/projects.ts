@@ -145,32 +145,38 @@ export async function listProjects(): Promise<ProjectSummary[]> {
       let promptContent = dbp.prompt_content || '';
       let updatesContent = dbp.updates_content || '';
 
-      // 1. Prioridade absoluta para arquivos reais do disco local
-      try {
-        const blp = path.join(pDir, 'backlog.md');
-        const localBacklog = await fs.readFile(blp, 'utf-8');
-        if (localBacklog) {
-          backlogContent = localBacklog;
-        }
-      } catch {}
+      // Se o banco estiver vazio para algum campo, faz fallback para o disco local e reconcilia
+      if (!backlogContent) {
+        try {
+          const blp = path.join(pDir, 'backlog.md');
+          const localBacklog = await fs.readFile(blp, 'utf-8');
+          if (localBacklog) backlogContent = localBacklog;
+        } catch {}
+      }
 
-      try {
-        const bp = path.join(pDir, 'brief.md');
-        const localBrief = await fs.readFile(bp, 'utf-8');
-        if (localBrief) briefContent = localBrief;
-      } catch {}
+      if (!briefContent) {
+        try {
+          const bp = path.join(pDir, 'brief.md');
+          const localBrief = await fs.readFile(bp, 'utf-8');
+          if (localBrief) briefContent = localBrief;
+        } catch {}
+      }
 
-      try {
-        const pp = path.join(pDir, 'GESTOR-HERMES-PROMPT.md');
-        const localPrompt = await fs.readFile(pp, 'utf-8');
-        if (localPrompt) promptContent = localPrompt;
-      } catch {}
+      if (!promptContent) {
+        try {
+          const pp = path.join(pDir, 'GESTOR-HERMES-PROMPT.md');
+          const localPrompt = await fs.readFile(pp, 'utf-8');
+          if (localPrompt) promptContent = localPrompt;
+        } catch {}
+      }
 
-      try {
-        const up = path.join(pDir, 'updates.md');
-        const localUpdates = await fs.readFile(up, 'utf-8');
-        if (localUpdates) updatesContent = localUpdates;
-      } catch {}
+      if (!updatesContent) {
+        try {
+          const up = path.join(pDir, 'updates.md');
+          const localUpdates = await fs.readFile(up, 'utf-8');
+          if (localUpdates) updatesContent = localUpdates;
+        } catch {}
+      }
 
       const { completedTasks, totalTasks } = countBacklogTasks(backlogContent);
 

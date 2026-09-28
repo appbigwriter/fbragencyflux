@@ -32,7 +32,7 @@ Fonte: briefing recebido do Publisher; nenhum item é considerado concluído sem
 |---|---|---|---|---|
 | THI-003 | HOLD ativo | Maia / Gestor Editorial | export ou ferramenta SEO autorizada | obter dados quantitativos rastreáveis; próximo check após acesso |
 | THI-004 | HOLD ativo | Sergio / Publisher | decisão de marca | revisar `03-design-ui/tokens.css`; manter como proposta até decisão formal |
-| THI-005 | review | Maia; Théo futuro | escopo técnico validado | revisar `architecture-contracts-v1.md`; depois story de implementação |
+| THI-005 | review | Maia; Théo futuro | escopo técnico validado | executar `04-site/implementation-tasklist-v1.md` em ordem; começar por SITE-001/SITE-004 |
 | THI-006 | concluído local | Maia / Gestor Editorial | revisão humana/publicação | manter pacote sem links e encaminhar para aprovação editorial |
 | THI-007 | concluído local | Maia / Gestor Editorial | Gate de publicação | manter Gate fechado e preparar eventual preview |
 | THI-008 | awaiting_approval | Sergio | QA completo + Gates | não executar sem aprovação formal |

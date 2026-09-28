@@ -81,13 +81,13 @@ async function upgradeDatabaseSchema() {
       selectedSkills: ['pesquisa-mercado', 'copy-posicionamento', 'design-identidade', 'engenharia-fullstack', 'trafego-growth', 'qa-auditoria']
     },
     {
-      slug: 'gamestyle',
-      name: 'Game Style by Tara Lindqvist',
+      slug: 'gameraesthetic',
+      name: 'Gamer Aesthetic by Tara Lindqvist',
       niche: 'Universo gamer e acessórios',
       gestor_name: 'Tara Lindqvist',
       target_audience: 'Homens e mulheres apaixonados por games',
       language: 'EN-US (Global)',
-      domain: 'gamestyle.fbr.news',
+      domain: 'gameraesthetic.fbr.news',
       personaTone: 'Curadoria sofisticada, transparente e útil: hardware, periféricos, setup e estilo gamer.',
       monetization: ['Amazon Associates', 'Afiliados Especializados', 'FBR Ads'],
       selectedSkills: ['pesquisa-mercado', 'copy-posicionamento', 'design-identidade', 'engenharia-fullstack', 'trafego-growth', 'qa-auditoria']

@@ -30,16 +30,16 @@ export const DEFAULT_PROJECTS: ProjectCreationData[] = [
     selectedSkills: ['pesquisa-mercado', 'copy-posicionamento', 'design-identidade', 'engenharia-fullstack', 'trafego-growth', 'qa-auditoria']
   },
   {
-    name: 'Game Style',
-    slug: 'gamestyle',
+    name: 'Gamer Aesthetic',
+    slug: 'gameraesthetic',
     niche: 'Universo gamer, Hardware, Periféricos e Acessórios',
     targetAudience: 'Homens e mulheres apaixonados por games',
     language: 'EN-US (Global)',
-    domain: 'gamestyle.fbr.news',
+    domain: 'gameraesthetic.fbr.news',
     gestorName: 'Tara Lindqvist',
     personaTone: 'Curadoria sofisticada, transparente e útil: hardware, periféricos, setup e estilo gamer sem hype falso.',
     monetization: ['Amazon Associates', 'Afiliados Especializados', 'FBR Ads'],
-    briefingText: 'Game Style organiza escolhas do universo gamer com curadoria sofisticada, transparente e útil: hardware, periféricos, setup, acessórios, estilo e cultura gamer. O produto deve entrar por adequação contextual, não por pressão.',
+    briefingText: 'Gamer Aesthetic organiza escolhas do universo gamer com curadoria sofisticada, transparente e útil: hardware, periféricos, setup, acessórios, estilo e cultura gamer. O produto deve entrar por adequação contextual, não por pressão.',
     selectedSkills: ['pesquisa-mercado', 'copy-posicionamento', 'design-identidade', 'engenharia-fullstack', 'trafego-growth', 'qa-auditoria']
   },
   {

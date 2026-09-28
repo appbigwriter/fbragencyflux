@@ -33,7 +33,7 @@ async function debugAutoDetect(slug) {
 }
 
 async function main() {
-  for (const s of ['after-forty', 'gamestyle', 'sharpeye', 'talk-to-your-crowd', 'thethirties']) {
+  for (const s of ['after-forty', 'gameraesthetic', 'sharpeye', 'talk-to-your-crowd', 'thethirties']) {
     await debugAutoDetect(s);
   }
 }

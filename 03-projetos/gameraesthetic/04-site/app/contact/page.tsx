@@ -1,0 +1,2 @@
+import Link from 'next/link';
+export default function Contact(){return <main className="shell prose-page"><Link className="text-link" href="/">← Gamer Aesthetic</Link><p className="eyebrow">Contact</p><h1>Have a setup question?</h1><p>For editorial corrections, compatibility notes or partnership enquiries, contact the Gamer Aesthetic team through the FBR Agency publishing channel.</p><p>Include the article URL, the exact claim or specification and a primary source when reporting a correction.</p></main>}

@@ -1,0 +1,2 @@
+import Link from 'next/link';
+export default function About(){return <main className="shell prose-page"><Link className="text-link" href="/">← Gamer Aesthetic</Link><p className="eyebrow">About</p><h1>Gear advice with context.</h1><p>Gamer Aesthetic is an editorial guide for gamers choosing displays, audio and setup accessories across platforms. We focus on constraints, compatibility and trade-offs—not hype.</p><p>Our standard is simple: explain what a product solves, what it does not solve and when keeping what you already own is the better decision.</p></main>}

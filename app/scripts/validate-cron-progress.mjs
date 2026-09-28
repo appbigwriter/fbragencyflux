@@ -74,7 +74,7 @@ async function validateProjectForCron(slug) {
 
 async function run() {
   console.log('🔍 Executando Verificação de Integridade de Cron & Backlog...\n');
-  const slugs = ['after-forty', 'gamestyle', 'sharpeye', 'talk-to-your-crowd', 'thethirties'];
+  const slugs = ['after-forty', 'gameraesthetic', 'sharpeye', 'talk-to-your-crowd', 'thethirties'];
   const results = [];
 
   for (const slug of slugs) {

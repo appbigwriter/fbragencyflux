@@ -24,7 +24,7 @@ function countBacklogTasks(backlogContent) {
 
 const GESTORES = {
   'after-forty': { name: 'After Forty by Heidi Braun', gestor: 'Heidi Braun' },
-  'gamestyle': { name: 'Game Style by Tara Lindqvist', gestor: 'Tara Lindqvist' },
+  'gameraesthetic': { name: 'Gamer Aesthetic by Tara Lindqvist', gestor: 'Tara Lindqvist' },
   'sharpeye': { name: 'SharpEye by Nadia Volkova', gestor: 'Nadia Volkova' },
   'talk-to-your-crowd': { name: 'Talk to Your Crowd', gestor: 'Marcus Cole' },
   'thethirties': { name: 'The Thirties by Maia Mendes', gestor: 'Maia Mendes' }

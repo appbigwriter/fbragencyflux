@@ -21,7 +21,7 @@ function countBacklogTasks(backlogContent) {
 }
 
 async function main() {
-  const slugs = ['after-forty', 'gamestyle', 'sharpeye', 'talk-to-your-crowd', 'thethirties'];
+  const slugs = ['after-forty', 'gameraesthetic', 'sharpeye', 'talk-to-your-crowd', 'thethirties'];
   
   console.log('🔄 Gravando backlogs reais do disco diretamente no PostgreSQL VPS...');
   
