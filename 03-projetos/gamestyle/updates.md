@@ -4,18 +4,21 @@ Canal ativo de comunicação entre Sergio Castro / Sistema Flux e Tara Lindqvist
 
 ## ✅ Histórico de updates atendidos
 
-- **GS-001 — Pesquisa:** `01-pesquisa/analise-nicho.md` criado e verificado.
-- **GS-002 — Design:** `03-design-ui/tokens.css` criado e status persistido no Flux.
-- **GS-003 — Editorial:** `02-conteudo/pautas.md` criado e status persistido no Flux.
-- **GS-004 — Conteúdo inicial:** lote editorial registrado no backlog.
-- **GS-005 — Institucionais:** About, Contact e Disclaimer registrados no backlog.
-- **GS-006 — Site:** setup Next.js/Tailwind registrado no backlog.
+- GS-001 — Pesquisa: `01-pesquisa/analise-nicho.md` criado e verificado.
+- GS-002 — Design: `03-design-ui/tokens.css` criado e persistido.
+- GS-003 — Editorial: `02-conteudo/pautas.md` criado e persistido.
+- GS-004 — Conteúdo inicial: lote editorial criado em `02-conteudo/`.
+- GS-005 — Institucionais: About, Contact e Disclaimer criados.
+- GS-006 — Setup Next.js/Tailwind concluído.
+- GS-007 — Homepage e layout editorial verificados.
+- GS-008 — Templates e callout afiliado verificados em `/guides`.
+- GS-009 — Auditoria QA concluída; build, TypeScript e npm audit verificados.
+- GS-010 — Gate aprovado explicitamente por Sergio Castro.
 
-## 📌 Pendências ativas
+## Deploy externo
 
-- GS-007 — página inicial/layout editorial.
-- GS-008 — templates de artigo e callouts afiliados.
-- GS-009 — auditoria SEO, performance e compliance.
-- GS-010 — deploy final, aguardando aprovação explícita do Sergio.
+- Estado: aprovado para execução, ainda não publicado.
+- Bloqueio técnico: falta target/contrato de infraestrutura e readback externo.
+- Próximo passo: escolher Easypanel/VPS, Vercel ou staging privado e executar publicação verificável.
 
-A fonte canônica de progresso é o backlog retornado pela API do Flux. Este arquivo deve refletir o estado persistido, não cobranças antigas já atendidas.
+A fonte canônica de progresso é o backlog retornado pela API do Flux.

@@ -14,15 +14,15 @@ Acompanhamento direto e transparente dos entregáveis do projeto.
 
 ## ✍️ Fase 2: Conteúdo & Copywriting
 - [x] **Estruturação da Linha Editorial e Pautas** (`02-conteudo/pautas.md`)
-- [ ] **Lote 1 de Artigos de Alta Conversão** (`02-conteudo/`)
-- [ ] **Páginas Institucionais (About, Contact, Disclaimer)** (`02-conteudo/`)
+- [x] **Lote 1 de Artigos de Alta Conversão** (`02-conteudo/`)
+- [x] **Páginas Institucionais (About, Contact, Disclaimer)** (`02-conteudo/`)
 
 ---
 
 ## 💻 Fase 3: Desenvolvimento Web
-- [ ] **Setup da Aplicação Web (Next.js / Tailwind)** (`04-site/`)
-- [ ] **Página Inicial & Layout Editorial**
-- [ ] **Templates de Artigo & Callouts de Afiliados**
+- [x] **Setup da Aplicação Web (Next.js / Tailwind)** (`04-site/`)
+- [x] **Página Inicial & Layout Editorial**
+- [x] **Templates de Artigo & Callouts de Afiliados**
 
 ---
 

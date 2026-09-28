@@ -11,8 +11,8 @@
 
 ## Fase 2 — Conteúdo & Copywriting
 - [x] GS-003 Linha editorial e pautas — `02-conteudo/pautas.md`
-- [ ] GS-004 Lote 1 de artigos de alta conversão — `02-conteudo/`
-- [ ] GS-005 About, Contact e Disclaimer — `02-conteudo/`
+- [x] GS-004 Lote 1 de artigos de alta conversão — `02-conteudo/`
+- [x] GS-005 About, Contact e Disclaimer — `02-conteudo/`
 
 ## Fase 3 — Desenvolvimento Web
 - [x] GS-006 Setup Next.js/Tailwind — `04-site/`
@@ -21,7 +21,7 @@
 
 ## Fase 4 — QA & Lançamento
 - [x] GS-009 Auditoria SEO, performance e compliance — `04-site/qa-auditoria.md`
-- [ ] GS-010 Gate final de deploy — bloqueado até aprovação de Sergio
+- [x] GS-010 Gate final de deploy — aprovado por Sergio; deploy externo pendente de target/contrato
 
 ## Critério de conclusão GS-001
 - Nicho, público, intenções e clusters explicitados.

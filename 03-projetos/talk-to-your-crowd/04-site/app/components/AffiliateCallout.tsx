@@ -1,0 +1,1 @@
+export function AffiliateCallout({title,description}:{title:string;description:string}){return <aside className="form-placeholder"><p className="eyebrow">Practical tool</p><h2>{title}</h2><p>{description}</p><small>Affiliate disclosure: recommendations are based on use-case fit.</small></aside>}
